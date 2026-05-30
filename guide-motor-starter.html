@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Full Motor Starter — WireNerd Build Guide</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+
+  .guidemeta{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 24px;}
+  .pill{font-size:12px;border:1px solid var(--line);border-radius:20px;padding:5px 13px;color:var(--muted);}
+  .pill b{color:var(--accent);}
+  .parts{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:22px 0;}
+  .parts h3{font-size:15px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:12px;}
+  .parts ul{margin:0 0 0 4px;list-style:none;}
+  .parts li{padding:6px 0;border-bottom:1px solid #2c2c2c;font-size:16px;display:flex;align-items:center;gap:10px;}
+  .parts li:last-child{border-bottom:none;}
+  .parts .qty{flex-shrink:0;width:26px;height:26px;border-radius:7px;background:#2f2f2f;border:1px solid var(--line);color:var(--accent);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  ol.steps{counter-reset:step;list-style:none;margin:10px 0 0;padding:0;}
+  ol.steps > li{position:relative;padding:0 0 22px 52px;margin:0;}
+  ol.steps > li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#1a1a1a;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;}
+  ol.steps > li:after{content:'';position:absolute;left:16px;top:36px;bottom:0;width:2px;background:var(--line);}
+  ol.steps > li:last-child:after{display:none;}
+  ol.steps h4{font-size:17px;font-weight:700;margin-bottom:5px;}
+  ol.steps p{font-size:15px;color:var(--muted);margin:0 0 6px;}
+  .wirelist{background:#1c1c1c;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0 0;font-size:14px;font-family:ui-monospace,Menlo,monospace;color:#cfcfcf;}
+  .wirelist div{padding:3px 0;}
+  .wirelist .arrow{color:var(--accent);}
+  .test{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:12px;padding:20px 24px;margin:24px 0;}
+  .test h3{color:#27B888;font-size:15px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+  .test li{font-size:16px;margin:6px 0 6px 18px;}
+  .tip{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:14px 18px;margin:18px 0;font-size:15px;}
+  .tip b{color:var(--blue);}
+</style></head><body>
+  <header><div class="wrap"><a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/guides.html">Build Guides</a><a href="/trainer.html">Sandbox</a></nav></div></header>
+  <div class="wrap"><div class="crumbs"><a href="/guides.html">← All Build Guides</a></div>
+    <article>
+      <div class="kicker">Build Guide · Motor Control</div>
+      <h1>Full Motor Starter</h1>
+      <p class="lede">A real starter: start/stop/seal-in control with an overload relay in the control rung, plus a contactor feeding the motor — control and power circuits together.</p>
+      <div class="guidemeta"><span class="pill">Difficulty: <b>Intermediate</b></span><span class="pill">Builds on: <b>start/stop with seal-in</b></span><span class="pill">Lesson: <a href="/lesson-motor-starter.html" style="color:var(--accent);">read the theory →</a></span></div>
+
+      <div class="parts"><h3>Parts to add</h3><ul><li><span class="qty">1</span>Power Source</li><li><span class="qty">1</span>Push Button NC (Stop)</li><li><span class="qty">1</span>Push Button NO (Start)</li><li><span class="qty">1</span>Overload Relay</li><li><span class="qty">1</span>Coil</li><li><span class="qty">1</span>NO Contact (seal-in)</li><li><span class="qty">1</span>Contactor</li><li><span class="qty">1</span>Motor</li></ul></div>
+
+      <h2>Steps</h2>
+      <ol class="steps"><li><h4>Add and label</h4><p>Coil = M, seal-in NO Contact = M, Contactor = M.</p></li><li><h4>Build the control rung with the overload</h4><p>Put the overload’s NC aux contact in series, before the coil.</p><div class="wirelist"><div>Power (L1) <span class="arrow">→</span> Stop <span class="arrow">→</span> Start <span class="arrow">→</span> Overload (NC aux) <span class="arrow">→</span> Coil A1</div><div>Coil A2 <span class="arrow">→</span> Power (N)</div></div></li><li><h4>Add the seal-in</h4><div class="wirelist"><div>across the Start button: Stop→Start junction <span class="arrow">→</span> M NO Contact <span class="arrow">→</span> Start→overload junction</div></div></li><li><h4>Wire the power circuit</h4><div class="wirelist"><div>Power (L1) <span class="arrow">→</span> Contactor <span class="arrow">→</span> Motor <span class="arrow">→</span> Power (N)</div></div></li><li><h4>Energize, start, then trip the overload</h4><p>Start the motor. Then click the Overload Relay to trip it.</p></li></ol>
+
+      <div class="test"><h3>✓ Test it</h3><ul><li>Start the motor — it runs and seals in.</li><li>Click the overload to TRIP it: its NC aux opens, the coil drops, the motor stops.</li><li>Reset the overload (click again) and Start once more.</li></ul></div>
+      <div class="tip"><b>Tip:</b> The overload does not switch the big motor power directly — it stops the motor by breaking the control circuit and dropping the coil. Smart and safe.</div>
+      <div class="cta"><h2>Open the Sandbox and build it</h2><p>Follow the steps above with the trainer open in another tab.</p><a class="btn" href="/trainer.html" target="_blank">Open the Sandbox →</a></div>
+      <div class="pager"><a href="/guide-three-wire.html">← Start/Stop with Seal-In</a><a href="/guide-hoa.html">Next: Hand-Off-Auto →</a></div>
+    </article></div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer></body></html>
