@@ -140,6 +140,25 @@ footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim
 footer .wrap{display:flex;flex-direction:column;gap:8px}
 footer a{color:var(--text-dim)}
 .social{display:flex;gap:16px}
+/* book map */
+.bookmap{margin:14px 0 4px}
+.bk-search{width:100%;font-family:var(--display);font-size:15px;color:var(--text);background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:12px 14px;outline:none;box-sizing:border-box}
+.bk-search:focus{border-color:var(--accent)}
+.bk-legend{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin:10px 2px 12px}
+.bk-star{color:var(--accent)}
+.bk-chapter{border:1px solid var(--line);border-radius:9px;background:var(--panel-2);margin:8px 0;overflow:hidden}
+.bk-chead{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;cursor:pointer;background:transparent;border:none;color:var(--text);font-family:var(--display);font-weight:600;font-size:15.5px;padding:13px 15px}
+.bk-chead:hover{background:rgba(239,159,39,.06)}
+.bk-chead .bk-cnt{font-family:var(--mono);font-size:12px;color:var(--text-dim);font-weight:400;white-space:nowrap}
+.bk-chead .bk-caret{color:var(--accent);transition:transform .18s ease;font-family:var(--mono);display:inline-block}
+.bk-chapter.open .bk-caret{transform:rotate(90deg)}
+.bk-arts{display:none;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:7px;padding:2px 13px 14px}
+.bk-chapter.open .bk-arts{display:grid}
+.bk-art{display:flex;gap:9px;align-items:baseline;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel);font-size:14px;line-height:1.3}
+.bk-art .bk-no{font-family:var(--mono);font-size:12.5px;color:var(--accent);min-width:36px}
+.bk-art.hi{border-color:rgba(239,159,39,.4);background:rgba(239,159,39,.06)}
+.bk-art .bk-t{color:var(--text)}
+.bk-art mark{background:rgba(239,159,39,.32);color:var(--text);border-radius:3px;padding:0 1px}
 </style>
 </head>
 <body>
@@ -234,6 +253,15 @@ footer a{color:var(--text-dim)}
       <li>Answer the quick theory and definition questions first to build a time cushion.</li>
       <li>Practice with the exact calculator allowed at your test center so it's muscle memory.</li>
     </ul>
+
+    <h3>The shape of the book</h3>
+    <p>The NEC is one big book with a logical map. Article 90 sets the ground rules; Chapters 1–4 apply to <em>everything</em>; Chapters 5–7 cover special situations; Chapter 8 is communications; Chapter 9 is tables; the annexes are reference only. Learn this map and you'll know which half of the book to be in before you ever crack it open. Tap a chapter to open it, or search by number or keyword.</p>
+    <div class="bookmap">
+      <input id="bookSearch" class="bk-search" type="search" placeholder="Search the book — try 250, grounding, motors, GFCI…" autocomplete="off" spellcheck="false">
+      <div class="bk-legend"><span class="bk-star">★</span> = high-yield on the Utah journeyman exam — tab these first</div>
+      <div id="bookMap"></div>
+      <div id="bookEmpty" class="muted" style="display:none;padding:10px 2px">Nothing matches that — try a number like 250, or a word like "motor".</div>
+    </div>
 
     <div class="callout">
       <b>Get a clean copy of the code.</b> You'll want your own tabbed 2023 NEC for the open-book exam. To look things up online for free, NFPA offers a read-only edition at <a href="https://link.nfpa.org/free-access/publications/70/2023" target="_blank" rel="noopener">link.nfpa.org/free-access/publications/70/2023</a> (free registration; you can't download or print it).
@@ -1710,6 +1738,112 @@ function renderHistory(){
 $("#clearHistory").addEventListener("click",()=>{
   if(confirm("Clear all saved scores on this device?")){try{localStorage.removeItem(HKEY);}catch(e){}renderHistory();}
 });
+/* =========================== the shape of the book =========================== */
+(function bookMap(){
+  const host=document.getElementById("bookMap");
+  if(!host) return;
+  const search=document.getElementById("bookSearch");
+  const empty=document.getElementById("bookEmpty");
+  // [number, title, highYield?]
+  const STRUCTURE=[
+    {c:"Article 90 — Introduction",a:[["90","Introduction, purpose, scope, and how the code is arranged",1]]},
+    {c:"Chapter 1 — General",a:[["100","Definitions",1],["110","Requirements for Electrical Installations",1]]},
+    {c:"Chapter 2 — Wiring and Protection",a:[
+      ["200","Use and Identification of Grounded Conductors"],["210","Branch Circuits",1],["215","Feeders"],
+      ["220","Branch-Circuit, Feeder, and Service Load Calculations",1],["225","Outside Branch Circuits and Feeders"],
+      ["230","Services",1],["240","Overcurrent Protection",1],["242","Overvoltage Protection"],["250","Grounding and Bonding",1]]},
+    {c:"Chapter 3 — Wiring Methods and Materials",a:[
+      ["300","General Requirements for Wiring Methods and Materials",1],["310","Conductors for General Wiring",1],
+      ["311","Medium Voltage Conductors and Cable"],["312","Cabinets, Cutout Boxes, and Meter Socket Enclosures"],
+      ["314","Outlet, Device, Pull, and Junction Boxes; Conduit Bodies; Fittings",1],["320","Armored Cable (Type AC)"],
+      ["330","Metal-Clad Cable (Type MC)"],["334","Nonmetallic-Sheathed Cable (Types NM, NMC)"],
+      ["338","Service-Entrance Cable (Types SE, USE)"],["340","Underground Feeder and Branch-Circuit Cable (Type UF)"],
+      ["342","Intermediate Metal Conduit (Type IMC)"],["344","Rigid Metal Conduit (Type RMC)"],
+      ["348","Flexible Metal Conduit (Type FMC)"],["350","Liquidtight Flexible Metal Conduit (Type LFMC)"],
+      ["352","Rigid Polyvinyl Chloride Conduit (Type PVC)"],["356","Liquidtight Flexible Nonmetallic Conduit (Type LFNC)"],
+      ["358","Electrical Metallic Tubing (Type EMT)"],["362","Electrical Nonmetallic Tubing (Type ENT)"],
+      ["376","Metal Wireways"],["378","Nonmetallic Wireways"],["386","Surface Metal Raceways"],["392","Cable Trays"]]},
+    {c:"Chapter 4 — Equipment for General Use",a:[
+      ["400","Flexible Cords and Flexible Cables"],["402","Fixture Wires"],["404","Switches"],
+      ["406","Receptacles, Cord Connectors, and Attachment Plugs"],["408","Switchboards, Switchgear, and Panelboards"],
+      ["409","Industrial Control Panels"],["410","Luminaires, Lampholders, and Lamps"],["411","Low-Voltage Lighting"],
+      ["422","Appliances"],["424","Fixed Electric Space-Heating Equipment"],
+      ["430","Motors, Motor Circuits, and Controllers",1],["440","Air-Conditioning and Refrigerating Equipment"],
+      ["445","Generators"],["450","Transformers and Transformer Vaults"],["455","Phase Converters"],
+      ["460","Capacitors"],["470","Resistors and Reactors"],["480","Storage Batteries"]]},
+    {c:"Chapter 5 — Special Occupancies",a:[
+      ["500","Hazardous (Classified) Locations"],["501","Class I Locations"],["502","Class II Locations"],
+      ["503","Class III Locations"],["505","Zone 0, 1, and 2 Locations"],["511","Commercial Garages, Repair and Storage"],
+      ["513","Aircraft Hangars"],["514","Motor Fuel Dispensing Facilities"],["515","Bulk Storage Plants"],
+      ["516","Spray Application, Dipping, Coating, and Printing"],["517","Health Care Facilities"],
+      ["518","Assembly Occupancies"],["520","Theaters and Similar Locations"],["525","Carnivals, Circuses, and Fairs"],
+      ["547","Agricultural Buildings"],["550","Mobile and Manufactured Homes"],
+      ["551","Recreational Vehicles and RV Parks"],["555","Marinas, Boatyards, and Docking Facilities"],
+      ["590","Temporary Installations"]]},
+    {c:"Chapter 6 — Special Equipment",a:[
+      ["600","Electric Signs and Outline Lighting"],["604","Manufactured Wiring Systems"],["610","Cranes and Hoists"],
+      ["620","Elevators, Escalators, and Moving Walks"],["625","Electric Vehicle Power Transfer Systems"],
+      ["630","Electric Welders"],["640","Audio Signal Processing and Reproduction Equipment"],
+      ["645","Information Technology Equipment"],["646","Modular Data Centers"],["647","Sensitive Electronic Equipment"],
+      ["660","X-Ray Equipment"],["665","Induction and Dielectric Heating Equipment"],["670","Industrial Machinery"],
+      ["675","Electrically Driven Irrigation Machines"],["680","Swimming Pools, Fountains, and Similar Installations"],
+      ["682","Natural and Artificially Made Bodies of Water"],["685","Integrated Electrical Systems"],
+      ["690","Solar Photovoltaic (PV) Systems"],["691","Large-Scale PV Electric Supply Stations"],
+      ["692","Fuel Cell Systems"],["694","Wind Electric Systems"],["695","Fire Pumps"]]},
+    {c:"Chapter 7 — Special Conditions",a:[
+      ["700","Emergency Systems"],["701","Legally Required Standby Systems"],["702","Optional Standby Systems"],
+      ["705","Interconnected Electric Power Production Sources"],["706","Energy Storage Systems"],
+      ["708","Critical Operations Power Systems (COPS)"],["710","Stand-Alone Systems"],["712","Direct Current Microgrids"],
+      ["720","Circuits and Equipment Operating at Less Than 50 Volts"],
+      ["725","Class 1, 2, and 3 Remote-Control, Signaling, and Power-Limited Circuits"],
+      ["727","Instrumentation Tray Cable (Type ITC)"],["728","Fire-Resistive Cable Systems"],
+      ["750","Energy Management Systems"],["760","Fire Alarm Systems"],["770","Optical Fiber Cables"]]},
+    {c:"Chapter 8 — Communications Systems",a:[
+      ["800","General Requirements for Communications Systems"],["805","Communications Circuits"],
+      ["810","Radio and Television Equipment"],["820","Community Antenna TV and Radio Distribution (Coax)"],
+      ["830","Network-Powered Broadband Communications Systems"],["840","Premises-Powered Broadband Communications Systems"]]},
+    {c:"Chapter 9 — Tables",a:[
+      ["T1","Percent fill of conduit and tubing for conductors"],["T4","Dimensions and percent area of conduit and tubing"],
+      ["T5","Dimensions of insulated conductors"],["T8","Conductor properties (cmil, resistance)"],
+      ["T9","AC resistance and reactance for 600V cables"]]},
+    {c:"Informative Annexes (reference only — not enforceable)",a:[
+      ["A","Product Safety Standards"],["B","Ampacity Calculation Under Engineering Supervision"],
+      ["C","Conduit and Tubing Fill Tables (same-size conductors)"],["D","Calculation Examples"],
+      ["E","Types of Construction"],["F","Availability/Reliability for COPS"],["G","SCADA"],
+      ["H","Administration and Enforcement"],["I","Recommended Tightening Torque"],["J","ADA Accessible Design"]]}
+  ];
+  const esc=q=>q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  function hl(text,q){ if(!q) return text; try{return text.replace(new RegExp("("+esc(q)+")","ig"),"<mark>$1</mark>");}catch(e){return text;} }
+  function render(query){
+    const q=(query||"").trim().toLowerCase();
+    host.innerHTML="";
+    let total=0;
+    STRUCTURE.forEach(ch=>{
+      const arts=q ? ch.a.filter(x=>x[0].toLowerCase().indexOf(q)>=0 || x[1].toLowerCase().indexOf(q)>=0) : ch.a;
+      if(q && arts.length===0) return;
+      total+=arts.length;
+      const wrap=document.createElement("div");
+      wrap.className="bk-chapter"+(q?" open":"");
+      const head=document.createElement("button");
+      head.className="bk-chead";
+      head.innerHTML=`<span><span class="bk-caret">▸</span>&nbsp;&nbsp;${ch.c}</span><span class="bk-cnt">${ch.a.length} article${ch.a.length>1?"s":""}</span>`;
+      head.addEventListener("click",()=>wrap.classList.toggle("open"));
+      const list=document.createElement("div");
+      list.className="bk-arts";
+      arts.forEach(x=>{
+        const a=document.createElement("div");
+        a.className="bk-art"+(x[2]?" hi":"");
+        a.innerHTML=`<span class="bk-no">${hl(x[0],q)}</span><span class="bk-t">${hl(x[1],q)}${x[2]?' <span class="bk-star">★</span>':""}</span>`;
+        list.appendChild(a);
+      });
+      wrap.appendChild(head);wrap.appendChild(list);
+      host.appendChild(wrap);
+    });
+    empty.style.display = total===0 ? "block" : "none";
+  }
+  render("");
+  search.addEventListener("input",e=>render(e.target.value));
+})();
 </script>
 </body>
 </html>
