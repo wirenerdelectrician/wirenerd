@@ -1096,6 +1096,313 @@ $$(".tab").forEach(tab=>{
       made++;
     }
   });
+
+  /* ---- code-calc generators: sizing rules, no NEC tables reproduced ---- */
+  const STD=[15,20,25,30,35,40,45,50,60,70,80,90,100,110,125,150,175,200,225,250,300,350,400,450,500,600];
+  const CODECALC={
+    "Overcurrent Protection":[
+      ()=>{const I=pick([13,16,18,21,23,26,29,32,36,41,44,48,53,58,63,72,84,96,110,128,144,168,190,220,260,300,340,380]);const r=Math.round(I*1.25*100)/100;
+        return {stem:`A continuous load draws ${I} A. Before rounding to a standard size, the overcurrent device must be rated at least:`,...build(r,[I,Math.round(I*1.15*100)/100,Math.round(I*1.5*100)/100],"A"),
+          solution:`Continuous loads are protected at 125%: ${I} × 1.25 = ${sn(r)} A (then round up to a standard rating).`,ref:"210.20(A) / 215.3"};},
+      ()=>{const calc=pick([17,22,27,33,38,42,47,55,63,72,88,95,105,118,135,160,185,215,240,275,330,380,420,470,520]);const next=STD.find(s=>s>=calc);const i=STD.indexOf(next);
+        return {stem:`A calculation requires a minimum overcurrent device of ${calc} A. Using NEC standard ratings, the next standard size is:`,...build(next,[STD[i-1],STD[i+1],calc],"A"),
+          solution:`The next standard rating at or above ${calc} A on the 240.6(A) list is ${next} A.`,ref:"240.6(A) standard ratings"};}
+    ],
+    "Motors & Controllers":[
+      ()=>{const F=pick([6,7,9.6,11,13,14,17,21,24,28,31,34,40,46,52,59,65,77,88,96,112]);const r=Math.round(F*1.25*100)/100;
+        return {stem:`A motor has a full-load current of ${F} A. The branch-circuit conductors must have an ampacity of at least:`,...build(r,[F,Math.round(F*1.15*100)/100,Math.round(F*2.5*100)/100],"A"),
+          solution:`Motor branch-circuit conductors are sized at 125% of FLC: ${F} × 1.25 = ${sn(r)} A.`,ref:"430.22"};},
+      ()=>{const F=pick([6,7,9.6,11,13,14,17,21,24,28,31,34,40,46,52,59,65,77,88,96,112]);const r=Math.round(F*1.15*100)/100;
+        return {stem:`A motor with no marked service factor of 1.15 or more has a full-load current of ${F} A. Standard overload protection is set at not more than:`,...build(r,[F,Math.round(F*1.25*100)/100,Math.round(F*1.4*100)/100],"A"),
+          solution:`These motors get overloads at 115% of FLC: ${F} × 1.15 = ${sn(r)} A.`,ref:"430.32(A)(1)"};},
+      ()=>{const F=pick([12,16,19,22,26,28,34,40,46,52,60,68,74,80,88,96,104,112]);const r=Math.round(F*1.15*100)/100;
+        return {stem:`A motor has a full-load current of ${F} A. Its disconnecting means must be rated at least:`,...build(r,[F,Math.round(F*1.25*100)/100,Math.round(F*2.5*100)/100],"A"),
+          solution:`A motor disconnect must be at least 115% of FLC: ${F} × 1.15 = ${sn(r)} A.`,ref:"430.110(A)"};},
+      ()=>{const a=pick([28,34,40,46,52,65,77]);const b=pick([10,14,17,21,24]);const c2=pick([6,8,11,13]);const r=Math.round((a*1.25+b+c2)*100)/100;
+        return {stem:`Three motors share one feeder, drawing ${a} A, ${b} A, and ${c2} A (largest is ${a} A). The feeder conductors must be sized at least:`,...build(r,[a+b+c2,Math.round(a*1.25*100)/100,Math.round((a+b+c2)*1.25*100)/100],"A"),
+          solution:`Feeder = 125% of the largest motor FLC + the others: (${a} × 1.25) + ${b} + ${c2} = ${sn(r)} A.`,ref:"430.24"};}
+    ],
+    "Services, Feeders & Branch Circuits":[
+      ()=>{const A=pick([800,900,1000,1100,1200,1350,1500,1650,1800,2000,2200,2400,2600,2800,3000,3200,3500,3800,4000]);const r=A*3;
+        return {stem:`Using 3 VA/ft² (per 220.12), the general lighting load for a ${sn(A)} sq ft dwelling is:`,...build(r,[A,A*1.5,A*2],"VA"),
+          solution:`General lighting = area × unit load = ${sn(A)} × 3 = ${sn(r)} VA.`,ref:"220.12 (3 VA/ft²)"};},
+      ()=>{const N=pick([6,8,10,12,14,15,16,18,20,22,24,26,28,30,34,38,40]);const r=N*180;
+        return {stem:`A commercial occupancy has ${N} general-use receptacle outlets. At 180 VA each (220.14(I)), the total receptacle load is:`,...build(r,[N*100,N*150,N*200],"VA"),
+          solution:`Receptacle load = ${N} × 180 = ${sn(r)} VA.`,ref:"220.14(I)"};},
+      ()=>{const I=pick([10,12,14,16,18,20,24,28,32,36,40,44,48,56]);const r=Math.round(I*1.25*100)/100;
+        return {stem:`A branch circuit serves a continuous load of ${I} A. Its conductors and overcurrent device must be rated at least:`,...build(r,[I,Math.round(I*1.15*100)/100,Math.round(I*1.5*100)/100],"A"),
+          solution:`Continuous loads are sized at 125%: ${I} × 1.25 = ${sn(r)} A.`,ref:"210.19(A) / 210.20(A)"};},
+      ()=>{const n=pick([2,3,4,5,6]);const r=n*1500;
+        return {stem:`A dwelling has ${n} required small-appliance and laundry branch circuits. At 1,500 VA each (220.52), the load before demand factors is:`,...build(r,[n*1000,n*1200,n*2000],"VA"),
+          solution:`Load = ${n} × 1,500 = ${sn(r)} VA.`,ref:"220.52 (1,500 VA per circuit)"};}
+    ],
+    "Conductors & Cables":[
+      ()=>{const I=pick([12,16,18,20,24,28,32,36,40,44,48,52,56,60,64,72,80]);const r=Math.round(I*1.25*100)/100;
+        return {stem:`A conductor supplies a continuous load of ${I} A. Its minimum ampacity before adjustments must be at least:`,...build(r,[I,Math.round(I*1.15*100)/100,Math.round(I*1.5*100)/100],"A"),
+          solution:`Continuous-load conductors are sized at 125%: ${I} × 1.25 = ${sn(r)} A.`,ref:"210.19(A)"};},
+      ()=>{const base=pick([30,35,40,45,50,55,60,65,70,75,85,95,105,115]);const cfg=pick([[5,0.8,"4–6"],[8,0.7,"7–9"],[12,0.5,"10–20"]]);const r=Math.round(base*cfg[1]*100)/100;
+        return {stem:`A conductor with a base ampacity of ${base} A shares a raceway with ${cfg[0]} current-carrying conductors. Applying the ${Math.round(cfg[1]*100)}% adjustment factor (${cfg[2]} conductors), its adjusted ampacity is:`,...build(r,[base,Math.round(base*0.9*100)/100,Math.round(base*(cfg[1]-0.1)*100)/100],"A"),
+          solution:`Adjusted ampacity = base × factor = ${base} × ${cfg[1]} = ${sn(r)} A.`,ref:"310.15(C)(1)"};}
+    ]
+  };
+  Object.keys(CODECALC).forEach(topic=>{
+    const fns=CODECALC[topic];
+    const existing=BANK.filter(q=>q.topic===topic).length;
+    const seen=new Set(BANK.filter(q=>q.topic===topic).map(q=>q.stem));
+    const tag=topic.replace(/[^A-Za-z]/g,"").toUpperCase().slice(0,6);
+    let made=0,tries=0,idx=1;
+    while(existing+made<50 && tries<15000){
+      tries++;
+      const q=fns[Math.floor(g()*fns.length)]();
+      if(!q||seen.has(q.stem))continue;
+      if(new Set(q.choices).size!==4)continue;
+      if(q.answer<0||q.answer>3)continue;
+      seen.add(q.stem);
+      BANK.push({id:`GC-${tag}-${idx++}`,topic,type:"code",stem:q.stem,choices:q.choices,answer:q.answer,solution:q.solution,ref:q.ref});
+      made++;
+    }
+  });
+})();
+
+/* =========================== concept & table-application banks =========================== */
+/* Built deterministically from verified fact sets so the numbered mock exams stay repeatable.
+   No NEC prose is reproduced; table-application questions state the rule and ask you to apply it. */
+(function buildConceptBanks(){
+  const g2=mulberry32(424242);
+  const shuf=arr=>{arr=arr.slice();for(let i=arr.length-1;i>0;i--){const j=Math.floor(g2()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;};
+  const countTopic=t=>BANK.filter(q=>q.topic===t).length;
+  function pushFacts(topic,tag,facts){
+    const seen=new Set(BANK.filter(q=>q.topic===topic).map(q=>q.stem));
+    let idx=1;
+    for(const f of shuf(facts)){
+      if(countTopic(topic)>=50) break;
+      if(!f||seen.has(f[0])) continue;
+      const opts=shuf([f[1],f[2],f[3],f[4]]);
+      if(new Set(opts).size!==4) continue;
+      seen.add(f[0]);
+      BANK.push({id:`F-${tag}-${idx++}`,topic,type:"code",stem:f[0],choices:opts,answer:opts.indexOf(f[1]),
+        solution:f[5]||`The correct answer is ${f[1]}.`,ref:f[6]||""});
+    }
+  }
+
+  /* ---------- Grounding & Bonding: EGC sizing (Table 250.122) + concepts ---------- */
+  const LADDER=["14 AWG","12 AWG","10 AWG","8 AWG","6 AWG","4 AWG","3 AWG","2 AWG","1 AWG","1/0 AWG","2/0 AWG","3/0 AWG","4/0 AWG","250 kcmil","350 kcmil"];
+  const EGC={"15":["14 AWG","12 AWG"],"20":["12 AWG","10 AWG"],"30":["10 AWG","8 AWG"],"40":["10 AWG","8 AWG"],"60":["10 AWG","8 AWG"],"100":["8 AWG","6 AWG"],"200":["6 AWG","4 AWG"],"300":["4 AWG","2 AWG"],"400":["3 AWG","1 AWG"],"500":["2 AWG","1/0 AWG"],"600":["1 AWG","2/0 AWG"],"800":["1/0 AWG","3/0 AWG"],"1000":["2/0 AWG","4/0 AWG"]};
+  function neighbors(ans){const i=LADDER.indexOf(ans);const out=[];[-1,1,2,-2,3].forEach(o=>{const v=LADDER[i+o];if(v&&v!==ans&&!out.includes(v)&&out.length<3)out.push(v);});return out;}
+  const gndFacts=[];
+  Object.keys(EGC).forEach(r=>{
+    [["copper",0],["aluminum",1]].forEach(m=>{
+      const a=EGC[r][m[1]];const n=neighbors(a);
+      gndFacts.push([`Using Table 250.122, the minimum ${m[0]} equipment grounding conductor for a circuit protected by a ${r} A overcurrent device is:`,a,n[0],n[1],n[2],
+        `Table 250.122 gives ${a} ${m[0]} for a ${r} A device.`,"Table 250.122"]);
+    });
+  });
+  [
+    ["The minimum length of a driven ground rod electrode in contact with soil is:","8 ft","6 ft","10 ft","4 ft","250.53(G) requires at least 8 ft in contact with soil.","250.53(G)"],
+    ["A single ground rod over 25 ohms resistance to earth must be:","Supplemented by one additional electrode","Replaced with a plate","Bonded to the gas line","Left as installed","250.53(A)(2) Exception.","250.53(A)(2)"],
+    ["A metal underground water pipe electrode must be:","Supplemented by an additional electrode","Used alone","Painted green","Limited to 6 AWG","250.53(D)(2).","250.53(D)(2)"],
+    ["A concrete-encased (Ufer) electrode requires a minimum of:","20 ft of rebar or wire","10 ft of rebar","8 ft of copper rod","6 ft of wire","250.52(A)(3).","250.52(A)(3)"],
+    ["A grounding electrode conductor to a ground rod need not be larger than:","6 AWG copper","4 AWG copper","2 AWG copper","8 AWG copper","250.66(A).","250.66(A)"],
+    ["A grounding electrode conductor to a concrete-encased electrode need not exceed:","4 AWG copper","6 AWG copper","2 AWG copper","1/0 copper","250.66(B).","250.66(B)"],
+    ["The grounding electrode conductor is sized using:","Table 250.66","Table 250.122","Chapter 9 Table 1","Table 310.16","Table 250.66 (by largest ungrounded service conductor).","250.66"],
+    ["The neutral and equipment grounding conductors should be bonded together only at:","The service (or source of a separately derived system)","Every subpanel","Each receptacle","The farthest outlet","Prevents objectionable current on metal parts (250.142/250.24).","250.142"],
+    ["The connection joining the grounded conductor to the equipment grounding system at the service is the:","Main bonding jumper","Grounding electrode conductor","Equipment bonding jumper","Bonding bushing","250.24(B)/250.28.","250.28"],
+    ["The primary purpose of equipment grounding is to:","Provide a low-impedance fault path so the overcurrent device operates","Reduce the utility bill","Limit voltage drop","Carry the neutral current","250.4(A)(5).","250.4(A)"],
+    ["A ground ring electrode must encircle the building with at least:","20 ft of 2 AWG copper","10 ft of 4 AWG copper","8 ft of 6 AWG copper","50 ft of any wire","250.52(A)(4).","250.52(A)(4)"],
+    ["Acceptable wiring methods used as an equipment grounding conductor are listed in:","250.118","250.66","Table 310.16","314.16","250.118 lists the permitted EGC types.","250.118"]
+  ].forEach(f=>gndFacts.push(f));
+  pushFacts("Grounding & Bonding","GND",gndFacts);
+
+  /* ---------- Raceways & Enclosures: box-fill volume (Table 314.16(B)) + concepts ---------- */
+  const VOL={"14":2.0,"12":2.25,"10":2.5,"8":3.0,"6":5.0};
+  const rwyFacts=[];
+  Object.keys(VOL).forEach(sz=>{
+    [3,4,5,6,7,8,9,10].forEach(n=>{
+      const v=VOL[sz];const tot=Math.round(n*v*100)/100;
+      const d1=Math.round((n+1)*v*100)/100, d2=Math.round((n-1)*v*100)/100, d3=Math.round((n+2)*v*100)/100;
+      rwyFacts.push([`A box contains ${n} ${sz} AWG conductors. At ${v} in³ per conductor (Table 314.16(B)(1)), the volume required for these conductors is:`,
+        `${tot} in³`,`${d1} in³`,`${d2} in³`,`${d3} in³`,`Volume = ${n} × ${v} = ${tot} in³.`,"Table 314.16(B)(1)"]);
+    });
+  });
+  pushFacts("Raceways & Enclosures","RWY",rwyFacts);
+
+  /* ---------- Definitions & General Requirements: Article 100 ---------- */
+  const DEF=[
+    ["Ampacity","the maximum current a conductor can carry continuously without exceeding its temperature rating"],
+    ["Branch Circuit","the circuit conductors between the final overcurrent device and the outlet(s)"],
+    ["Feeder","the conductors between the service equipment and the final branch-circuit overcurrent device"],
+    ["Continuous Load","a load where the maximum current continues for 3 hours or more"],
+    ["Demand Factor","the ratio of the maximum demand of a system to its total connected load"],
+    ["Device","a unit of an electrical system that carries or controls but does not utilize electrical energy"],
+    ["Dwelling Unit","a single unit with permanent provisions for living, sleeping, cooking, and sanitation"],
+    ["Outlet","a point on the wiring system where current is taken to supply utilization equipment"],
+    ["Receptacle","a contact device installed at an outlet for the connection of an attachment plug"],
+    ["Grounded Conductor","a system or circuit conductor that is intentionally grounded"],
+    ["Equipment Grounding Conductor","the conductive path that connects non-current-carrying metal parts to the source and ground"],
+    ["Bonding","the connecting of metallic parts to establish electrical continuity and conductivity"],
+    ["Service","the conductors and equipment connecting the serving utility to the premises wiring"],
+    ["Service Equipment","the main control and cutoff means of the supply, usually a disconnect"],
+    ["Overcurrent","any current in excess of the rated current of equipment or the ampacity of a conductor"],
+    ["Overload","operation of equipment above its full-load rating that would cause damage if sustained"],
+    ["Qualified Person","one with the skills and safety training to recognize and avoid the hazards involved"],
+    ["Listed","equipment included in a list published by a recognized testing organization"],
+    ["Labeled","equipment bearing the label of a recognized testing or listing organization"],
+    ["Luminaire","a complete lighting unit consisting of lamp(s) plus the parts to position and protect it"],
+    ["Panelboard","a panel with buses and overcurrent devices, accessible only from the front"],
+    ["Disconnecting Means","a device that disconnects the conductors of a circuit from their source"],
+    ["Separately Derived System","a source with no direct electrical connection to conductors of another system"],
+    ["Neutral Conductor","the conductor connected to the neutral point that carries current under normal conditions"],
+    ["Grounding Electrode","a conducting object through which a direct connection to earth is established"],
+    ["Raceway","an enclosed channel designed expressly for holding wires, cables, or busbars"],
+    ["Accessible, Readily","capable of being reached quickly without climbing over obstacles or using a ladder"],
+    ["Identified","recognized as suitable for the specific purpose, function, use, or environment"],
+    ["Approved","acceptable to the authority having jurisdiction"],
+    ["Within Sight","visible and not more than 50 ft distant from the equipment"]
+  ];
+  const defFacts=[];
+  DEF.forEach((p,i)=>{
+    const others=DEF.filter((_,j)=>j!==i);
+    const ot=shuf(others).slice(0,3).map(x=>x[0]);
+    defFacts.push([`Which NEC term is defined as: ${p[1]}?`,p[0],ot[0],ot[1],ot[2],`Article 100 defines ${p[0]} this way.`,"Article 100"]);
+    const od=shuf(others).slice(0,3).map(x=>x[1]);
+    defFacts.push([`Per Article 100, the term “${p[0]}” refers to:`,p[1],od[0],od[1],od[2],`That is the Article 100 definition of ${p[0]}.`,"Article 100"]);
+  });
+  pushFacts("Definitions & General Requirements","DEF",defFacts);
+
+  /* ---------- Special Occupancies & Equipment: article scope + class/division ---------- */
+  const ART=[
+    ["Article 500","hazardous (classified) locations, general"],["Article 501","Class I locations"],
+    ["Article 502","Class II locations"],["Article 503","Class III locations"],
+    ["Article 511","commercial garages, repair and storage"],["Article 513","aircraft hangars"],
+    ["Article 514","motor fuel dispensing facilities"],["Article 515","bulk storage plants"],
+    ["Article 516","spray application, dipping, and coating"],["Article 517","health care facilities"],
+    ["Article 518","assembly occupancies"],["Article 520","theaters and motion picture studios"],
+    ["Article 525","carnivals, circuses, and fairs"],["Article 547","agricultural buildings"],
+    ["Article 550","mobile and manufactured homes"],["Article 551","recreational vehicles and RV parks"],
+    ["Article 555","marinas and boatyards"],["Article 590","temporary installations"],
+    ["Article 600","electric signs and outline lighting"],["Article 610","cranes and hoists"],
+    ["Article 620","elevators and escalators"],["Article 625","electric vehicle charging systems"],
+    ["Article 645","information technology equipment"],["Article 680","swimming pools, spas, and hot tubs"],
+    ["Article 690","solar photovoltaic (PV) systems"],["Article 695","fire pumps"],
+    ["Article 700","emergency systems"],["Article 701","legally required standby systems"],
+    ["Article 702","optional standby systems"]
+  ];
+  const spoFacts=[];
+  ART.forEach((p,i)=>{
+    const others=ART.filter((_,j)=>j!==i);
+    const on=shuf(others).slice(0,3).map(x=>x[0]);
+    spoFacts.push([`Which NEC article covers ${p[1]}?`,p[0],on[0],on[1],on[2],`${p[0]} covers ${p[1]}.`,p[0]]);
+    const ot=shuf(others).slice(0,3).map(x=>x[1]);
+    spoFacts.push([`${p[0]} primarily covers:`,p[1],ot[0],ot[1],ot[2],`${p[0]} covers ${p[1]}.`,p[0]]);
+  });
+  [
+    ["A Class I hazardous location is made hazardous by:","Flammable gases or vapors","Combustible dust","Ignitible fibers","Excess moisture","500.5(B)(1).","500.5"],
+    ["A Class II hazardous location is made hazardous by:","Combustible dust","Flammable gases","Ignitible fibers","Standing water","500.5(B)(2).","500.5"],
+    ["A Class III hazardous location is made hazardous by:","Ignitible fibers and flyings","Flammable gases","Combustible dust","Corrosive vapors","500.5(B)(3).","500.5"],
+    ["In a Division 1 location, the hazard is present:","Under normal operating conditions","Only after a failure","Never","Only during maintenance","500.5(B).","500.5(B)"],
+    ["The branch circuit for a swimming pool pump motor must have:","GFCI protection","AFCI protection","Only surge protection","No special protection","680.21.","680.21"],
+    ["Equipotential bonding is a key requirement of which installation?","Swimming pools","Aircraft hangars","Information technology rooms","Fire pumps","680.26.","680.26"]
+  ].forEach(f=>spoFacts.push(f));
+  pushFacts("Special Occupancies & Equipment","SPO",spoFacts);
+
+  /* ---------- Lighting & General Use Equipment ---------- */
+  const lgt=[
+    ["In a dwelling, no point along the wall floor line may be more than ___ from a receptacle.","6 ft","4 ft","8 ft","12 ft","210.52(A) — the 6-ft rule.","210.52(A)"],
+    ["The maximum spacing between receptacles along a dwelling wall is:","12 ft","6 ft","8 ft","16 ft","Result of the 6-ft rule.","210.52(A)"],
+    ["On a kitchen countertop, no point may be more than ___ from a receptacle.","24 in","12 in","18 in","36 in","210.52(C).","210.52(C)"],
+    ["A dwelling bathroom requires a receptacle within ___ of the outside edge of each basin.","3 ft","1 ft","4 ft","6 ft","210.52(D).","210.52(D)"],
+    ["A dwelling hallway requires at least one receptacle when it is at least:","10 ft","6 ft","8 ft","15 ft","210.52(H).","210.52(H)"],
+    ["A dwelling kitchen must have at least how many small-appliance branch circuits?","Two","One","Three","Four","210.11(C)(1).","210.11(C)(1)"],
+    ["Kitchen small-appliance branch circuits must be rated:","20 A","15 A","30 A","40 A","210.11(C)(1).","210.11(C)(1)"],
+    ["The dwelling laundry branch circuit must be rated:","20 A","15 A","30 A","40 A","210.11(C)(2).","210.11(C)(2)"],
+    ["GFCI protection is required for a dwelling receptacle within ___ of a sink.","6 ft","3 ft","4 ft","8 ft","210.8(A)(7).","210.8(A)"],
+    ["GFCI protection for the outlet supplying a dwelling dishwasher is:","Required","Optional","Prohibited","Required only outdoors","210.8(D).","210.8(D)"],
+    ["AFCI protection is required for 120 V, 15/20 A circuits supplying outlets in:","Most habitable dwelling rooms","Detached garages only","Outdoors only","Crawl spaces only","210.12.","210.12"],
+    ["A wall switch-controlled lighting outlet is required in:","Every habitable room and bathroom","Closets only","Garages only","Hallways only","210.70(A)(1).","210.70(A)(1)"],
+    ["Most 125 V, 15/20 A dwelling receptacles must be:","Tamper-resistant","Weather-resistant","Isolated-ground","Twist-lock","406.12.","406.12"],
+    ["A 15/20 A receptacle in a wet outdoor location requires:","A weatherproof in-use cover","Only a gasket","No cover","An indoor-rated cover","406.9(B).","406.9(B)"],
+    ["A surface-mounted LED luminaire in a clothes closet must clear the storage space by at least:","12 in","6 in","18 in","3 in","410.16(C).","410.16(C)"],
+    ["A recessed luminaire in a clothes closet must clear the storage space by at least:","6 in","12 in","18 in","24 in","410.16(C).","410.16(C)"],
+    ["A recessed luminaire installed in thermal insulation must be:","Type IC rated","Type NM rated","Type MC rated","Surface mounted","410.116.","410.116"],
+    ["A single receptacle on an individual branch circuit must be rated:","Not less than the branch circuit","Exactly half the circuit","One size below","Any value","210.21(B)(1).","210.21(B)(1)"],
+    ["On a 20 A branch circuit serving multiple receptacles, the receptacles may be:","15 A or 20 A","20 A only","15 A only","30 A","210.21(B)(3).","210.21(B)(3)"],
+    ["A fixed storage water heater branch circuit is sized at a minimum of:","125% of the load","100% of the load","115% of the load","150% of the load","422.13 (continuous load).","422.13"],
+    ["A receptacle for servicing rooftop HVAC equipment must be within:","25 ft","10 ft","50 ft","6 ft","210.63.","210.63"],
+    ["A dwelling requires an outdoor receptacle at:","The front and back of the dwelling","The front only","The garage only","No outdoor location","210.52(E).","210.52(E)"],
+    ["An unfinished dwelling basement requires:","At least one receptacle","No receptacle","A receptacle every 6 ft","Only a lighting outlet","210.52(G).","210.52(G)"],
+    ["A dwelling attached garage requires:","At least one receptacle per vehicle bay","No receptacle","A 240 V receptacle","Only a switch","210.52(G)(1).","210.52(G)(1)"],
+    ["Luminaires marked “Suitable for Wet Locations” are required where:","Exposed to weather or water saturation","Only indoors","Only in closets","In dry attics","410.10(A).","410.10(A)"],
+    ["A grounded (neutral) conductor is generally required to be provided at:","Switch locations","Every junction box","Each luminaire","The service only","404.2(C).","404.2(C)"],
+    ["Continuous lighting loads must be sized at:","125%","100%","115%","150%","210.20(A).","210.20(A)"],
+    ["Show windows in stores require at least one receptacle for each:","12 linear feet","6 linear feet","20 linear feet","2 linear feet","210.62.","210.62"],
+    ["GFCI protection is required for dwelling receptacles serving:","Kitchen countertop surfaces","Bedrooms","Living rooms","Dining rooms","210.8(A)(6).","210.8(A)"],
+    ["Outdoor dwelling receptacles must have:","GFCI protection","AFCI only","No protection","Surge protection only","210.8(A)(3).","210.8(A)"],
+    ["An outlet box used as the sole support of a luminaire over 50 lb must be:","Listed for that weight","Any metal box","A plastic box","Supported by the conductors","314.27(A).","314.27"],
+    ["Track lighting load (other than dwellings/guest rooms) is calculated at:","150 VA per 2 ft of track","100 VA per ft","180 VA per outlet","50 VA per ft","220.43(B).","220.43(B)"],
+    ["Snap switches used for AC general-use must be:","Rated for the connected load","Always 30 A","Always 15 A","Rated for DC only","404.14.","404.14"],
+    ["GFCI protection is required in dwelling laundry areas:","Yes (per 2020/2023 NEC)","No","Only outdoors","Only for 240 V","210.8(A)(10).","210.8(A)"],
+    ["A lighting outlet with a wall switch is required in attics/under-floor spaces when they contain:","Equipment requiring servicing","Only storage","Insulation","Nothing","210.70(A)(3).","210.70(A)(3)"],
+    ["Lampholders installed in wet or damp locations must be:","Of the weatherproof type","Brass only","Keyless porcelain","Any type","410.96.","410.96"],
+    ["A receptacle outlet is required in dwelling kitchens at each:","Counter space 12 in or wider","Counter space 6 in or wider","Wall over 2 ft","Window","210.52(C)(1).","210.52(C)"],
+    ["Boxes and conduit bodies must be installed so they are:","Accessible","Concealed permanently","Buried","Plastered over","314.29.","314.29"],
+    ["The general lighting branch-circuit load for a dwelling is computed at:","3 VA per square foot","1 VA per square foot","5 VA per square foot","10 VA per square foot","220.12.","220.12"],
+    ["A receptacle rating must not be less than the load served when it is the:","Sole receptacle on an individual circuit","First of several","Outdoor type","Switched type","210.21(B)(1).","210.21(B)(1)"],
+    ["Fixed appliances on a circuit with lighting may be loaded to no more than ___ of the circuit rating.","50%","75%","100%","25%","210.23(A)(2).","210.23(A)"],
+    ["A 125 V, single-phase, 15/20 A receptacle is required for HVAC servicing on the:","Same level within 25 ft","Floor below","Roof edge only","Nearest panel","210.63.","210.63"]
+  ];
+  pushFacts("Lighting & General Use Equipment","LGT",lgt);
+
+  /* ---------- State Laws & Rules: Utah specifics + NEC Article 90 administration ---------- */
+  const law=[
+    ["As of 2025, Utah's electrician exams are based on which NEC edition?","2023 NEC","2017 NEC","2020 NEC","2026 NEC","Utah adopted the 2023 NEC statewide effective July 1, 2025.","Utah adoption"],
+    ["Effective August 1, 2025, the Utah journeyman exam changed how?","Code and Theory merged into one written exam","Became closed-book","Was eliminated","Moved to oral format","Per the updated R156-55b.","R156-55b"],
+    ["The minimum passing score on the Utah journeyman written exam is:","75%","65%","70%","80%","Per the Utah Candidate Information Bulletin.","Utah CIB"],
+    ["The Utah journeyman written exam contains how many questions?","100","80","120","150","Per the Utah CIB blueprint.","Utah CIB"],
+    ["The time allowed for the Utah journeyman written exam is:","240 minutes","120 minutes","180 minutes","300 minutes","Four hours per the CIB.","Utah CIB"],
+    ["The Utah journeyman written exam is administered as:","Open book","Closed book","Oral only","Take-home","Current and previous code editions are allowed.","Utah CIB"],
+    ["How many electrician license classifications does Utah have?","Five","Three","Four","Six","Apprentice, Journeyman, Master, Residential Journeyman, Residential Master.","Utah DOPL"],
+    ["A full journeyman electrician license generally requires how much supervised experience?","8,000 hours","2,000 hours","4,000 hours","1,000 hours","About four years of supervised work.","Utah DOPL"],
+    ["A residential journeyman license generally requires about:","4,000 hours","8,000 hours","2,000 hours","16,000 hours","About two years of supervised work.","Utah DOPL"],
+    ["Utah electrician licenses are renewed every:","2 years","1 year","3 years","5 years","Two-year renewal cycle.","Utah DOPL"],
+    ["Utah journeyman and master licenses expire on:","November 30 of even-numbered years","January 1 each year","June 30 annually","December 31 of odd years","Set renewal date.","Utah DOPL"],
+    ["Utah requires how many continuing-education hours per renewal cycle?","16 hours","8 hours","12 hours","24 hours","Per DOPL renewal requirements.","Utah DOPL"],
+    ["An apprentice electrician in Utah must work under:","Direct supervision of a licensed journeyman or master","No supervision","Remote supervision only","A general contractor","Apprentices log hours under supervision.","Utah DOPL"],
+    ["Which agency licenses electricians in Utah?","Division of Professional Licensing (DOPL)","OSHA","NFPA","The local utility","DOPL, under the Department of Commerce.","Utah DOPL"],
+    ["The Utah electrician licensing rule is designated:","R156-55b","R156-1","NFPA 70","Title 15","The Electricians Licensing Act Rule.","R156-55b"],
+    ["Utah grants automatic, blanket reciprocity to all other states:","False","True","Only to bordering states","Only to federal licensees","Reciprocity is limited and conditional.","Utah DOPL"],
+    ["A licensed journeyman in Utah works under the general supervision of a:","Master electrician","Apprentice","Building inspector","Utility lineman","Scope-of-work rule.","Utah DOPL"],
+    ["There is no licensing exam required for which Utah classification?","Apprentice","Journeyman","Master","Residential Master","Apprentices register but do not test.","Utah DOPL"],
+    ["The underlying Utah statute governing the trade is the:","Construction Trades Licensing Act","Clean Air Act","Uniform Building Code","Fair Labor Standards Act","Title 58, Chapter 55.","Title 58-55"],
+    ["The purpose of the NEC, per Article 90, is:","Practical safeguarding of persons and property from electrical hazards","A design specification","An instruction manual for untrained users","A product catalog","90.1(A).","90.1"],
+    ["Per 90.1(C), the NEC is NOT intended as:","A design specification or instruction manual for untrained persons","A safety standard","An enforceable document","A national standard","90.1(C).","90.1(C)"],
+    ["In the NEC, the word “shall” indicates:","A mandatory requirement","An option","A suggestion","Explanatory text","90.5(A).","90.5(A)"],
+    ["In the NEC, “shall be permitted” indicates:","An allowance or option","A mandatory rule","A prohibition","A penalty","90.5(B).","90.5(B)"],
+    ["Explanatory material in the NEC appears as:","Informational Notes (not enforceable)","Mandatory rules","Exceptions","Tables","90.5(C).","90.5"],
+    ["Enforcement and interpretation of the NEC is the responsibility of the:","Authority having jurisdiction (AHJ)","NFPA","Conductor manufacturer","Property owner","90.4.","90.4"],
+    ["Chapters 1 through 4 of the NEC apply:","Generally to all electrical installations","Only to special occupancies","Only to communications","Only to tables","90.3.","90.3"],
+    ["Chapters 5, 6, and 7 of the NEC:","Supplement or modify the general chapters","Replace Chapter 1","Are not enforceable","Cover only definitions","90.3.","90.3"],
+    ["Chapter 8 (communications systems) is:","Independent unless referenced by other chapters","Subject to all earlier chapters","Not part of the NEC","Only informational","90.3.","90.3"],
+    ["Chapter 9 of the NEC consists of:","Tables that apply as referenced","Definitions","Exceptions","Annex material","90.3.","90.3"],
+    ["The NEC is published by:","The NFPA (as NFPA 70)","OSHA","ANSI alone","The IEEE","NFPA 70.","NFPA 70"],
+    ["A new edition of the NEC is published every:","3 years","1 year","5 years","10 years","Three-year revision cycle.","NEC cycle"],
+    ["A code rule becomes legally enforceable when it is:","Adopted by the state or local jurisdiction","Printed by NFPA","Proposed in a draft","Cited in a magazine","Adoption gives it the force of law.","Code adoption"],
+    ["“Approved,” as used in the NEC, means:","Acceptable to the authority having jurisdiction","Listed by UL","Sold commercially","Inspected by the utility","Article 100 definition.","Article 100"],
+    ["The AHJ has the authority to:","Grant special permission and interpret the rules","Rewrite the NEC","Issue NFPA standards","License manufacturers","90.4.","90.4"],
+    ["Where a general rule and a specific rule conflict, the:","Specific rule applies","General rule applies","Stricter penalty applies","Rule is ignored","Standard code interpretation principle.","Code principle"],
+    ["Units of measurement in the NEC are shown as:","SI (metric) with inch-pound","Inch-pound only","SI only","No units","90.9.","90.9"],
+    ["The NEC does NOT generally cover installations:","Under the exclusive control of an electric utility","In single-family homes","In commercial buildings","In schools","90.2(B).","90.2"],
+    ["An Informational Note in the NEC is:","Explanatory and not enforceable","A mandatory rule","An exception","A defined term","90.5(C).","90.5(C)"],
+    ["Product listing and labeling is one recognized means of:","Examining equipment for safety","Setting prices","Training apprentices","Adopting the code","90.7.","90.7"],
+    ["Formal Interpretations of the NEC are processed under the procedures of the:","NFPA","AHJ","State legislature","Local utility","90.6.","90.6"],
+    ["Utah's adopted NEC edition is enforced statewide as of:","July 1, 2025","January 1, 2023","August 1, 2025","November 30, 2026","Statewide adoption date.","Utah adoption"],
+    ["A master electrician in Utah is authorized to:","Design systems and supervise journeymen and apprentices","Only perform residential work","Only inspect installations","Only teach","Scope-of-practice rule.","Utah DOPL"],
+    ["The journeyman classification also requires passing the Utah:","Practical examination","Bar examination","Master law exam","Contractor business exam","Written plus practical.","Utah DOPL"],
+    ["Apprentice electricians must be:","Registered with DOPL","Licensed contractors","NFPA members","Union members","Registration requirement.","Utah DOPL"],
+    ["Mandatory NEC rules are stated using the words:","“shall” or “shall not”","“may”","“should”","“can”","90.5(A).","90.5(A)"],
+    ["“Identified,” as applied to equipment, means it is:","Suitable for the specific purpose or environment","The cheapest available","Made in the USA","Painted a set color","Article 100.","Article 100"],
+    ["The body of continuing education for Utah renewal must include hours on the:","National Electrical Code","Local zoning code","Plumbing code","Fire code only","NEC content requirement.","Utah DOPL"]
+  ];
+  pushFacts("State Laws & Rules","LAW",law);
 })();
 
 /* =========================== TOPIC PRACTICE =========================== */
