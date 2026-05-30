@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Complete Circuit — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 2 · Fundamentals</div>
+      <h1>The Complete Circuit</h1>
+      <p class="lede">Everything in control wiring comes back to one idea: current only does work when it can make a full round trip. Get this, and faults stop being mysterious.</p>
+
+      <h2>Out and back</h2>
+      <p>Electricity doesn't just flow <em>to</em> a load — it flows <strong>through</strong> it and back to where it came from. Power leaves the source on the <span class="accent">hot</span> leg, travels through the load, and returns on the <span class="accent">neutral</span> (or the other line). If it can't get back, nothing happens. A circuit is a loop, not a one-way street.</p>
+      <p>Think of it like water in a closed pipe loop with a pump. The pump pushes water out one side and it has to return on the other for anything to circulate. Break the pipe anywhere — out side or return side — and flow stops everywhere. Voltage is the pump's pressure; current is the water moving.</p>
+
+      <figure>
+        <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+          <!-- source -->
+          <rect x="40" y="100" width="90" height="70" rx="8" fill="#2f2f2f" stroke="#EF9F27" stroke-width="2"/>
+          <text x="85" y="130" fill="#fff" font-size="13" text-anchor="middle">SOURCE</text>
+          <text x="85" y="150" fill="#EF9F27" font-size="12" text-anchor="middle">120V</text>
+          <!-- hot wire top -->
+          <line x1="130" y1="118" x2="430" y2="118" stroke="#000" stroke-width="3"/>
+          <rect x="125" y="113" width="0" height="0"/>
+          <text x="280" y="108" fill="#aaa" font-size="12" text-anchor="middle">HOT (black) — power out</text>
+          <!-- load -->
+          <circle cx="470" cy="140" r="30" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+          <text x="470" y="145" fill="#1D9E75" font-size="14" text-anchor="middle">LOAD</text>
+          <line x1="430" y1="118" x2="470" y2="118" stroke="#000" stroke-width="3"/>
+          <line x1="470" y1="118" x2="470" y2="110" stroke="#000" stroke-width="3"/>
+          <!-- return wire bottom -->
+          <line x1="470" y1="170" x2="470" y2="200" stroke="#fff" stroke-width="3"/>
+          <line x1="470" y1="200" x2="130" y2="200" stroke="#fff" stroke-width="3"/>
+          <line x1="130" y1="200" x2="130" y2="170" stroke="#fff" stroke-width="3"/>
+          <text x="280" y="220" fill="#aaa" font-size="12" text-anchor="middle">NEUTRAL (white) — power returns</text>
+          <!-- arrows -->
+          <text x="250" y="135" fill="#E24B4A" font-size="16">→</text>
+          <text x="300" y="195" fill="#85B7EB" font-size="16">←</text>
+        </svg>
+        <figcaption>A complete loop: hot out of the source, through the load, neutral back. Break it anywhere and the load goes dead.</figcaption>
+      </figure>
+
+      <h2>Why this is the whole game</h2>
+      <p>In the Sandbox, a load runs <strong>only</strong> when one side traces back to the source hot and the other side traces back to the source return. That's not a quirk of the simulator — it's physics. Every switch, button, and contact you'll ever wire is just a way to <span class="accent">make or break that loop</span> on purpose.</p>
+      <ul>
+        <li>A switch in the hot leg, when open, breaks the trip out — load off.</li>
+        <li>A broken neutral breaks the trip back — load off, even though the hot side is live.</li>
+        <li>Close every switch in the path and complete the loop — load runs.</li>
+      </ul>
+
+      <div class="callout">
+        <b>Troubleshooting insight:</b> a dead load almost always means the loop is broken somewhere. Your job is to find <em>where</em>. That's why a meter reads full voltage right across an open — the break is the one spot where the two sides of the loop are at different potential.
+      </div>
+
+      <h2>Series vs. the load</h2>
+      <p>Controls go in <strong>series</strong> with the load — one after another, all in the same path. If you have a stop button, a start contact, and an overload contact all feeding a coil, current must pass through <em>every one</em> of them to reach the coil. Any single one open kills the coil. That series chain is how safety devices work: an overload or e-stop anywhere in the line drops the whole circuit.</p>
+
+      <h2>What to take away</h2>
+      <p>A circuit is a loop. Power goes out the hot, through the load, and back on the return. Controls sit in series and make or break that loop. When something won't run, you're looking for the break — and when something runs that shouldn't, you've got an unintended complete path.</p>
+
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>In the Sandbox, wire a Power Source to a Light and back. Then put a switch in the hot leg and watch the light die the instant you open the loop.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-ladder.html">← Reading a Ladder Diagram</a>
+        <a href="/lesson-two-wire.html">Next: Two-Wire Control →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

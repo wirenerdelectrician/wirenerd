@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counters — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 26 · Motor Control</div>
+      <h1>Counters</h1>
+      <p class="lede">Count events and act on the total. Where a timer triggers on elapsed time, a counter triggers on how many times something happened.</p>
+      <h2>Counting events</h2>
+      <p>A counter does for <em>events</em> what a timer does for <em>time</em>: it watches its input and counts each pulse. When the count reaches a preset value, it turns its output on. It’s how a control circuit acts on "how many" instead of "how long."</p>
+      <h2>How it counts</h2>
+      <p>A counter is <span class="accent">edge-triggered</span> — it adds one each time its input goes from off to on (a rising edge), not continuously while the input is held. So a part passing a sensor, a button press, or a machine cycle each adds exactly one to the count. Hold the input on and it still only counts once; it has to release and re-trigger to count again.</p>
+      <ul>
+        <li><strong>Input:</strong> the thing being counted — a limit switch a part trips, a proximity sensor, a push button, or a contact from another part of the circuit.</li>
+        <li><strong>Preset:</strong> the target count. When the count reaches it, the output energizes.</li>
+        <li><strong>Reset:</strong> a separate input that clears the count back to zero so you can start again.</li>
+      </ul>
+      <h2>Where you use it</h2>
+      <ul>
+        <li><strong>Batching:</strong> count 12 parts onto a tray, then stop the conveyor and signal "tray full."</li>
+        <li><strong>Packaging:</strong> count items into a box, trigger the sealer at the target count.</li>
+        <li><strong>Maintenance:</strong> count machine cycles and flag service at a threshold.</li>
+        <li><strong>Quantity control:</strong> run a process exactly N times.</li>
+      </ul>
+      <div class="callout"><b>Timers vs. counters:</b> reach for a timer when the trigger is <em>elapsed time</em> ("after 5 seconds"), and a counter when the trigger is <em>a number of events</em> ("after 10 parts"). They’re the two ways a control circuit reacts to something other than a simple on/off condition — and they pair beautifully (count parts, then time a sealing cycle).</div>
+      <h2>How it works in a circuit</h2>
+      <p>Like a timer or coil, a counter gets a letter, and contacts with that letter follow its output — so when the count hits the preset, those contacts switch and drive the next action (stop the conveyor, light a "full" lamp, start the sealer). Wire something to its reset to clear it and go again.</p>
+      <h2>What to take away</h2>
+      <p>A counter counts rising edges of its input and energizes its letter when the count reaches the preset; a reset clears it. Use it when the trigger is a quantity of events rather than elapsed time. With timers and counters, your control circuits can react to time <em>and</em> count — the basis of real sequencing and batching.</p>
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>In the Sandbox, wire a Push Button (or a switch) into a Counter (set preset to 3, letter "C"), and a Light controlled by a NO Contact assigned to "C". Energize, press the button three times, and the light comes on. Wire another switch to the counter\u2019s RST terminal to reset the count.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-on-off-delay.html">← On-Delay &amp; Off-Delay Timers</a>
+        <a href="/lesson-grounding.html">Next: Grounding &amp; Bonding →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

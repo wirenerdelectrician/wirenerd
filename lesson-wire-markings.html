@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Reading Wire &amp; Cable Markings — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style></head><body>
+  <header><div class="wrap"><a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav></div></header>
+  <div class="wrap"><div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article><div class="kicker">Lesson 29 · Field Skills</div><h1>Reading Wire &amp; Cable Markings</h1><p class="lede">The letters and numbers printed on a wire tell you everything — size, insulation, temperature and voltage rating. Here is how to decode them.</p>
+      <h2>The printing on the jacket means something</h2>
+      <p>Every conductor and cable has markings printed along it, and learning to read them tells you instantly whether the wire is right for the job — its size, its insulation type, its temperature and voltage rating, and where it’s allowed to be used.</p>
+      <h2>Wire gauge (AWG)</h2>
+      <p>The size is given in <span class="accent">AWG</span> (American Wire Gauge) for common sizes, then kcmil for large conductors. Remember the backwards rule: smaller number = bigger wire. 14 and 12 AWG are typical branch-circuit sizes; as the number drops (10, 8, 6...) the wire gets physically larger and carries more.</p>
+      <h2>Insulation type letters</h2>
+      <p>Those letter codes (like <strong>THHN</strong>, <strong>THWN</strong>, <strong>XHHW</strong>) describe the insulation, and each letter means something:</p>
+      <ul>
+        <li><strong>T</strong> — Thermoplastic insulation.</li>
+        <li><strong>H</strong> — Heat resistant (one H ≈ 75°C); <strong>HH</strong> — high heat resistant (90°C).</li>
+        <li><strong>W</strong> — rated for Wet locations.</li>
+        <li><strong>N</strong> — Nylon outer jacket (tough, resists oil/gas).</li>
+      </ul>
+      <p>So <strong>THHN</strong> = thermoplastic, high-heat (90°C), nylon-jacketed — a very common building wire. <strong>THWN</strong> = thermoplastic, heat-resistant, wet-rated, nylon. Many wires are dual-rated <strong>THHN/THWN</strong> for both dry-high-heat and wet use.</p>
+      <div class="callout"><b>Why the temperature rating matters:</b> the insulation’s temp rating (60/75/90°C) sets which ampacity column you’re allowed to use, and it must be compatible with the terminals you land on. A 90°C wire is great, but if the breaker lugs are rated 75°C you generally size to the 75°C column. Wire, insulation, and terminations all have to agree.</div>
+      <h2>The rest of the print</h2>
+      <ul>
+        <li><strong>Voltage rating</strong> (e.g. 600V) — the maximum the insulation is rated for.</li>
+        <li><strong>Conductor material</strong> — CU for copper, AL for aluminum.</li>
+        <li><strong>Manufacturer, standards/listing marks</strong> (UL, etc.) and sometimes the gas/oil resistance rating.</li>
+      </ul>
+      <h2>What to take away</h2>
+      <p>Wire markings tell you size (AWG/kcmil, smaller number = bigger wire), insulation type (THHN = thermoplastic/high-heat/nylon, W = wet-rated), temperature rating (sets your ampacity column and must match your terminals), voltage rating, and material. Reading them fluently lets you confirm a wire is right for the job at a glance.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;"><b style="color:#EF9F27;">Concept lesson:</b> this one is field knowledge rather than a wiring exercise, so there’s no Sandbox build. How these ratings feed into code-compliant ampacity selection belongs in the NEC section we add later.</div>
+      <div class="pager"><a href="/lesson-conductor-sizing.html">← Conductor &amp; Wire Sizing</a><a href="/lesson-transformer-sizing.html">Next: Control Transformer Sizing →</a></div>
+    </article></div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer></body></html>

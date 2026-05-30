@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three-Phase Power Basics — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 21 · Field Skills</div>
+      <h1>Three-Phase Power Basics</h1>
+      <p class="lede">Three hots, offset in time. Understand wye vs. delta and line vs. phase, and the voltages on every industrial panel start to make sense.</p>
+      <h2>Why three phases</h2>
+      <p>Industrial power comes in <span class="accent">three phases</span> — three hot conductors carrying AC that peak one-third of a cycle apart. The payoff: smoother, more constant power delivery, and motors that are simpler, more efficient, and self-starting. Almost everything big runs on three-phase.</p>
+      <h2>Wye and delta</h2>
+      <p>Three-phase systems are wired one of two ways, and you need to recognize both:</p>
+      <ul>
+        <li><strong>Wye (star):</strong> the three windings join at a common center point — the neutral. This gives you two voltages: line-to-line (between any two hots) and line-to-neutral (between a hot and neutral). A 480Y/277V system is wye — 480V across two legs, 277V from a leg to neutral.</li>
+        <li><strong>Delta:</strong> the three windings form a closed triangle, hot-to-hot, with no neutral (or a special "high leg" in some). A 480V delta gives 480V between any two legs.</li>
+      </ul>
+      <h2>Line vs. phase</h2>
+      <p>The two words trip people up. <span class="accent">Line</span> values are measured on the conductors feeding the load (line-to-line voltage, line current). <span class="accent">Phase</span> values are across an individual winding. In a wye, line voltage is √3 (about 1.73) times the phase voltage — that’s where 480 and 277 come from (480 ÷ 1.73 ≈ 277). In a delta it’s the currents that differ by √3 instead. You don’t need the math daily, but knowing line vs. phase keeps you from mixing up readings.</p>
+      <div class="callout"><b>Practical takeaway:</b> wye gives you a neutral and two usable voltages (good for mixing motor and lighting loads); delta gives you one robust line voltage with no neutral. The Sandbox’s 480V 3φ (no neutral) is delta-style; 480V 3φ+N and 120/240V 3φ include the neutral, wye-style.</div>
+      <h2>Rotation</h2>
+      <p>The order the three phases peak — <strong>phase rotation</strong> (or phase sequence) — sets which way a three-phase motor turns. Swap any two legs and you reverse rotation, which is exactly the trick behind the forward/reverse circuits. Getting rotation right matters before you couple a motor to a pump or fan that must not run backward.</p>
+      <h2>What to take away</h2>
+      <p>Three-phase power uses three hots offset in time for smooth delivery and great motors. Wye has a neutral and two voltages (line = √3 × phase); delta is hot-to-hot with one line voltage. Swapping two legs reverses motor rotation. These basics underlie every motor circuit you’ll wire.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;">
+        <b style="color:#EF9F27;">Concept lesson:</b> this one is about understanding equipment and ideas rather than wiring a circuit, so there’s no Sandbox build for it. The Sandbox lets you pick 3φ systems and see how the legs feed a contactor and motor.
+      </div>
+      <div class="pager">
+        <a href="/lesson-schematic-vs-wiring.html">← Schematic vs. Wiring Diagram</a>
+        <a href="/lesson-motor-nameplate.html">Next: Reading a Motor Nameplate →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

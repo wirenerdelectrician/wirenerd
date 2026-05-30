@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WireNerd — Lessons</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#ffffff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .hero{padding:54px 0 20px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  .hero h1{font-size:40px;font-weight:800;letter-spacing:-1px;margin:10px 0 12px;}
+  .hero p{color:var(--muted);font-size:17px;max-width:640px;}
+  .reflink{display:inline-block;margin-top:16px;font-size:14px;color:var(--blue);border:1px solid var(--line);border-radius:8px;padding:8px 14px;}
+  .reflink:hover{border-color:var(--blue);}
+  .grouphead{font-size:14px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin:34px 0 14px;}
+  .lesson-card{display:flex;gap:18px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:12px;transition:border-color .15s,transform .15s;}
+  .lesson-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .num{flex-shrink:0;width:38px;height:38px;border-radius:10px;background:#2f2f2f;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-size:16px;}
+  .lesson-card h3{font-size:18px;font-weight:700;margin-bottom:3px;}
+  .lesson-card p{color:var(--muted);font-size:14px;}
+  .lesson-card .meta{margin-top:7px;font-size:12px;color:#777;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:36px 0 10px;}
+  .cta h2{font-size:22px;margin-bottom:8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;margin-top:20px;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+
+  <div class="wrap">
+    <section class="hero">
+      <div class="kicker">Lessons</div>
+      <h1>Control wiring, made clear.</h1>
+      <p>Read the lesson, understand exactly how the circuit works and why — then head to the Wiring Sandbox and build it yourself. Learn it, then do it.</p>
+      <br>
+      <a class="reflink" href="/components.html">Components &amp; Inputs Reference →</a>
+    </section>
+
+    <div class="grouphead">Fundamentals</div>
+    <a class="lesson-card" href="/lesson-ladder.html"><div class="num">1</div><div>
+      <h3>Reading a Ladder Diagram</h3>
+      <p>The two rails, the rungs, and the symbols. Before you can wire a control circuit, you have to read one.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-complete-circuit.html"><div class="num">2</div><div>
+      <h3>The Complete Circuit</h3>
+      <p>Hot, load, return. Why current must form a full loop — and why a break anywhere stops everything.</p>
+      <div class="meta">5 min read</div></div></a>
+
+    <div class="grouphead">Lighting Control</div>
+    <a class="lesson-card" href="/lesson-three-way.html"><div class="num">7</div><div>
+      <h3>Three-Way Switches</h3>
+      <p>Control one light from two locations. The first circuit where a switch picks a path instead of just on/off.</p>
+      <div class="meta">5 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-four-way.html"><div class="num">8</div><div>
+      <h3>Four-Way Switches</h3>
+      <p>Control one light from three or more locations by adding crossover switches between two 3-ways.</p>
+      <div class="meta">5 min read</div></div></a>
+
+    <div class="grouphead">Motor Control</div>
+    <a class="lesson-card" href="/lesson-two-wire.html"><div class="num">3</div><div>
+      <h3>Two-Wire Control</h3>
+      <p>The simplest motor control: a maintained switch energizes a coil. Automatic restart and why it matters.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-three-wire.html"><div class="num">4</div><div>
+      <h3>Three-Wire Control: Start/Stop with Seal-In</h3>
+      <p>The cornerstone. Momentary buttons, the holding contact, and how the circuit keeps itself running.</p>
+      <div class="meta">8 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-motor-starter.html"><div class="num">5</div><div>
+      <h3>The Motor Starter</h3>
+      <p>Contactor, overload relay, and control transformer working together — the complete real-world package.</p>
+      <div class="meta">8 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-hoa.html"><div class="num">6</div><div>
+      <h3>Hand-Off-Auto</h3>
+      <p>A selector switch for manual and automatic operation — the bread-and-butter of industrial panels.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-interlocking.html"><div class="num">9</div><div>
+      <h3>Interlocking</h3>
+      <p>Preventing two contactors from closing at once. The safety foundation under every reversing circuit.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-fwd-rev-buttons.html"><div class="num">10</div><div>
+      <h3>Forward/Reverse with Push Buttons</h3>
+      <p>Reverse a motor by swapping two legs — two start/stop circuits locked together with interlocks.</p>
+      <div class="meta">7 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-fwd-rev-relays.html"><div class="num">11</div><div>
+      <h3>Forward/Reverse with Relays</h3>
+      <p>The same reversing circuit built with control relays — how relay logic scales toward automation.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-jogging.html"><div class="num">12</div><div>
+      <h3>Jogging</h3>
+      <p>Run a motor in short bursts for positioning by deliberately defeating the seal-in.</p>
+      <div class="meta">5 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-sequence.html"><div class="num">13</div><div>
+      <h3>Sequence Control</h3>
+      <p>Force motors to start in the right order — a permissive contact makes the sequence mandatory.</p>
+      <div class="meta">5 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-multiple-stations.html"><div class="num">14</div><div>
+      <h3>Multiple Start/Stop Stations</h3>
+      <p>Control one motor from several locations. Stops in series, starts in parallel — with the safety reasoning.</p>
+      <div class="meta">5 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-reduced-voltage.html"><div class="num">15</div><div>
+      <h3>Reduced-Voltage Starting</h3>
+      <p>Bring big motors up gently to tame inrush — wye-delta, part-winding, autotransformer, soft starters.</p>
+      <div class="meta">7 min read · Advanced</div></div></a>
+    <a class="lesson-card" href="/lesson-on-off-delay.html"><div class="num">25</div><div>
+      <h3>On-Delay &amp; Off-Delay Timers</h3>
+      <p>Add time to your circuits. On-delay waits before turning on; off-delay lingers before turning off.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-counters.html"><div class="num">26</div><div>
+      <h3>Counters</h3>
+      <p>Count events and act on the total — batching, packaging, and cycle counting with a reset.</p>
+      <div class="meta">5 min read</div></div></a>
+
+    <div class="grouphead">Automation</div>
+    <a class="lesson-card" href="/lesson-what-is-plc.html"><div class="num">16</div><div>
+      <h3>What Is a PLC?</h3>
+      <p>An industrial computer that runs relay logic in software. Everything you learned about contacts and coils is how a PLC thinks.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-plc-io.html"><div class="num">17</div><div>
+      <h3>PLC Inputs and Outputs</h3>
+      <p>How a PLC senses the world and acts on it — discrete and analog I/O, and why it drives contactors instead of motors directly.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-why-plc.html"><div class="num">18</div><div>
+      <h3>Why Use a PLC?</h3>
+      <p>The honest trade-off between relay logic and a PLC — and why most real panels use both.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-vfd.html"><div class="num">19</div><div>
+      <h3>Variable Frequency Drives (VFDs)</h3>
+      <p>Control motor speed by controlling frequency. Soft starts, big energy savings, and PLC-driven process control.</p>
+      <div class="meta">7 min read</div></div></a>
+
+    <div class="grouphead">Field Skills</div>
+    <a class="lesson-card" href="/lesson-schematic-vs-wiring.html"><div class="num">20</div><div>
+      <h3>Schematic vs. Wiring Diagram</h3>
+      <p>Two drawings of the same circuit for two different jobs. Knowing which to reach for saves real time.</p>
+      <div class="meta">5 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-three-phase.html"><div class="num">21</div><div>
+      <h3>Three-Phase Power Basics</h3>
+      <p>Wye vs. delta, line vs. phase. Understand these and every voltage on an industrial panel makes sense.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-motor-nameplate.html"><div class="num">22</div><div>
+      <h3>Reading a Motor Nameplate</h3>
+      <p>The numbers that tell you how to wire, protect, and replace a motor — FLA, voltage, service factor, and more.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-overcurrent.html"><div class="num">23</div><div>
+      <h3>Overcurrent Protection</h3>
+      <p>Short circuits vs. overloads — two problems, two devices. How fuses, breakers, and overloads divide the work.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-meter.html"><div class="num">24</div><div>
+      <h3>Using a Meter: Voltage &amp; Continuity</h3>
+      <p>The two measurements that solve most faults — and the half-split method to corner any problem in a few readings.</p>
+      <div class="meta">7 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-grounding.html"><div class="num">27</div><div>
+      <h3>Grounding &amp; Bonding</h3>
+      <p>The most important safety topic in the trade, and the most misunderstood. What each does and why earth isn\u2019t the fault path.</p>
+      <div class="meta">7 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-conductor-sizing.html"><div class="num">28</div><div>
+      <h3>Conductor &amp; Wire Sizing</h3>
+      <p>Ampacity, derating, and voltage drop — the principles behind picking the right wire for a load.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-wire-markings.html"><div class="num">29</div><div>
+      <h3>Reading Wire &amp; Cable Markings</h3>
+      <p>Decode THHN, AWG, and the temperature and voltage ratings printed on every conductor.</p>
+      <div class="meta">5 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-transformer-sizing.html"><div class="num">30</div><div>
+      <h3>Control Transformer Sizing</h3>
+      <p>Sizing in VA for both the sealed load and the inrush spike when coils pull in.</p>
+      <div class="meta">6 min read</div></div></a>
+    <a class="lesson-card" href="/lesson-troubleshooting.html"><div class="num">31</div><div>
+      <h3>Troubleshooting Methodology</h3>
+      <p>The repeatable loop the best techs run on every fault: observe, theorize, test, fix root cause, verify.</p>
+      <div class="meta">6 min read</div></div></a>
+
+    <div class="cta">
+      <h2>Ready to build?</h2>
+      <p>Open the Wiring Sandbox and wire up what you just learned.</p>
+      <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+    </div>
+  </div>
+
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

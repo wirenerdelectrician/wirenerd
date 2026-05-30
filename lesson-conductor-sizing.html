@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Conductor &amp; Wire Sizing — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style></head><body>
+  <header><div class="wrap"><a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav></div></header>
+  <div class="wrap"><div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article><div class="kicker">Lesson 28 · Field Skills</div><h1>Conductor &amp; Wire Sizing</h1><p class="lede">Every wire has a safe current limit. Size it wrong and it overheats. Here are the principles behind picking the right conductor for a load.</p>
+      <h2>Why wire size matters</h2>
+      <p>Every conductor has a safe current-carrying capacity called <span class="accent">ampacity</span>. Push more current through a wire than it’s rated for and it overheats — damaging insulation, and in the worst case starting a fire. Sizing conductors correctly is one of the most fundamental safety calculations in the trade.</p>
+      <h2>What determines ampacity</h2>
+      <ul>
+        <li><strong>Conductor size (gauge):</strong> bigger copper carries more current. Wire is sized in AWG (American Wire Gauge) for smaller sizes and kcmil for large ones. Counterintuitively, a <em>smaller</em> AWG number means a <em>bigger</em> wire (14 AWG is small, 2 AWG is much larger).</li>
+        <li><strong>Material:</strong> copper carries more current than the same size aluminum.</li>
+        <li><strong>Insulation temperature rating:</strong> insulation rated for higher temperatures (90°C vs 60°C) allows more current.</li>
+        <li><strong>Conditions of use:</strong> ambient heat and how many current-carrying conductors are bundled together both <em>derate</em> ampacity — more heat or more crowded wires mean less safe current.</li>
+      </ul>
+      <h2>The basic process</h2>
+      <p>Conceptually, sizing a conductor goes like this: determine the load current, account for any continuous-load and motor factors, then choose a conductor whose ampacity (after applying temperature and bundling derating) is at least that value — and coordinate it with the overcurrent device protecting it.</p>
+      <div class="callout"><b>Wire and breaker work together:</b> the conductor must be able to carry the load, and the overcurrent device must protect the conductor. You don’t put a 40A breaker on wire rated for 20A — the breaker would happily let enough current flow to cook the wire before tripping. Conductor ampacity and overcurrent protection are sized as a matched pair.</div>
+      <h2>Voltage drop — the other half</h2>
+      <p>Ampacity keeps the wire from overheating, but on long runs you also have to watch <span class="accent">voltage drop</span>. Resistance over distance eats voltage, so a motor at the end of a long thin run sees less than nameplate voltage and struggles. On long runs you often go up a wire size purely to keep voltage drop acceptable, even when ampacity alone would allow a smaller conductor.</p>
+      <h2>What to take away</h2>
+      <p>Ampacity is the safe current a conductor can carry, set by size, material, insulation temp rating, and conditions (heat and bundling derate it). Size the conductor to the load, protect it with a matched overcurrent device, and upsize for voltage drop on long runs. Specific numbers come from code tables — which is exactly what the dedicated NEC section will cover.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;"><b style="color:#EF9F27;">Concept lesson:</b> this one is field knowledge rather than a wiring exercise, so there’s no Sandbox build. Exact ampacity tables, derating factors, and motor conductor sizing will live in the dedicated NEC code section we add later.</div>
+      <div class="pager"><a href="/lesson-grounding.html">← Grounding &amp; Bonding</a><a href="/lesson-wire-markings.html">Next: Reading Wire &amp; Cable Markings →</a></div>
+    </article></div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer></body></html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hand-Off-Auto — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 6 · Motor Control</div>
+      <h1>Hand-Off-Auto</h1>
+      <p class="lede">One selector switch, three positions, and a circuit that can run by hand or run itself. Hand-Off-Auto is on nearly every industrial panel — and it's a clean payoff for everything you've learned.</p>
+
+      <h2>What it does</h2>
+      <p>A Hand-Off-Auto (HOA) selector is a <strong>maintained, three-position</strong> switch that gives an operator a choice about how a motor is controlled:</p>
+      <ul>
+        <li><span class="accent">HAND</span> — run the motor manually, right now, regardless of any automatic device. Used for testing, maintenance, or forcing operation.</li>
+        <li><span class="accent">OFF</span> — the motor can't run no matter what. A true off, in the middle.</li>
+        <li><span class="accent">AUTO</span> — hand control over to an automatic device (a float, a thermostat, a pressure switch, a PLC). The motor runs when that device calls for it.</li>
+      </ul>
+
+      <figure>
+        <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+          <line x1="50" y1="20" x2="50" y2="280" stroke="#000" stroke-width="2.5"/>
+          <line x1="580" y1="20" x2="580" y2="280" stroke="#fff" stroke-width="2.5"/>
+          <text x="50" y="14" fill="#aaa" font-size="12" text-anchor="middle">L1</text>
+          <text x="580" y="14" fill="#aaa" font-size="12" text-anchor="middle">N</text>
+
+          <!-- selector common at left -->
+          <line x1="50" y1="150" x2="150" y2="150" stroke="#bbb" stroke-width="2"/>
+          <circle cx="150" cy="150" r="4" fill="#EF9F27"/>
+          <text x="150" y="140" fill="#EF9F27" font-size="11" text-anchor="middle">COM</text>
+          <!-- wiper to two positions -->
+          <line x1="150" y1="150" x2="200" y2="100" stroke="#EF9F27" stroke-width="2"/>
+          <text x="120" y="180" fill="#777" font-size="10">selector</text>
+
+          <!-- HAND branch (top) -->
+          <circle cx="200" cy="100" r="3" fill="#fff"/>
+          <line x1="200" y1="100" x2="430" y2="100" stroke="#bbb" stroke-width="2"/>
+          <text x="210" y="92" fill="#aaa" font-size="11">HAND → straight to coil</text>
+
+          <!-- AUTO branch (bottom) through an auto device -->
+          <circle cx="200" cy="210" r="3" fill="#fff"/>
+          <line x1="200" y1="210" x2="260" y2="210" stroke="#bbb" stroke-width="2"/>
+          <!-- auto device NO contact (e.g. float) -->
+          <circle cx="260" cy="210" r="3" fill="#fff"/><circle cx="288" cy="210" r="3" fill="#fff"/>
+          <line x1="260" y1="210" x2="286" y2="197" stroke="#fff" stroke-width="2"/>
+          <text x="274" y="232" fill="#85B7EB" font-size="11" text-anchor="middle">AUTO device (float/PLC)</text>
+          <line x1="288" y1="210" x2="410" y2="210" stroke="#bbb" stroke-width="2"/>
+          <line x1="410" y1="210" x2="410" y2="100" stroke="#bbb" stroke-width="2"/>
+          <circle cx="410" cy="100" r="3.5" fill="#bbb"/>
+
+          <!-- both branches meet, go to coil -->
+          <line x1="430" y1="100" x2="500" y2="100" stroke="#bbb" stroke-width="2"/>
+          <circle cx="528" cy="100" r="22" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+          <text x="528" y="105" fill="#1D9E75" font-size="14" text-anchor="middle">M</text>
+          <line x1="500" y1="100" x2="506" y2="100" stroke="#bbb" stroke-width="2"/>
+          <line x1="550" y1="100" x2="580" y2="100" stroke="#bbb" stroke-width="2"/>
+
+          <text x="310" y="270" fill="#777" font-size="12" text-anchor="middle">HAND: COM→top, coil runs now.  OFF (middle): COM connects to nothing.  AUTO: COM→bottom, coil runs when the device closes.</text>
+        </svg>
+        <figcaption>The selector's common feeds either the HAND path (straight to the coil) or the AUTO path (through an automatic device). OFF connects to neither.</figcaption>
+      </figure>
+
+      <h2>How it's wired</h2>
+      <p>The selector has one <strong>common</strong> terminal (fed from the hot side of the control circuit) and it routes that common to one of two outputs depending on position:</p>
+      <ul>
+        <li>In <strong>HAND</strong>, the common connects straight to the coil — the motor runs immediately, bypassing any automatic device.</li>
+        <li>In <strong>OFF</strong>, the common connects to neither output. Dead. The motor can't run.</li>
+        <li>In <strong>AUTO</strong>, the common connects through the automatic device (a float switch, pressure switch, PLC output) to the coil. Now the motor follows that device.</li>
+      </ul>
+      <p>Both the HAND path and the AUTO path land on the same coil — they're just two different routes to energize it. The selector picks which route is live.</p>
+
+      <div class="callout">
+        <b>Why it's everywhere:</b> HOA lets a tech force a pump on by hand to test it, lock it OFF for service, then return it to AUTO so it runs on its own — all from one switch, without touching the wiring. It's the practical bridge between manual and automatic control.
+      </div>
+
+      <h2>Combining with start/stop</h2>
+      <p>On bigger systems you'll see HOA combined with the three-wire start/stop you already know: AUTO might feed a full seal-in circuit, while HAND gives a direct manual run. The principle stays the same — the selector is choosing <em>which control logic</em> gets to energize the coil. Everything you learned about seal-ins, overloads, and contactors still applies; HOA just adds a layer of operator choice on top.</p>
+
+      <h2>What to take away</h2>
+      <p>Hand-Off-Auto is a three-position maintained selector that routes control power to either a manual path (HAND), nothing (OFF), or an automatic device (AUTO). It's how one panel serves both the operator who needs to force a machine and the process that needs to run itself. Master this and you can read the control scheme on most industrial equipment you'll meet.</p>
+
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>In the Sandbox: wire a Selector (H-O-A) common to your control hot. Run its T1 (HAND) straight to Coil "M", and its T2 (AUTO) through a Float or Limit switch to the same coil. Cycle the selector through Hand, Off, and Auto and watch how the motor's behavior changes.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-motor-starter.html">← The Motor Starter</a>
+        <a href="/lessons.html">All Lessons →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

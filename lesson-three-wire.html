@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three-Wire Control: Start/Stop with Seal-In — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:36px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  .steps{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 24px;margin:22px 0;}
+  .steps li{margin:14px 0;}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 4 · Motor Control</div>
+      <h1>Three-Wire Control: Start/Stop with Seal-In</h1>
+      <p class="lede">This is the most important circuit in motor control. Once the seal-in clicks for you, you understand the trick at the heart of nearly every industrial panel.</p>
+
+      <h2>The problem it solves</h2>
+      <p>We want to start a motor by tapping a <strong>Start</strong> button and stop it by tapping a <strong>Stop</strong> button. But buttons are <span class="accent">momentary</span> — they spring back the instant you let go. So how does the motor keep running after you release Start? The circuit needs a way to <em>remember</em> that it was started. That memory is the <span class="accent">seal-in</span> (also called the holding contact or maintaining contact).</p>
+
+      <h2>The three pieces</h2>
+      <ul>
+        <li><strong>Stop button</strong> — a normally-closed (NC) momentary button. Current passes through it until pressed. It sits first in line so it can break the whole circuit.</li>
+        <li><strong>Start button</strong> — a normally-open (NO) momentary button. Pressing it completes the path to the coil.</li>
+        <li><strong>Seal-in contact</strong> — a NO auxiliary contact controlled by the coil itself, wired in <em>parallel</em> with the Start button.</li>
+      </ul>
+
+      <figure>
+        <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+          <line x1="50" y1="20" x2="50" y2="280" stroke="#E24B4A" stroke-width="3"/>
+          <line x1="580" y1="20" x2="580" y2="280" stroke="#85B7EB" stroke-width="3"/>
+          <text x="50" y="14" fill="#E24B4A" font-size="12" text-anchor="middle">L1</text>
+          <text x="580" y="14" fill="#85B7EB" font-size="12" text-anchor="middle">L2/N</text>
+
+          <!-- main rung: Stop(NC) -> Start(NO) -> Coil -->
+          <line x1="50" y1="110" x2="120" y2="110" stroke="#bbb" stroke-width="2"/>
+          <!-- Stop NC: two posts with a slash -->
+          <circle cx="120" cy="110" r="3" fill="#fff"/>
+          <circle cx="150" cy="110" r="3" fill="#fff"/>
+          <line x1="118" y1="122" x2="152" y2="98" stroke="#fff" stroke-width="2"/>
+          <line x1="120" y1="110" x2="150" y2="110" stroke="#fff" stroke-width="2"/>
+          <text x="135" y="88" fill="#E24B4A" font-size="12" text-anchor="middle">STOP (NC)</text>
+          <line x1="150" y1="110" x2="250" y2="110" stroke="#bbb" stroke-width="2"/>
+          <!-- Start NO -->
+          <circle cx="250" cy="110" r="3" fill="#fff"/>
+          <circle cx="280" cy="110" r="3" fill="#fff"/>
+          <line x1="250" y1="110" x2="278" y2="96" stroke="#fff" stroke-width="2"/>
+          <text x="265" y="88" fill="#1D9E75" font-size="12" text-anchor="middle">START (NO)</text>
+          <line x1="280" y1="110" x2="470" y2="110" stroke="#bbb" stroke-width="2"/>
+          <!-- coil M -->
+          <circle cx="500" cy="110" r="24" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+          <text x="500" y="115" fill="#1D9E75" font-size="15" text-anchor="middle">M</text>
+          <line x1="470" y1="110" x2="476" y2="110" stroke="#bbb" stroke-width="2"/>
+          <line x1="524" y1="110" x2="580" y2="110" stroke="#bbb" stroke-width="2"/>
+
+          <!-- seal-in branch: parallel around Start, from node after Stop (150) to node before coil wire (280..) -->
+          <line x1="200" y1="110" x2="200" y2="180" stroke="#bbb" stroke-width="2"/>
+          <line x1="200" y1="180" x2="250" y2="180" stroke="#bbb" stroke-width="2"/>
+          <!-- M aux NO contact on the branch -->
+          <circle cx="250" cy="180" r="3" fill="#fff"/>
+          <circle cx="280" cy="180" r="3" fill="#fff"/>
+          <line x1="250" y1="180" x2="278" y2="166" stroke="#fff" stroke-width="2"/>
+          <text x="265" y="205" fill="#EF9F27" font-size="12" text-anchor="middle">M (seal-in)</text>
+          <line x1="280" y1="180" x2="330" y2="180" stroke="#bbb" stroke-width="2"/>
+          <line x1="330" y1="180" x2="330" y2="110" stroke="#bbb" stroke-width="2"/>
+          <circle cx="200" cy="110" r="3.5" fill="#bbb"/>
+          <circle cx="330" cy="110" r="3.5" fill="#bbb"/>
+          <text x="310" y="245" fill="#777" font-size="12" text-anchor="middle">The seal-in M contact is in PARALLEL with Start. When coil M energizes, it closes —</text>
+          <text x="310" y="263" fill="#777" font-size="12" text-anchor="middle">providing a path around Start so the coil stays energized after you release the button.</text>
+        </svg>
+        <figcaption>Three-wire start/stop. Stop (NC) and Start (NO) in series with coil M; the M seal-in contact bridges around Start to hold the circuit in.</figcaption>
+      </figure>
+
+      <h2>Walk through what happens</h2>
+      <ol class="steps">
+        <li><strong>At rest:</strong> Stop is closed (NC), Start is open, the seal-in M is open. No path to the coil. Motor off.</li>
+        <li><strong>Press Start:</strong> now there's a path — through Stop, through Start, to the coil. Coil M energizes and the contactor pulls in. The motor runs. <em>At the same instant</em>, coil M closes its seal-in contact.</li>
+        <li><strong>Release Start:</strong> Start springs back open — but it no longer matters. Current now flows through the <span class="accent">seal-in contact</span> instead, which is held closed by the very coil it's feeding. The circuit holds itself in. The motor keeps running.</li>
+        <li><strong>Press Stop:</strong> the NC Stop button opens and breaks the whole rung. Coil M drops out, the contactor releases, the motor stops — and the seal-in contact opens again. Release Stop and nothing restarts, because Start is open and the seal-in is open. You're back at rest.</li>
+      </ol>
+
+      <div class="callout">
+        <b>Why it's safe:</b> after a power failure the coil is de-energized, so the seal-in is open. When power returns, the motor stays off until a person presses Start. That manual restart is exactly what two-wire control can't do — and it's why machinery uses three-wire.
+      </div>
+
+      <h2>The mental model</h2>
+      <p>Think of the seal-in as the circuit "latching" itself. Start is a momentary nudge that gets the coil going; the coil then reaches back and holds its own door open through the seal-in contact. Stop is the one thing that can break the latch. This latch-and-break pattern shows up everywhere once you start looking — it's the foundation of relay logic.</p>
+
+      <h2>What to take away</h2>
+      <p>Three-wire control = NC Stop, NO Start, and a coil-driven seal-in contact in parallel with Start. The momentary Start kicks it off, the seal-in holds it, and Stop breaks it. It requires a deliberate restart after power loss, which is what makes it safe for machinery.</p>
+
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>This is the one to build. In the Sandbox: Power → Push Button NC (Stop) → Push Button NO (Start) → Coil "M". Add a NO Contact assigned to "M" wired in parallel across the Start button. Energize, tap Start, and watch it stay running after you let go. Then tap Stop.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-two-wire.html">← Two-Wire Control</a>
+        <a href="/lesson-motor-starter.html">Next: The Motor Starter →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

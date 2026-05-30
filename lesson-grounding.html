@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Grounding &amp; Bonding — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style></head><body>
+  <header><div class="wrap"><a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav></div></header>
+  <div class="wrap"><div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article><div class="kicker">Lesson 27 · Field Skills</div><h1>Grounding &amp; Bonding</h1><p class="lede">The most important safety topic in the trade, and the most misunderstood. Bonding and grounding do different jobs — here’s the plain-language difference.</p>
+      <h2>The most misunderstood topic in the trade</h2>
+      <p>Grounding and bonding save lives, yet the two words get used interchangeably when they mean different things. Getting this right is the difference between a safe installation and a deadly one. Here is the plain-language version.</p>
+      <h2>Bonding — tying metal together</h2>
+      <p><span class="accent">Bonding</span> means electrically connecting all the metal parts that aren’t supposed to carry current — equipment enclosures, conduit, motor frames, raceways — so they’re all at the <strong>same potential</strong>. If a hot conductor faults to a bonded metal frame, bonding gives that fault current a solid, low-resistance path back to the source, so the breaker trips fast instead of leaving the frame energized and waiting to shock someone.</p>
+      <h2>Grounding — connecting to earth</h2>
+      <p><span class="accent">Grounding</span> means connecting the electrical system to the earth, typically through ground rods or other grounding electrodes. Its main jobs are to stabilize voltage to earth and to handle high-energy events like lightning and utility surges — draining them safely away.</p>
+      <div class="callout"><b>The key distinction:</b> bonding clears <em>internal</em> faults by giving fault current a fast path back to the source so protection trips. Grounding handles the <em>connection to earth</em> for voltage stability and external events. Earth is NOT the path that clears a normal fault — the bonded equipment grounding conductor back to the source is. This trips people up constantly.</div>
+      <h2>The equipment grounding conductor (EGC)</h2>
+      <p>The green (or bare) wire that runs with your circuit conductors is the <span class="accent">equipment grounding conductor</span>. It bonds the equipment back to the system’s grounded point at the source. It normally carries <strong>no current</strong> — it’s only there to carry fault current the instant something goes wrong, so the overcurrent device can open. A missing or broken EGC is invisible until the day it’s needed and isn’t there.</p>
+      <h2>Grounded vs. grounding</h2>
+      <p>Two more words that confuse: the <strong>grounded conductor</strong> is the neutral — it’s a current-carrying conductor that’s connected to ground at the source. The <strong>grounding conductor</strong> (the EGC) is the safety path that normally carries nothing. Neutral and ground are bonded together at exactly one place (the service/source) and kept separate everywhere downstream — mixing them elsewhere puts current on equipment frames, which is dangerous.</p>
+      <h2>What to take away</h2>
+      <p>Bonding ties non-current-carrying metal together and back to the source so faults clear fast. Grounding connects the system to earth for voltage stability and surge/lightning events. The EGC is your fault-clearing safety path; the neutral is the grounded current-carrying conductor; the two bond together only at the source. Respect all of it — this is the safety backbone of every install.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;"><b style="color:#EF9F27;">Concept lesson:</b> this one is field knowledge rather than a wiring exercise, so there’s no Sandbox build. When we add the dedicated NEC section later, grounding electrode and equipment-grounding-conductor sizing will live there.</div>
+      <div class="pager"><a href="/lesson-counters.html">← Counters</a><a href="/lesson-conductor-sizing.html">Next: Conductor &amp; Wire Sizing →</a></div>
+    </article></div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer></body></html>

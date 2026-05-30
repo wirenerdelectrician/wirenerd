@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Four-Way Switches — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 8 · Lighting Control</div>
+      <h1>Four-Way Switches</h1>
+      <p class="lede">Control one light from three or more locations by adding crossover switches between two 3-ways.</p>
+      <h2>Beyond two locations</h2>
+      <p>Two 3-way switches max out at two control locations. To control one light from <strong>three or more</strong> spots, you insert <span class="accent">4-way switches</span> into the traveler wires between the two 3-ways. Each 4-way you add gives you one more control location.</p>
+      <h2>What a 4-way does</h2>
+      <p>A 4-way is a <span class="accent">crossover</span> switch. It has two inputs and two outputs, and it does one of two things: pass the travelers <strong>straight through</strong> (in→out, in→out), or <strong>cross them over</strong> (in→the other out). Flipping it swaps the traveler path, which — just like flipping a 3-way — makes or breaks the complete circuit.</p>
+      <figure><svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+<rect x="15" y="105" width="22" height="30" rx="3" fill="#2f2f2f" stroke="#EF9F27" stroke-width="2"/><text x="26" y="100" fill="#EF9F27" font-size="10" text-anchor="middle">L1</text>
+<line x1="37" y1="120" x2="70" y2="120" stroke="#000" stroke-width="3"/>
+<circle cx="80" cy="120" r="4" fill="#EF9F27"/><text x="80" y="152" fill="#aaa" font-size="10" text-anchor="middle">3-way</text>
+<line x1="80" y1="120" x2="110" y2="103" stroke="#EF9F27" stroke-width="2"/>
+<circle cx="113" cy="103" r="3" fill="#fff"/><circle cx="113" cy="137" r="3" fill="#fff"/>
+<line x1="113" y1="103" x2="230" y2="103" stroke="#bbb" stroke-width="2"/><line x1="113" y1="137" x2="230" y2="137" stroke="#bbb" stroke-width="2"/>
+<!-- 4-way (crossover) -->
+<rect x="230" y="90" width="120" height="60" rx="6" fill="#2f2f2f" stroke="#85B7EB" stroke-width="2"/><text x="290" y="120" fill="#85B7EB" font-size="12" text-anchor="middle">4-way</text><text x="290" y="136" fill="#777" font-size="9" text-anchor="middle">(crossover)</text>
+<line x1="350" y1="103" x2="470" y2="103" stroke="#bbb" stroke-width="2"/><line x1="350" y1="137" x2="470" y2="137" stroke="#bbb" stroke-width="2"/>
+<!-- 3-way B -->
+<circle cx="473" cy="103" r="3" fill="#fff"/><circle cx="473" cy="137" r="3" fill="#fff"/>
+<line x1="510" y1="120" x2="476" y2="137" stroke="#EF9F27" stroke-width="2"/>
+<circle cx="510" cy="120" r="4" fill="#EF9F27"/><text x="510" y="152" fill="#aaa" font-size="10" text-anchor="middle">3-way</text>
+<line x1="510" y1="120" x2="545" y2="120" stroke="#bbb" stroke-width="2"/>
+<circle cx="570" cy="120" r="20" fill="none" stroke="#1D9E75" stroke-width="2.5"/><text x="570" y="125" fill="#1D9E75" font-size="12" text-anchor="middle">L</text>
+<line x1="590" y1="120" x2="625" y2="120" stroke="#fff" stroke-width="3"/>
+</svg><figcaption>A 4-way switch sits between two 3-ways. It either passes the travelers straight through or crosses them — adding a third control location. Add more 4-ways for more locations.</figcaption></figure>
+      <div class="callout"><b>The pattern:</b> always a 3-way on each end, with any number of 4-ways sandwiched in the travelers between them. Two 3-ways = 2 locations; add one 4-way = 3 locations; add another = 4; and so on.</div>
+      <h2>Reading it</h2>
+      <p>Trace the travelers through each switch. A 3-way picks which traveler it's on; a 4-way either keeps the travelers as-is or swaps them. The light is on when the path stays continuous end to end. Any single switch — 3-way or 4-way — flips that continuity, so any location can toggle the light.</p>
+      <h2>What to take away</h2>
+      <p>4-way switches are crossover switches placed between two 3-ways to add control locations. Straight-through or crossed — that's all a 4-way does, and it's enough to let a third (or fourth, or fifth) spot control the same light.</p>
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>In the Sandbox, build the 3-way circuit from the last lesson, then insert a 4-Way Switch into the two travelers between the 3-ways. Now three switches all toggle the same light.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-three-way.html">← Three-Way Switches</a>
+        <a href="/lesson-interlocking.html">Next: Interlocking →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

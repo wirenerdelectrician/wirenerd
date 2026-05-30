@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components &amp; Inputs Reference — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  .hero{padding:18px 0 10px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  .hero h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .hero p{color:var(--muted);font-size:18px;max-width:660px;}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 10px;}
+  .toc a{font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 14px;color:var(--muted);}
+  .toc a:hover{border-color:var(--accent);color:var(--ink);}
+  section.group{margin:36px 0;}
+  section.group > h2{font-size:24px;font-weight:800;letter-spacing:-0.3px;padding-bottom:8px;border-bottom:2px solid var(--accent);margin-bottom:18px;}
+  .device{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:14px;}
+  .device h3{font-size:18px;font-weight:700;margin-bottom:2px;}
+  .device .type{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:8px;}
+  .device p{font-size:15px;margin-bottom:8px;}
+  .device .row{display:flex;gap:8px;font-size:14px;margin-top:6px;}
+  .device .row .k{color:var(--blue);font-weight:600;min-width:74px;flex-shrink:0;}
+  .device .row .v{color:var(--muted);}
+  .state{display:inline-block;font-size:12px;border-radius:4px;padding:1px 7px;margin-right:4px;}
+  .no{background:#16331f;color:#27B888;border:1px solid #1D9E75;}
+  .nc{background:#331a1a;color:#E24B4A;border:1px solid #E24B4A;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;margin-top:30px;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <div class="hero">
+      <div class="kicker">Reference</div>
+      <h1>Components &amp; Inputs</h1>
+      <p>Every device in the Sandbox and on a real control panel — what it is, how it behaves, and where you'd use it. Keep this open while you build.</p>
+    </div>
+
+    <div class="toc">
+      <a href="#power">Power &amp; Loads</a>
+      <a href="#buttons">Push Buttons</a>
+      <a href="#switches">Switches &amp; Selectors</a>
+      <a href="#sensors">Sensors</a>
+      <a href="#contacts">Relay Contacts &amp; Coils</a>
+      <a href="#protection">Switching &amp; Protection</a>
+    </div>
+
+    <!-- ============ POWER & LOADS ============ -->
+    <section class="group" id="power">
+      <h2>Power &amp; Loads</h2>
+
+      <div class="device">
+        <h3>Power Source</h3>
+        <div class="type">Supply</div>
+        <p>The origin of all current in the circuit. Provides a hot leg (or legs) and a return. Everything else just makes or breaks the path between them.</p>
+        <div class="row"><span class="k">Systems</span><span class="v">120V 1φ (L1,N) · 120/240V 1φ (L1,L2,N) · 120/240V 3φ (L1,L2,L3,N) · 480V 3φ (L1,L2,L3) · 480V 3φ+N · 480V 1φ (L1,L2)</span></div>
+        <div class="row"><span class="k">Use</span><span class="v">Set this first — it defines the voltage every load is judged against and the conductor colors.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Light / Pilot Light</h3>
+        <div class="type">Load · Indicator</div>
+        <p>A load that lights when its circuit completes. A pilot light is the panel version — used for status, not illumination (green = running, red = stopped/fault, amber = warning).</p>
+        <div class="row"><span class="k">Behavior</span><span class="v">On only when hot reaches one side and return reaches the other at the right voltage.</span></div>
+        <div class="row"><span class="k">Use</span><span class="v">Status indication, run/stop lights, fault annunciation.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Motor</h3>
+        <div class="type">Load</div>
+        <p>The thing that does the mechanical work. Rated for a specific voltage and phase. Over-voltage faults it (🔥); under-voltage means it won't run properly.</p>
+        <div class="row"><span class="k">Behavior</span><span class="v">Runs when fed at its rated voltage through a complete path (usually via a contactor).</span></div>
+        <div class="row"><span class="k">Use</span><span class="v">Pumps, fans, conveyors, compressors — anything that turns.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Coil (relay/contactor coil)</h3>
+        <div class="type">Control output</div>
+        <p>An electromagnet. When its circuit completes, it energizes and pulls in every contact and contactor that shares its letter. The heart of relay logic.</p>
+        <div class="row"><span class="k">Letter</span><span class="v">Give it a letter (M, CR1, etc.); contacts with the same letter follow it.</span></div>
+        <div class="row"><span class="k">Use</span><span class="v">Turns a small control signal into the muscle to switch big loads or many contacts.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Contactor (3-pole)</h3>
+        <div class="type">Power switch</div>
+        <p>A heavy-duty relay built to switch motor-level power. Three main poles (L1/L2/L3 → T1/T2/T3) slam closed together when its matching coil energizes.</p>
+        <div class="row"><span class="k">Control</span><span class="v">Driven by a separate Coil sharing its letter — coil energizes, poles close.</span></div>
+        <div class="row"><span class="k">Use</span><span class="v">Switching power to motors and large loads from a low-power control signal.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Transformer (control transformer)</h3>
+        <div class="type">Power conversion</div>
+        <p>Steps voltage down (e.g. 480V → 120V). Primary (H1/H2) takes the high voltage; secondary (X1/X2) becomes a new source at the lower voltage to power the control circuit.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Keeps the control circuit (buttons, coils, pilot lights) at a safe, friendly voltage.</span></div>
+      </div>
+    </section>
+
+    <!-- ============ PUSH BUTTONS ============ -->
+    <section class="group" id="buttons">
+      <h2>Push Buttons</h2>
+
+      <div class="device">
+        <h3>Push Button — Normally Open (NO)</h3>
+        <div class="type">Momentary input</div>
+        <p><span class="state no">NO</span>Open at rest; closes only while you hold it, springs back when released. Passes current only while pressed.</p>
+        <div class="row"><span class="k">Use</span><span class="v">START buttons. A momentary tap kicks off a circuit that a seal-in then holds.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Push Button — Normally Closed (NC)</h3>
+        <div class="type">Momentary input</div>
+        <p><span class="state nc">NC</span>Closed at rest; opens while you hold it. Passes current until pressed.</p>
+        <div class="row"><span class="k">Use</span><span class="v">STOP buttons and e-stops. Pressing it breaks the circuit and drops the coil.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Push Button — Two-Block (NO + NC)</h3>
+        <div class="type">Momentary input</div>
+        <p><span class="state nc">NC</span><span class="state no">NO</span>One button operating two contact blocks at once. Press it and the NC block opens while the NO block closes — simultaneously.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Forward/reverse and jog circuits where one button must make one path while breaking another (built-in interlocking).</span></div>
+      </div>
+    </section>
+
+    <!-- ============ SWITCHES ============ -->
+    <section class="group" id="switches">
+      <h2>Switches &amp; Selectors</h2>
+
+      <div class="device">
+        <h3>Single-Pole Switch</h3>
+        <div class="type">Maintained input</div>
+        <p>A simple on/off switch that holds its state. Open or closed until you flip it.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Disconnects, simple manual control, two-wire control of a load.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>3-Way Switch</h3>
+        <div class="type">Maintained · SPDT</div>
+        <p>A single-pole, double-throw switch: a common terminal that connects to one of two travelers. Flipping it moves the connection from one traveler to the other.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Controlling one light from two locations (a pair of 3-ways). Also "either/or" routing in control logic.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>4-Way Switch</h3>
+        <div class="type">Maintained · crossover</div>
+        <p>A crossover switch with two inputs and two outputs. It either passes the travelers straight through or crosses them, swapping the path.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Placed between two 3-ways to add more control locations — one light from three, four, or more spots.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Selector Switch (Hand-Off-Auto)</h3>
+        <div class="type">Maintained · 3-position</div>
+        <p>A maintained rotary switch. A common terminal routes to one of two outputs (HAND or AUTO) or to neither (OFF).</p>
+        <div class="row"><span class="k">Use</span><span class="v">Choosing between manual operation, off, and automatic control on the same circuit.</span></div>
+      </div>
+    </section>
+
+    <!-- ============ SENSORS ============ -->
+    <section class="group" id="sensors">
+      <h2>Sensors (automatic inputs)</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:14px;">These are switches operated by a physical condition instead of a hand. Each can be wired NO or NC depending on what you want it to do.</p>
+
+      <div class="device">
+        <h3>Limit Switch</h3>
+        <div class="type">Mechanical sensor</div>
+        <p>Trips when a moving machine part physically contacts its lever or plunger. Tells the circuit "something reached this position."</p>
+        <div class="row"><span class="k">Use</span><span class="v">End-of-travel stops, position detection, sequencing (a part arrives → next step starts).</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Float Switch</h3>
+        <div class="type">Level sensor</div>
+        <p>Operated by a liquid level via a float. Changes state as the level rises or falls.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Sump and fill pumps, tank level control — run the pump when level is high (or low), stop at the setpoint.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Proximity Switch</h3>
+        <div class="type">Non-contact sensor</div>
+        <p>Detects a nearby object without touching it (inductive for metal, capacitive for most materials). No moving parts to wear out.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Part-present detection, counting, position sensing in fast or dirty environments.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Pressure Switch <span style="font-size:11px;color:#777;">(real-world)</span></h3>
+        <div class="type">Pressure sensor</div>
+        <p>Closes or opens at a set pressure. (Wire a maintained switch in the Sandbox to represent it.)</p>
+        <div class="row"><span class="k">Use</span><span class="v">Air compressors (cut-in/cut-out), pump protection, hydraulic systems.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Temperature Switch / Thermostat <span style="font-size:11px;color:#777;">(real-world)</span></h3>
+        <div class="type">Temperature sensor</div>
+        <p>Changes state at a set temperature.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Calling for heating/cooling, over-temp protection, fan control.</span></div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACTS & COILS ============ -->
+    <section class="group" id="contacts">
+      <h2>Relay Contacts &amp; Coils</h2>
+
+      <div class="device">
+        <h3>NO Contact (relay contact, normally open)</h3>
+        <div class="type">Control output</div>
+        <p><span class="state no">NO</span>An auxiliary contact controlled by a coil, not by hand. Open until its coil energizes, then it closes. Assign it the coil's letter.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Seal-in/holding contacts, turning on additional rungs when a coil energizes, interlock logic.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>NC Contact (relay contact, normally closed)</h3>
+        <div class="type">Control output</div>
+        <p><span class="state nc">NC</span>Closed until its coil energizes, then it opens. Assign it the coil's letter.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Electrical interlocks (one coil's NC contact prevents another from energizing), shutting down rungs when something turns on.</span></div>
+      </div>
+    </section>
+
+    <!-- ============ PROTECTION ============ -->
+    <section class="group" id="protection">
+      <h2>Switching &amp; Protection</h2>
+
+      <div class="device">
+        <h3>Overload Relay</h3>
+        <div class="type">Motor protection</div>
+        <p>Senses motor current through heaters in the power circuit. On a sustained overcurrent it trips, opening its NC auxiliary contact in the control circuit to drop the coil and stop the motor.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Protecting motors from burning out. Always wired into the control circuit via its aux contact.</span></div>
+      </div>
+
+      <div class="device">
+        <h3>Fuse / Circuit Breaker <span style="font-size:11px;color:#777;">(real-world)</span></h3>
+        <div class="type">Overcurrent protection</div>
+        <p>Opens the circuit on a fault or short. A fuse is one-time (replace it); a breaker resets.</p>
+        <div class="row"><span class="k">Use</span><span class="v">Protecting conductors and equipment from short circuits and overcurrent.</span></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

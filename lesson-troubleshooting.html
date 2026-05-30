@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Troubleshooting Methodology — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style></head><body>
+  <header><div class="wrap"><a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav></div></header>
+  <div class="wrap"><div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article><div class="kicker">Lesson 31 · Field Skills</div><h1>Troubleshooting Methodology</h1><p class="lede">The difference between fixing fast and throwing parts at it is method. Here is the repeatable loop the best techs run on every fault.</p>
+      <h2>Troubleshooting is a method, not a guess</h2>
+      <p>The difference between a tech who fixes things fast and one who throws parts at a problem is <strong>method</strong>. Good troubleshooting is a repeatable process you can run on any fault, in any system. Here is the loop the best techs run, mostly without thinking about it.</p>
+      <h2>The five steps</h2>
+      <ol>
+        <li><strong>Observe the symptom precisely.</strong> Not "it’s broken" — exactly what happens and when. Does the motor hum but not turn? Does it run then trip after a minute? Does nothing happen at all? Precise symptoms point at whole categories of cause.</li>
+        <li><strong>Form a theory.</strong> Based on the symptom and how the circuit works, what <em>could</em> cause this? This is where understanding the circuit pays off — you can only theorize about a circuit you understand. Your lessons on how each circuit works are the foundation of this step.</li>
+        <li><strong>Test the theory with the smallest measurement.</strong> Don’t tear things apart — take a meter reading that confirms or kills your theory. Think "if my theory is right, I should read X volts here." Use the half-split method to cut the suspect area in half with each measurement.</li>
+        <li><strong>Find and fix the cause — not just the symptom.</strong> A blown fuse is a symptom; <em>why</em> did it blow? Replace the fuse and find the short, or you’ll be back tomorrow. Fix root cause.</li>
+        <li><strong>Verify.</strong> Restore power, run the system, and confirm the symptom is gone <em>and</em> nothing new broke. Then document what you found.</li>
+      </ol>
+      <div class="callout"><b>Think before you probe:</b> the slowest troubleshooters start measuring randomly. The fastest spend ten seconds asking "given this symptom and how this circuit works, where ’s the fault most likely to be?" — then take one smart measurement instead of twenty random ones. A meter confirms a theory; it shouldn’t replace one.</div>
+      <h2>Symptom-to-cause patterns</h2>
+      <ul>
+        <li><strong>Nothing happens at all:</strong> suspect supply, main fuse/breaker, or the very start of the control circuit.</li>
+        <li><strong>Coil won’t pull in:</strong> trace the control rung — an open stop button, a tripped overload, a failed contact, a broken conductor. Voltage across the open spot finds it.</li>
+        <li><strong>Runs then trips:</strong> think overload — the motor or load is drawing too much over time.</li>
+        <li><strong>Works intermittently:</strong> suspect a loose connection or a marginal contact — often the hardest, found by wiggling and watching, or continuity under stress.</li>
+      </ul>
+      <h2>What to take away</h2>
+      <p>Troubleshooting is a loop: observe the precise symptom, form a theory from how the circuit works, test it with the smallest smart measurement (half-split), fix the root cause, and verify. Understanding your circuits is what makes step two possible, and your meter is how you confirm — not how you guess. Run the loop and almost any fault falls.</p>
+      <div class="cta"><h2>Now build it yourself</h2><p>In the Sandbox, build a circuit you understand, then hit Troubleshoot to inject a hidden fault. Practice the loop: observe what fails, theorize where the fault is, and use the meter to half-split your way to it before you click to call your shot.</p><a class="btn" href="/trainer.html">Open the Sandbox →</a></div>
+      <div class="pager"><a href="/lesson-transformer-sizing.html">← Control Transformer Sizing</a><a href="/lessons.html">Next: All Lessons →</a></div>
+    </article></div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer></body></html>

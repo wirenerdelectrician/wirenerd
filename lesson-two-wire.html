@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Wire Control — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  .warn{background:#332a1f;border-left:3px solid var(--accent);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .warn b{color:var(--accent);}
+  ul{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 3 · Motor Control</div>
+      <h1>Two-Wire Control</h1>
+      <p class="lede">The simplest motor control there is: one maintained device decides whether the motor runs. Simple, reliable — and with one important safety trade-off you need to understand.</p>
+
+      <h2>What "two-wire" means</h2>
+      <p>The name comes from the field wiring: it takes just <strong>two wires</strong> to the control device. A single <span class="accent">maintained</span> contact — one that stays where you put it — sits in series with the coil. Close it, the coil energizes and the contactor pulls in, the motor runs. Open it, the coil drops, the motor stops. That's the whole circuit.</p>
+      <p>"Maintained" is the key word. A light switch is maintained — flip it up, it stays up. Compare that to a doorbell button, which springs back the moment you let go (that's "momentary," and it's the next lesson). In two-wire control the device holds its own state, so the circuit needs no memory of its own.</p>
+
+      <figure>
+        <svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+          <!-- rails -->
+          <line x1="60" y1="30" x2="60" y2="210" stroke="#E24B4A" stroke-width="3"/>
+          <line x1="540" y1="30" x2="540" y2="210" stroke="#85B7EB" stroke-width="3"/>
+          <text x="60" y="22" fill="#E24B4A" font-size="12" text-anchor="middle">L1</text>
+          <text x="540" y="22" fill="#85B7EB" font-size="12" text-anchor="middle">L2 / N</text>
+          <!-- single rung: maintained switch -> coil M -->
+          <line x1="60" y1="110" x2="230" y2="110" stroke="#bbb" stroke-width="2"/>
+          <!-- maintained switch symbol (toggle) -->
+          <circle cx="230" cy="110" r="3" fill="#fff"/>
+          <line x1="230" y1="110" x2="258" y2="92" stroke="#fff" stroke-width="2"/>
+          <circle cx="262" cy="110" r="3" fill="#fff"/>
+          <text x="246" y="78" fill="#aaa" font-size="12" text-anchor="middle">maintained switch</text>
+          <line x1="262" y1="110" x2="430" y2="110" stroke="#bbb" stroke-width="2"/>
+          <!-- coil -->
+          <circle cx="460" cy="110" r="24" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+          <text x="460" y="115" fill="#1D9E75" font-size="15" text-anchor="middle">M</text>
+          <line x1="430" y1="110" x2="436" y2="110" stroke="#bbb" stroke-width="2"/>
+          <line x1="484" y1="110" x2="540" y2="110" stroke="#bbb" stroke-width="2"/>
+          <text x="300" y="165" fill="#777" font-size="12" text-anchor="middle">Close the switch → coil M energizes → contactor pulls in → motor runs.</text>
+          <text x="300" y="185" fill="#777" font-size="12" text-anchor="middle">Open it → coil drops → motor stops. The switch holds its own state.</text>
+        </svg>
+        <figcaption>Two-wire control: one maintained contact in series with the coil. No holding contact needed — the device remembers for you.</figcaption>
+      </figure>
+
+      <h2>Where you see it</h2>
+      <p>Two-wire control runs anything that should follow a condition automatically, with no operator pushing buttons:</p>
+      <ul>
+        <li>A <strong>float switch</strong> on a sump pump — water rises, the float closes, the pump runs until the level drops.</li>
+        <li>A <strong>pressure switch</strong> on an air compressor — pressure falls, the switch closes, the compressor refills the tank.</li>
+        <li>A <strong>thermostat</strong> calling for a fan or heater.</li>
+      </ul>
+      <p>In every case the "switch" is really a sensor that maintains its state based on a physical condition, and the motor simply follows it.</p>
+
+      <h2>The safety trade-off: automatic restart</h2>
+      <p>Here's the thing you must understand about two-wire control. Because the contact is maintained, <strong>the motor restarts on its own after a power failure.</strong> If the power drops while the float is up, then comes back, the pump just starts again — no one has to do anything.</p>
+      <p>That's a feature for a sump pump (you <em>want</em> it to resume). But it's a serious hazard for a machine someone might be servicing. If the power blips and a conveyor or saw restarts by itself with a hand near it, someone gets hurt. That's exactly why machinery uses <span class="accent">three-wire control</span> instead — which won't restart until a person presses Start. That's the next lesson.</p>
+
+      <div class="warn">
+        <b>Rule of thumb:</b> two-wire (automatic restart) for unattended processes like pumps and compressors; three-wire (manual restart required) for anything a person operates or services. Choosing wrong is a safety issue, not just a design preference.
+      </div>
+
+      <h2>What to take away</h2>
+      <p>Two-wire control is one maintained contact in series with a coil. It's simple and reliable, and it restarts automatically after power is restored — great for unattended equipment, dangerous for machinery people work on. Know which one a job calls for.</p>
+
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>In the Sandbox, wire a Power Source through a Single-Pole Switch (or a Float Switch) to a Coil, give the coil a letter, and add a Contactor with the same letter feeding a Motor. Flip the switch and watch it run.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-complete-circuit.html">← The Complete Circuit</a>
+        <a href="/lesson-three-wire.html">Next: Three-Wire Control →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

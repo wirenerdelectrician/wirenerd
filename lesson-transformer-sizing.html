@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Control Transformer Sizing — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style></head><body>
+  <header><div class="wrap"><a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav></div></header>
+  <div class="wrap"><div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article><div class="kicker">Lesson 30 · Field Skills</div><h1>Control Transformer Sizing</h1><p class="lede">The control transformer has to power every coil and light — including the big current spike when a contactor pulls in. Here is how it is sized.</p>
+      <h2>Why size it at all?</h2>
+      <p>Back in the motor starter lesson, the control transformer stepped the high voltage (say 480V) down to a safe control voltage (120V) to run buttons, coils, and pilot lights. But that transformer has to be big enough to actually power everything on the control circuit — both while things are running and at the moment a coil first pulls in. Undersize it and coils chatter or won’t pull in; oversize it and you waste money and space.</p>
+      <h2>The unit: VA (volt-amperes)</h2>
+      <p>Control transformers are rated in <span class="accent">VA</span> — volt-amperes — which is voltage times current. A 100VA transformer at 120V can supply about 0.83 amps continuously (100 ÷ 120). You add up the <strong>burden</strong> (the VA demand) of everything the transformer feeds and pick a transformer that comfortably covers it.</p>
+      <h2>Two numbers for every coil: sealed and inrush</h2>
+      <p>Here’s the catch that makes transformer sizing its own topic. A contactor or relay coil draws far more current at the instant it energizes (<span class="accent">inrush</span>) than it does once it’s pulled in and holding (<span class="accent">sealed</span>) — often several times more, briefly.</p>
+      <ul>
+        <li><strong>Sealed VA:</strong> the steady demand of all coils and devices that are energized at once. The transformer must supply this continuously.</li>
+        <li><strong>Inrush VA:</strong> the momentary spike when coils pull in. The transformer must hold up its voltage through this spike, or the coil voltage sags and the contactor won’t reliably pull in.</li>
+      </ul>
+      <div class="callout"><b>The sizing idea:</b> total the sealed VA of everything on at once (continuous capability), and also check the worst-case inrush VA (momentary capability, with enough voltage left to actually pull the coil in). The transformer has to satisfy <em>both</em> — steady load and inrush — which is why you can’t just add up running watts and call it done.</div>
+      <h2>The practical process</h2>
+      <p>List every device the transformer feeds (coils, pilot lights, timers, the PLC power supply if applicable). Get each one’s sealed and inrush VA from its datasheet. Sum the sealed VA, identify the largest combined inrush moment, and choose a transformer rated to handle the sealed load continuously while still delivering enough voltage during inrush. Add some margin for future additions.</p>
+      <h2>What to take away</h2>
+      <p>Control transformers are rated in VA, and you size them by totaling the sealed (continuous) burden of everything on the control circuit while also covering the inrush (momentary) spike when coils energize. Account for both or the control circuit misbehaves. Exact VA figures come from device datasheets.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;"><b style="color:#EF9F27;">Concept lesson:</b> this one is field knowledge rather than a wiring exercise, so there’s no Sandbox build. You can see the control transformer in action by building the motor starter circuit in the Sandbox.</div>
+      <div class="pager"><a href="/lesson-wire-markings.html">← Reading Wire &amp; Cable Markings</a><a href="/lesson-troubleshooting.html">Next: Troubleshooting Methodology →</a></div>
+    </article></div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer></body></html>

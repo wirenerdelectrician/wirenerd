@@ -63,6 +63,8 @@
     <button class="device-btn" data-type="light">💡 Light</button>
     <button class="device-btn" data-type="motor">⚙️ Motor</button>
     <button class="device-btn" data-type="coil">◯ Coil (relay)</button>
+    <button class="device-btn" data-type="timer">⏱ Timer (TON/TOF)</button>
+    <button class="device-btn" data-type="counter">🔢 Counter</button>
     <button class="device-btn" data-type="contactor">▭ Contactor (3-pole)</button>
     <button class="device-btn" data-type="transformer">⧉ Transformer</button>
   </div>
@@ -122,10 +124,17 @@
     <button class="action btn-energize" id="energizeBtn">⚡ Energize</button>
     <button class="action btn-pdf" id="pdfBtn">🖼 Save as PNG</button>
     <button class="action btn-clear" id="flowBtn">🌊 Flow: ON</button>
+    <button class="action btn-clear" id="resetViewBtn">🔍 Reset View</button>
     <button class="action btn-clear" id="troubleBtn">🔧 Troubleshoot</button>
     <button class="action" id="foundBtn" style="display:none; background:#EF9F27; color:#1a1a1a;">🎯 I Found It!</button>
     <button class="action btn-clear" id="meterBtn">🔌 Meter</button>
+    <button class="action btn-clear" id="meterModeBtn" style="display:none;">Ω Mode: Volts</button>
+    <button class="action btn-clear" id="undoBtn" style="opacity:0.4;">↩ Undo</button>
+    <button class="action btn-clear" id="redoBtn" style="opacity:0.4;">↪ Redo</button>
+    <button class="action btn-clear" id="saveBtn">💾 Save</button>
+    <button class="action btn-clear" id="loadBtn">📂 Load</button>
     <button class="action btn-clear" id="clearBtn">Clear All</button>
+    <input type="file" id="loadInput" accept="application/json,.json" style="display:none;">
   </div>
 
   <div class="status" id="status">Add a Power Source, then loads and switches. Complete the loop to run a load.</div>
@@ -135,6 +144,38 @@
     const svg = document.getElementById('panel');
     const statusBox = document.getElementById('status');
     const NS = 'http://www.w3.org/2000/svg';
+    // ----- Zoom & Pan (adjusts the SVG viewBox) -----
+    let vb={x:0,y:0,w:720,h:640};
+    function applyVB(){ svg.setAttribute('viewBox', vb.x+' '+vb.y+' '+vb.w+' '+vb.h); }
+    svg.addEventListener('wheel', function(e){
+      e.preventDefault();
+      const r=svg.getBoundingClientRect();
+      const mx=vb.x + (e.clientX-r.left)/r.width*vb.w;
+      const my=vb.y + (e.clientY-r.top)/r.height*vb.h;
+      const factor = e.deltaY<0 ? 0.9 : 1.1;   // wheel up = zoom in
+      const nw=Math.min(2400, Math.max(200, vb.w*factor));
+      const nh=nw*(640/720);
+      vb.x = mx - (mx-vb.x)*(nw/vb.w);
+      vb.y = my - (my-vb.y)*(nh/vb.h);
+      vb.w=nw; vb.h=nh; applyVB();
+    }, {passive:false});
+    // Pan by dragging empty canvas (background), middle-button, or space — only when not on a device/terminal/wire
+    let panning=false, panSX, panSY, panOX, panOY;
+    svg.addEventListener('mousedown', function(e){
+      // only start a pan if the click is on the bare svg background (not a child element)
+      if(e.target===svg && e.button===0 && !meterMode){
+        panning=true; const r=svg.getBoundingClientRect();
+        panSX=e.clientX; panSY=e.clientY; panOX=vb.x; panOY=vb.y;
+        svg.style.cursor='grabbing';
+      }
+    });
+    window.addEventListener('mousemove', function(e){
+      if(!panning) return; const r=svg.getBoundingClientRect();
+      vb.x = panOX - (e.clientX-panSX)/r.width*vb.w;
+      vb.y = panOY - (e.clientY-panSY)/r.height*vb.h;
+      applyVB();
+    });
+    window.addEventListener('mouseup', function(){ if(panning){ panning=false; svg.style.cursor='default'; } });
 
     let deviceCount = 0;
     const devices = {};
@@ -143,7 +184,7 @@
     let selectedTerminal = null, selectedDot = null, dragMoved = false;
     let energized = false;
     let activeFault = null;   // {type, deviceId?, wireId?} hidden until found
-    let meterMode = false; let meterA = null;
+    let meterMode = false; let meterA = null; let meterContinuity = false;
     let diagnosing = false;   // true after 'I Found It' pressed, waiting for the guess click
     let wireSeq = 0;
     let wireLane = 0;
@@ -153,6 +194,8 @@
       light:      { w: 75, label: 'Light', role:'load', voltage:120, phase:0 },
       motor:      { w: 90, label: 'Motor', role:'load', voltage:240, phase:1 },
       coil:       { w: 85, label: 'Coil',  role:'coil', voltage:120, letter:'M' },
+      timer:      { w: 95, label: 'Timer', role:'timer', voltage:120, letter:'T', mode:'on', preset:3, elapsed:0, output:false },
+      counter:    { w: 95, label: 'Counter', role:'counter', letter:'C', preset:3, count:0, output:false, lastInput:false },
       contactor:  { w: 110, label: 'Contactor', role:'contactor', letter:'M' },
       transformer:{ w: 120, label: 'XFMR', role:'transformer', primaryV:480, secondaryV:120 },
       button_no:  { w: 85, label: 'PB-NO', role:'contact', normally:'open', kind:'momentary' },
@@ -204,6 +247,8 @@
       if (d.role==='pilot') return ['X1','X2'];
       if (d.role==='transformer') return ['H1','X1','H2','X2'];
       if (d.role==='coil') return ['A1','A2'];
+      if (d.role==='timer') return ['A1','A2'];
+      if (d.role==='counter') return ['A1','A2','RST'];
       if (d.role==='contactor') return ['L1','T1','L2','T2','L3','T3'];
       if (d.role==='switch3') return ['COM','T1','T2'];
       if (d.role==='switch4') return ['IN1','IN2','OUT1','OUT2'];
@@ -212,6 +257,7 @@
     function deviceHeight(d){ const n=getTermLabels(d).length; return Math.max(60, 34 + Math.ceil(n/2)*22); }
 
     function addDevice(type){
+      if(typeof pushUndo==='function') pushUndo();
       const def = deviceTypes[type];
       deviceCount++;
       const id = type + '-' + deviceCount;
@@ -273,6 +319,8 @@
       if (d.role==='source'){ const sy=sysOf(d); d.voltage=sy.volts; d.info.textContent = sy.label; d.info.setAttribute('fill','#EF9F27'); }
       else if (d.role==='load'){ d.info.textContent = d.voltage+'V'+(d.phase?' '+d.phase+'φ':''); d.info.setAttribute('fill','#85B7EB'); }
       else if (d.role==='coil'){ d.info.textContent = '['+d.letter+'] '+d.voltage+'V'; d.info.setAttribute('fill','#C9A0FF'); }
+      else if (d.role==='timer'){ const md=d.mode==='on'?'TON':'TOF'; const rem=d.output?'done':(d.elapsed>0?(Math.max(0,d.preset-d.elapsed)).toFixed(1)+'s':d.preset+'s'); d.info.textContent='['+d.letter+'] '+md+' '+rem; d.info.setAttribute('fill', d.output?'#27B888':'#C9A0FF'); }
+      else if (d.role==='counter'){ d.info.textContent='['+d.letter+'] '+d.count+'/'+d.preset; d.info.setAttribute('fill', d.output?'#27B888':'#C9A0FF'); }
       else if (d.role==='transformer'){ d.info.textContent = d.primaryV+' → '+d.secondaryV+'V'; d.info.setAttribute('fill', d.live?'#27B888':'#85B7EB'); }
       else if (d.role==='contactor'){ d.info.textContent = '['+d.letter+'] '+(d.state==='closed'?'CLOSED':'OPEN'); d.info.setAttribute('fill', d.state==='closed'?'#27B888':'#C9A0FF'); }
       else if (d.role==='contact'){ d.info.textContent = (d.kind==='relay'?'['+d.letter+'] ':'')+d.state.toUpperCase(); d.info.setAttribute('fill', d.state==='closed'?'#27B888':'#888'); }
@@ -320,6 +368,15 @@
           const oldP=d.phase; d.voltage=opts[i].v; d.phase=opts[i].p||0;
           if (oldP!==d.phase) rebuildKeepingWires(d);
           updateDeviceInfo(d); setStatus(d.type+' rated '+d.voltage+'V'+(d.phase?' '+d.phase+'φ':'')); if(energized) runSimulation();
+        } else if (d.role==='counter'){
+          const choice=prompt('Counter ['+d.letter+'] — enter a LETTER to assign, or a NUMBER for the count preset.', String(d.preset));
+          if(choice){ const num=parseInt(choice,10); if(!isNaN(num)&&num>0){ d.preset=num; setStatus('Counter preset = '+num); } else { d.letter=choice.toUpperCase().trim(); setStatus('Counter follows letter ['+d.letter+'].'); } updateDeviceInfo(d); if(energized) runSimulation(); }
+        } else if (d.role==='timer'){
+          if (e.shiftKey){ d.mode = (d.mode==='on'?'off':'on'); updateDeviceInfo(d); setStatus('Timer mode: '+(d.mode==='on'?'ON-delay (TON)':'OFF-delay (TOF)')); if(energized) runSimulation(); }
+          else {
+            const choice=prompt('Timer ['+d.letter+'] — enter: a LETTER to assign, or a NUMBER for preset seconds. (Shift-click toggles ON/OFF-delay.)', String(d.preset));
+            if(choice){ const num=parseFloat(choice); if(!isNaN(num)&&num>0){ d.preset=num; setStatus('Timer preset = '+num+'s'); } else { d.letter=choice.toUpperCase().trim(); setStatus('Timer follows letter ['+d.letter+'].'); } updateDeviceInfo(d); if(energized) runSimulation(); }
+          }
         } else if (d.role==='coil' || d.role==='contactor'){
           const l=prompt('Letter (e.g. M, M1, CR1):', d.letter);
           if (l){ d.letter=l.toUpperCase().trim(); updateDeviceInfo(d); setStatus((d.role==='contactor'?'Contactor':'Coil')+' ['+d.letter+'] set.'); if(energized) runSimulation(); }
@@ -350,6 +407,7 @@
     }
 
     function rebuildKeepingWires(d){
+      pushUndo();
       for (let i=wires.length-1;i>=0;i--){ const w=wires[i]; if ((terminals[w.from]&&terminals[w.from].deviceId===d.id)||(terminals[w.to]&&terminals[w.to].deviceId===d.id)){ w.lineEl.remove(); if(w.hitEl)w.hitEl.remove(); (w.handles||[]).forEach(h=>h.remove()); wires.splice(i,1); } }
       buildDeviceGraphics(d);
       setStatus('Phase changed — terminals updated, wires on this device removed. Re-wire as needed.','#EF9F27');
@@ -393,7 +451,9 @@
       return d;
     }
 
+    let _restoring=false;
     function addWire(fromId,toId){
+      if(!_restoring && typeof pushUndo==='function') pushUndo();
       const path=document.createElementNS(NS,'path');
       const w={id:'w'+(++wireSeq),from:fromId,to:toId,lineEl:path,waypoints:[],handles:[]};
       // Wide invisible hit area BEHIND the visible wire so clicks land easily on the thin line.
@@ -413,7 +473,7 @@
       recolorWiresStatic();
       setStatus('Wired. Double-click the wire to add a bend; right-click to delete.');
     }
-    function removeWire(w){ w.lineEl.remove(); if(w.hitEl)w.hitEl.remove(); (w.handles||[]).forEach(h=>h.remove()); const i=wires.indexOf(w); if(i>-1)wires.splice(i,1); recolorWiresStatic(); setStatus('Removed wire. Total: '+wires.length); }
+    function removeWire(w){ pushUndo(); w.lineEl.remove(); if(w.hitEl)w.hitEl.remove(); (w.handles||[]).forEach(h=>h.remove()); const i=wires.indexOf(w); if(i>-1)wires.splice(i,1); recolorWiresStatic(); setStatus('Removed wire. Total: '+wires.length); }
 
     function rebuildHandles(w){
       (w.handles||[]).forEach(h=>h.remove());
@@ -472,10 +532,11 @@
         // momentary button: fire press, but still allow drag if user moves
         if(e.target.dataset.momentary==='1' && e.target._press){ e.target._press(); }
         dragging=true; dragMoved=false; g.style.cursor='grabbing';
+        _preDragSnap = (typeof snapshot==='function')?snapshot():null;
         const p=svgPoint(e); sx=p.x; sy=p.y; ox=device.x; oy=device.y; e.preventDefault();
       });
       window.addEventListener('mousemove',function(e){ if(!dragging)return; const p=svgPoint(e); const dx=p.x-sx,dy=p.y-sy; if(Math.abs(dx)>3||Math.abs(dy)>3)dragMoved=true; device.x=ox+dx; device.y=oy+dy; g.setAttribute('transform','translate('+device.x+','+device.y+')'); device.terminals.forEach(termId=>{ const tt=terminals[termId]; tt.x=device.x+tt.lx; tt.y=device.y+tt.ly; }); updateAllWiresFor(device.id); });
-      window.addEventListener('mouseup',function(){ if(dragging){ dragging=false; g.style.cursor='grab'; setTimeout(()=>{dragMoved=false;},50); } });
+      window.addEventListener('mouseup',function(){ if(dragging){ dragging=false; g.style.cursor='grab'; if(dragMoved && _preDragSnap){ undoStack.push(_preDragSnap); if(undoStack.length>50)undoStack.shift(); redoStack.length=0; updateUndoButtons(); } _preDragSnap=null; setTimeout(()=>{dragMoved=false;},50); } });
     }
     function svgPoint(e){ const r=svg.getBoundingClientRect(); const vb=svg.viewBox.baseVal; return { x:(e.clientX-r.left)/r.width*vb.width, y:(e.clientY-r.top)/r.height*vb.height }; }
 
@@ -564,6 +625,8 @@
         energizedCoils.clear();
         Object.values(devices).forEach(d=>{
           if (d.role==='coil'){ const a1=d.id+':A1',a2=d.id+':A2'; const failed=(activeFault&&activeFault.deviceId===d.id&&activeFault.type==='failedcoil'); if(!failed&&((hotSet.has(a1)&&retSet.has(a2))||(hotSet.has(a2)&&retSet.has(a1)))) energizedCoils.add(d.letter); }
+          if (d.role==='timer'){ const a1=d.id+':A1',a2=d.id+':A2'; d.inputEnergized = (hotSet.has(a1)&&retSet.has(a2))||(hotSet.has(a2)&&retSet.has(a1)); if(d.output) energizedCoils.add(d.letter); }
+          if (d.role==='counter'){ const a1=d.id+':A1',a2=d.id+':A2',r=d.id+':RST'; d.inputEnergized=(hotSet.has(a1)&&retSet.has(a2))||(hotSet.has(a2)&&retSet.has(a1)); d.resetEnergized = hotSet.has(r)||retSet.has(r); if(d.output) energizedCoils.add(d.letter); }
         });
         stable=(prev.size===energizedCoils.size)&&[...energizedCoils].every(c=>prev.has(c));
       }
@@ -590,6 +653,8 @@
       });
       Object.values(devices).forEach(d=>{
         if (d.role==='coil' && energizedCoils.has(d.letter)){ d.box.setAttribute('fill','#1f4d3a'); d.box.setAttribute('stroke','#27B888'); }
+        if (d.role==='timer'){ if(d.output){ d.box.setAttribute('fill','#1f4d3a'); d.box.setAttribute('stroke','#27B888'); } else if(d.inputEnergized){ d.box.setAttribute('fill','#3a3320'); d.box.setAttribute('stroke','#EF9F27'); } }
+        if (d.role==='counter' && d.output){ d.box.setAttribute('fill','#1f4d3a'); d.box.setAttribute('stroke','#27B888'); }
         if (d.role==='contactor' && d.state==='closed'){ d.box.setAttribute('stroke','#27B888'); }
       });
 
@@ -615,8 +680,105 @@
 
     function drawFire(d){ const f=document.createElementNS(NS,'text'); f.setAttribute('x',d.x+d.w/2); f.setAttribute('y',d.y-6); f.setAttribute('text-anchor','middle'); f.setAttribute('font-size',22); f.setAttribute('class','fire-effect'); f.textContent='🔥'; svg.appendChild(f); const a=document.createElementNS(NS,'animate'); a.setAttribute('attributeName','opacity'); a.setAttribute('values','1;0.4;1'); a.setAttribute('dur','0.4s'); a.setAttribute('repeatCount','indefinite'); f.appendChild(a); }
 
-    function energize(){ energized=true; runSimulation(); }
-    function clearAll(){ diagnosing=false; const fb=document.getElementById('foundBtn'); if(fb){fb.style.display='none'; fb.textContent='🎯 I Found It!'; fb.style.background='#EF9F27';} svg.innerHTML=''; Object.keys(devices).forEach(k=>delete devices[k]); Object.keys(terminals).forEach(k=>delete terminals[k]); wires.length=0; deviceCount=0; wireLane=0; energized=false; selectedTerminal=null; selectedDot=null; setStatus('Cleared. Add a Power Source to begin.'); }
+    let timerTick=null, lastTick=0;
+    function advanceTimers(){
+      const now=Date.now(); const dt=(now-lastTick)/1000; lastTick=now;
+      let changed=false;
+      Object.values(devices).forEach(d=>{
+        if(d.role==='timer'){
+          const inp=!!d.inputEnergized; const before=d.output;
+          if(d.mode==='on'){
+            if(inp){ d.elapsed=Math.min(d.preset, d.elapsed+dt); d.output=(d.elapsed>=d.preset); }
+            else { d.elapsed=0; d.output=false; }
+          } else {
+            if(inp){ d.elapsed=0; d.output=true; }
+            else if(d.output){ d.elapsed+=dt; if(d.elapsed>=d.preset){ d.output=false; } }
+          }
+          if(d.output!==before) changed=true;
+          updateDeviceInfo(d);
+        }
+        if(d.role==='counter'){
+          const before=d.output;
+          if(d.resetEnergized){ d.count=0; d.output=false; }
+          else { const inp=!!d.inputEnergized; if(inp && !d.lastInput){ d.count=Math.min(d.preset, d.count+1); } d.lastInput=inp; }
+          d.output=(d.count>=d.preset);
+          if(d.output!==before) changed=true;
+          updateDeviceInfo(d);
+        }
+      });
+      if(changed) runSimulation();
+    }
+    function startTimerLoop(){
+      if(timerTick) return;
+      lastTick=Date.now();
+      timerTick=setInterval(()=>{ if(!energized){ return; } if(Object.values(devices).some(d=>d.role==='timer'||d.role==='counter')){ advanceTimers(); } }, 100);
+    }
+    // ----- Save / Load circuits as JSON files -----
+    function serializeCircuit(){
+      const devs=Object.values(devices).map(d=>{
+        const o={};
+        ['id','type','x','y','role','w','voltage','phase','system','normally','kind','letter','state','position','mode','preset','color','tripped'].forEach(k=>{ if(d[k]!==undefined) o[k]=d[k]; });
+        return o;
+      });
+      const ws=wires.map(w=>({from:w.from,to:w.to,waypoints:(w.waypoints||[]).map(p=>({x:p.x,y:p.y}))}));
+      return {version:1, devices:devs, wires:ws};
+    }
+    function saveCircuit(){
+      const data=JSON.stringify(serializeCircuit(),null,2);
+      const blob=new Blob([data],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='wirenerd-circuit.json';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setStatus('Saved circuit to wirenerd-circuit.json','#27B888');
+    }
+    function rebuildDeviceFromData(o){
+      deviceCount++;
+      const def=deviceTypes[o.type]||{};
+      const d=Object.assign({}, o, {terminals:[], faulted:false, pressed:false, elapsed:0, output:false, lastInput:false, count:0});
+      d.w = o.w || def.w || 90;
+      devices[d.id]=d;
+      const g=document.createElementNS(NS,'g'); g.style.cursor='grab'; d.el=g; svg.appendChild(g);
+      buildDeviceGraphics(d); makeDraggable(g,d);
+      const nMatch=String(o.id).match(/-(\d+)$/); if(nMatch){ deviceCount=Math.max(deviceCount, parseInt(nMatch[1],10)); }
+    }
+    function restoreFromData(data){
+      // Rebuild the whole circuit from a serialized object (used by Load and Undo/Redo).
+      if(timerTick){clearInterval(timerTick);timerTick=null;}
+      diagnosing=false; activeFault=null;
+      const fb=document.getElementById('foundBtn'); if(fb){fb.style.display='none'; fb.textContent='🎯 I Found It!'; fb.style.background='#EF9F27';}
+      svg.innerHTML='';
+      Object.keys(devices).forEach(k=>delete devices[k]);
+      Object.keys(terminals).forEach(k=>delete terminals[k]);
+      wires.length=0; deviceCount=0; wireLane=0; energized=false; selectedTerminal=null; selectedDot=null;
+      _restoring=true;
+      (data.devices||[]).forEach(rebuildDeviceFromData);
+      (data.wires||[]).forEach(w=>{
+        if(terminals[w.from] && terminals[w.to]){
+          addWire(w.from, w.to);
+          const added=wires[wires.length-1];
+          if(w.waypoints && w.waypoints.length){ added.waypoints=w.waypoints.map(p=>({x:p.x,y:p.y})); rebuildHandles(added); refreshWire(added); }
+        }
+      });
+      recolorWiresStatic();
+      _restoring=false;
+    }
+    function loadCircuit(json){
+      let data; try{ data=JSON.parse(json); }catch(err){ setStatus('Could not read that file — is it a WireNerd circuit?','#E24B4A'); return; }
+      if(!data || !Array.isArray(data.devices)){ setStatus('That file is not a valid circuit.','#E24B4A'); return; }
+      pushUndo();
+      restoreFromData(data);
+      setStatus('Loaded circuit — '+data.devices.length+' devices, '+(data.wires||[]).length+' wires.','#27B888');
+    }
+    // ----- Undo / Redo via state snapshots -----
+    let undoStack=[], redoStack=[], _preDragSnap=null;
+    function snapshot(){ return JSON.stringify(serializeCircuit()); }
+    function pushUndo(){ undoStack.push(snapshot()); if(undoStack.length>50) undoStack.shift(); redoStack.length=0; updateUndoButtons(); }
+    function updateUndoButtons(){ const u=document.getElementById('undoBtn'), r=document.getElementById('redoBtn'); if(u) u.style.opacity=undoStack.length?'1':'0.4'; if(r) r.style.opacity=redoStack.length?'1':'0.4'; }
+    function doUndo(){ if(!undoStack.length){ setStatus('Nothing to undo.'); return; } redoStack.push(snapshot()); const prev=undoStack.pop(); restoreFromData(JSON.parse(prev)); updateUndoButtons(); setStatus('Undo.'); }
+    function doRedo(){ if(!redoStack.length){ setStatus('Nothing to redo.'); return; } undoStack.push(snapshot()); const next=redoStack.pop(); restoreFromData(JSON.parse(next)); updateUndoButtons(); setStatus('Redo.'); }
+    function energize(){ energized=true; lastTick=Date.now(); Object.values(devices).forEach(d=>{ if(d.role==='timer'){ d.elapsed=0; d.output=false; } if(d.role==='counter'){ d.count=0; d.output=false; d.lastInput=false; } }); runSimulation(); startTimerLoop(); }
+    function clearAll(){ if(typeof pushUndo==='function' && Object.keys(devices).length) pushUndo(); if(timerTick){clearInterval(timerTick);timerTick=null;} diagnosing=false; const fb=document.getElementById('foundBtn'); if(fb){fb.style.display='none'; fb.textContent='🎯 I Found It!'; fb.style.background='#EF9F27';} svg.innerHTML=''; Object.keys(devices).forEach(k=>delete devices[k]); Object.keys(terminals).forEach(k=>delete terminals[k]); wires.length=0; deviceCount=0; wireLane=0; energized=false; selectedTerminal=null; selectedDot=null; setStatus('Cleared. Add a Power Source to begin.'); }
 
     document.querySelectorAll('.device-btn').forEach(b=>b.addEventListener('click',()=>addDevice(b.dataset.type)));
     document.getElementById('energizeBtn').addEventListener('click',energize);
@@ -707,12 +869,21 @@
     function meterRead(termId){
       if(!meterA){
         meterA=termId; clearProbeLeads(); drawProbeLead(termId,'#E24B4A'); // red probe
-        setMeterDisplay(null, 'red probe on '+termId.split(':')[1]+' — click 2nd point');
-        setStatus('🔌 Red probe on '+termId.split(':')[1]+'. Click the second point (black probe).','#85B7EB');
+        setMeterDisplay(null, (meterContinuity?'red probe on ':'red probe on ')+termId.split(':')[1]+' — click 2nd point');
+        setStatus('🔌 Red probe on '+termId.split(':')[1]+'. Click the second point.','#85B7EB');
         return;
       }
       const a=meterA, b=termId;
       drawProbeLead(b,'#222'); // black probe (dark ring)
+      if(meterContinuity){
+        // Continuity: are the two points electrically connected through wires + closed devices?
+        const adj=buildGraph();
+        const conn=reachable([a],adj).has(b);
+        document.getElementById('meterValue').textContent = conn ? '0.0' : 'OL';
+        document.getElementById('meterWhere').textContent = (conn?'continuity ✓ (beep)':'open — no path')+'  '+a.split(':')[1]+' ↔ '+b.split(':')[1];
+        setStatus(conn ? '🔌 Continuity ✓ — those points are connected (0Ω).' : '🔌 OL — no continuity, the path is open between those points.', conn?'#27B888':'#EF9F27');
+        meterA=null; return;
+      }
       const va = (meterV[a]!=null)?meterV[a]:(meterRet.has(a)?0:null);
       const vb = (meterV[b]!=null)?meterV[b]:(meterRet.has(b)?0:null);
       const A=(va===null?0:va), B=(vb===null?0:vb);
@@ -735,16 +906,32 @@
       this.textContent = meterMode?'🔌 Meter: ON':'🔌 Meter';
       this.style.background = meterMode?'#1D9E75':'#3a3a3a';
       document.getElementById('meterDisplay').classList.toggle('on', meterMode);
+      document.getElementById('meterModeBtn').style.display = meterMode?'inline-block':'none';
       if(meterMode){
         energized=true; runSimulation();
-        setMeterDisplay(null,'click two points');
-        setStatus('🔌 Meter ON — click any two terminals to read the voltage between them.','#85B7EB');
+        setMeterDisplay(null, meterContinuity?'continuity — click two points':'click two points');
+        setStatus('🔌 Meter ON — click any two terminals.','#85B7EB');
       } else {
         clearProbeLeads();
         setStatus('Meter off.','#B4B2A9');
       }
     });
+    document.getElementById('meterModeBtn').addEventListener('click',function(){
+      meterContinuity=!meterContinuity; meterA=null; clearProbeLeads();
+      this.textContent = meterContinuity?'Ω Mode: Continuity':'Ω Mode: Volts';
+      document.querySelector('#meterDisplay .mlabel').textContent = meterContinuity?'Continuity':'DC/AC Volts';
+      document.querySelector('#meterDisplay .munit').style.display = meterContinuity?'none':'inline';
+      setMeterDisplay(null, meterContinuity?'continuity — click two points':'click two points');
+      setStatus(meterContinuity?'🔌 Continuity mode — click two points to test for a connection.':'🔌 Voltage mode — click two points to read volts.','#85B7EB');
+    });
 
+    document.getElementById('resetViewBtn').addEventListener('click',function(){ vb={x:0,y:0,w:720,h:640}; applyVB(); setStatus('View reset.'); });
+    document.getElementById('undoBtn').addEventListener('click',doUndo);
+    document.getElementById('redoBtn').addEventListener('click',doRedo);
+    window.addEventListener('keydown',function(e){ const mod=e.ctrlKey||e.metaKey; if(mod && e.key.toLowerCase()==='z' && !e.shiftKey){ e.preventDefault(); doUndo(); } else if(mod && (e.key.toLowerCase()==='y' || (e.key.toLowerCase()==='z' && e.shiftKey))){ e.preventDefault(); doRedo(); } });
+    document.getElementById('saveBtn').addEventListener('click',saveCircuit);
+    document.getElementById('loadBtn').addEventListener('click',()=>document.getElementById('loadInput').click());
+    document.getElementById('loadInput').addEventListener('change',function(e){ const f=e.target.files[0]; if(!f)return; const rd=new FileReader(); rd.onload=()=>{ loadCircuit(rd.result); }; rd.readAsText(f); this.value=''; });
     document.getElementById('clearBtn').addEventListener('click',clearAll);
     document.getElementById('flowBtn').addEventListener('click',function(){
       const off=document.body.classList.toggle('flow-off');

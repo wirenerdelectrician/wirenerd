@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading a Motor Nameplate — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 22 · Field Skills</div>
+      <h1>Reading a Motor Nameplate</h1>
+      <p class="lede">The numbers stamped on a motor tell you how to wire it, protect it, and replace it. Here’s how to read every one that matters.</p>
+      <h2>The motor’s ID card</h2>
+      <p>Every motor has a metal <span class="accent">nameplate</span> stamped with the numbers you need to wire, protect, and replace it. Learning to read it is a core field skill — these numbers drive your overload sizing, conductor sizing, and whether the motor even fits the job.</p>
+      <h2>The key fields</h2>
+      <ul>
+        <li><strong>Voltage:</strong> what the motor is built for (e.g. 230/460V — a dual-voltage motor you connect one way for 230, another for 460). Match it to your supply.</li>
+        <li><strong>FLA / FLC (Full-Load Amps/Current):</strong> the current it draws at full rated load. This is the number you size overloads and conductors from. Arguably the most important figure on the plate.</li>
+        <li><strong>HP (horsepower):</strong> mechanical output rating.</li>
+        <li><strong>RPM:</strong> full-load speed — tells you the pole count and roughly how fast the shaft turns (e.g. ~1750 = 4-pole, ~3500 = 2-pole at 60Hz).</li>
+        <li><strong>Phase &amp; Hz:</strong> single or three phase, and frequency (60 Hz in North America).</li>
+        <li><strong>Service Factor (SF):</strong> how much over its rating it can run continuously (1.15 SF = 15% overload capacity). Affects overload sizing.</li>
+        <li><strong>Frame:</strong> the standardized physical size/mounting (e.g. 145T) — so a replacement bolts up the same.</li>
+        <li><strong>Code letter / Design letter:</strong> indicate starting inrush and torque characteristics.</li>
+        <li><strong>Insulation class &amp; temp rise:</strong> how much heat the windings tolerate.</li>
+        <li><strong>Duty:</strong> continuous or intermittent.</li>
+        <li><strong>Efficiency / Power factor:</strong> for energy and sizing calcs.</li>
+      </ul>
+      <div class="callout"><b>The big three for wiring:</b> <strong>voltage</strong> (connect it right), <strong>FLA</strong> (size overloads and wire), and <strong>service factor</strong> (fine-tune the overload). Get those and you can power and protect the motor correctly.</div>
+      <h2>Dual-voltage connections</h2>
+      <p>Many motors run on two voltages depending on how their leads are connected (often shown by a connection table or diagram on the plate or in the peckerhead). Wire the leads for 230 or 460 per that diagram — get it wrong and you either get no torque or a burned motor. Always follow the plate’s connection table.</p>
+      <h2>What to take away</h2>
+      <p>The nameplate tells you everything to wire and protect a motor: voltage (and how to connect it), full-load amps (for overloads and wire), HP, RPM, service factor, frame, and more. Reading it confidently is foundational — the FLA and voltage in particular drive your whole installation.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;">
+        <b style="color:#EF9F27;">Concept lesson:</b> this one is about understanding equipment and ideas rather than wiring a circuit, so there’s no Sandbox build for it. When you set a Motor{A}s voltage in the Sandbox, you{A}re doing what the nameplate voltage tells you to match.
+      </div>
+      <div class="pager">
+        <a href="/lesson-three-phase.html">← Three-Phase Power Basics</a>
+        <a href="/lesson-overcurrent.html">Next: Overcurrent Protection →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

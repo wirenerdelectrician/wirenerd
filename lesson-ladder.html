@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading a Ladder Diagram — WireNerd</title>
+<style>
+  :root{
+    --bg:#1a1a1a; --panel:#232323; --ink:#ffffff; --muted:#B4B2A9;
+    --accent:#EF9F27; --green:#1D9E75; --blue:#85B7EB; --line:#3a3a3a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+
+  ul{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+
+    <article>
+      <div class="kicker">Lesson 1 · Fundamentals</div>
+      <h1>Reading a Ladder Diagram</h1>
+      <p class="lede">Before you can wire a control circuit, you have to be able to read one. The ladder diagram is the language of motor control — and once it clicks, every circuit you'll ever see is just a variation on the same shape.</p>
+
+      <h2>Why it's called a ladder</h2>
+      <p>A ladder diagram gets its name because it looks like a ladder. There are two vertical lines on the sides — the <span class="accent">rails</span> — and horizontal lines crossing between them — the <span class="accent">rungs</span>. Power comes down one rail, passes through whatever is on a rung, and returns up the other rail.</p>
+      <p>The <strong>left rail is the hot</strong> (your power, often labeled L1). The <strong>right rail is the return</strong> (the neutral, or the other line, often L2 or N). Every rung is one complete path from hot to return.</p>
+
+      <figure>
+        <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+          <!-- rails -->
+          <line x1="60" y1="30" x2="60" y2="270" stroke="#E24B4A" stroke-width="3"/>
+          <line x1="540" y1="30" x2="540" y2="270" stroke="#85B7EB" stroke-width="3"/>
+          <text x="60" y="22" fill="#E24B4A" font-size="13" text-anchor="middle">L1 (hot)</text>
+          <text x="540" y="22" fill="#85B7EB" font-size="13" text-anchor="middle">L2 / N (return)</text>
+
+          <!-- rung 1: a switch then a load -->
+          <line x1="60" y1="90" x2="230" y2="90" stroke="#bbb" stroke-width="2"/>
+          <!-- NO contact symbol -->
+          <line x1="230" y1="90" x2="250" y2="78" stroke="#fff" stroke-width="2"/>
+          <line x1="250" y1="90" x2="250" y2="90" stroke="#fff" stroke-width="2"/>
+          <line x1="230" y1="90" x2="230" y2="90" stroke="#fff" stroke-width="2"/>
+          <circle cx="230" cy="90" r="3" fill="#fff"/>
+          <circle cx="250" cy="90" r="3" fill="#fff"/>
+          <line x1="250" y1="90" x2="380" y2="90" stroke="#bbb" stroke-width="2"/>
+          <text x="240" y="68" fill="#aaa" font-size="12" text-anchor="middle">switch</text>
+          <!-- coil/load circle -->
+          <circle cx="430" cy="90" r="22" fill="none" stroke="#1D9E75" stroke-width="2"/>
+          <text x="430" y="95" fill="#1D9E75" font-size="14" text-anchor="middle">M</text>
+          <line x1="380" y1="90" x2="408" y2="90" stroke="#bbb" stroke-width="2"/>
+          <line x1="452" y1="90" x2="540" y2="90" stroke="#bbb" stroke-width="2"/>
+          <text x="300" y="125" fill="#777" font-size="12" text-anchor="middle">RUNG 1 — one complete path: hot → switch → coil → return</text>
+
+          <!-- rung 2: just to show ladder shape -->
+          <line x1="60" y1="200" x2="240" y2="200" stroke="#bbb" stroke-width="2"/>
+          <line x1="240" y1="200" x2="260" y2="188" stroke="#fff" stroke-width="2"/>
+          <circle cx="240" cy="200" r="3" fill="#fff"/>
+          <circle cx="260" cy="200" r="3" fill="#fff"/>
+          <line x1="260" y1="200" x2="408" y2="200" stroke="#bbb" stroke-width="2"/>
+          <circle cx="430" cy="200" r="22" fill="none" stroke="#1D9E75" stroke-width="2"/>
+          <text x="430" y="205" fill="#1D9E75" font-size="13" text-anchor="middle">L</text>
+          <line x1="452" y1="200" x2="540" y2="200" stroke="#bbb" stroke-width="2"/>
+          <text x="300" y="235" fill="#777" font-size="12" text-anchor="middle">RUNG 2 — same shape, different load</text>
+        </svg>
+        <figcaption>Two rails, two rungs. Power flows down the left rail, across each rung through its devices, and back up the right rail.</figcaption>
+      </figure>
+
+      <h2>How to read a rung</h2>
+      <p>You read a rung <strong>left to right</strong>, the same direction current flows. Everything on the left side of the load is a <span class="accent">control</span> — switches, buttons, contacts that decide whether power gets through. The thing on the right is the <span class="accent">load</span> — the coil, light, or motor that does the work.</p>
+      <p>Here's the key rule, and it's the same one the Sandbox enforces: <strong>the load only operates when the rung forms a complete path from hot to return.</strong> If any switch or contact in the rung is open, the path is broken and the load stays off.</p>
+
+      <div class="callout">
+        <b>The two halves of every rung:</b> control on the left (decides), load on the right (does the work). Train your eye to split every rung at the load — once you do, even a busy diagram reads quickly.
+      </div>
+
+      <h2>The basic symbols</h2>
+      <p>You only need a handful of symbols to read most control circuits:</p>
+      <ul>
+        <li><strong>Normally-open contact</strong> — two short lines with a gap. Open until something closes it. No current passes until it's activated.</li>
+        <li><strong>Normally-closed contact</strong> — the same, but with a slash across it. Closed until something opens it. Passes current until activated.</li>
+        <li><strong>Coil</strong> — a circle (often with a letter like M or CR). When its rung completes, it energizes and pulls in every contact that shares its letter.</li>
+        <li><strong>Load</strong> — a circle or symbol for a light, motor, or other device that does work.</li>
+      </ul>
+      <p>That letter on a coil is the whole trick of control wiring: a coil on one rung can close or open contacts on <em>other</em> rungs, just by sharing a letter. That's how one button can control a big motor — and it's exactly what you'll do in the Sandbox by giving a coil and its contacts the same letter.</p>
+
+      <h2>What to take away</h2>
+      <p>A ladder diagram is just hot on the left, return on the right, and rungs in between. Read each rung left to right, split it at the load, and check whether the control side forms a complete path. Master that, and you can read any control circuit you'll meet on the job.</p>
+
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>Open the Sandbox, drop a Power Source, a switch, and a Light, and wire a single rung. Watch it only run when the path completes.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+
+      <div class="pager">
+        <span class="disabled">← Previous</span>
+        <span class="disabled">Next: The Complete Circuit (coming soon)</span>
+      </div>
+    </article>
+  </div>
+
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

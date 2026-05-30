@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Using a Meter: Voltage &amp; Continuity — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 24 · Field Skills</div>
+      <h1>Using a Meter: Voltage &amp; Continuity</h1>
+      <p class="lede">Two measurements solve most faults: is voltage present, and is this path continuous? Here is how to use each — and how to half-split your way to any fault.</p>
+      <h2>Your most important troubleshooting tool</h2>
+      <p>A multimeter answers two core questions: <strong>is voltage present?</strong> and <strong>is this path continuous?</strong> Nearly every troubleshooting job comes down to those two measurements, used in the right order. Learn to think in volts and ohms and you can find almost any fault.</p>
+      <h2>Measuring voltage (power ON)</h2>
+      <p>Voltage is always measured <span class="accent">across</span> two points, with the circuit energized. You’re asking "what is the difference in potential between here and there?"</p>
+      <ul>
+        <li><strong>Across the source</strong> (hot to neutral): you should read full supply voltage. No reading? Your problem is upstream — the supply itself.</li>
+        <li><strong>Across a load</strong> that should be running: full voltage means power is getting there. Zero means the path to it is broken.</li>
+        <li><strong>Across an open switch or contact:</strong> here’s the key one. If you read <em>full voltage across a device that should be passing current</em>, that device is your open. Voltage appears across the break because that’s the one spot where the two sides of the circuit are at different potential.</li>
+      </ul>
+      <div class="callout"><b>The half-split method:</b> don’t check every point. Measure at the electrical middle of the dead circuit. Voltage there? The fault is downstream. No voltage? It’s upstream. Move to the middle of the bad half and repeat. Each measurement cuts the suspect area in half — you’ll corner the fault in just a few readings.</div>
+      <h2>Measuring continuity (power OFF)</h2>
+      <p>Continuity is measured with the circuit <strong>de-energized</strong>. The meter sends a tiny test current and tells you whether two points are connected: a near-zero reading (and usually a beep) means a complete path; "OL" (over-limit) means open. You’re asking "is this actually connected?"</p>
+      <ul>
+        <li><strong>Check a suspect conductor:</strong> probe both ends. Beep = good wire. OL = broken conductor.</li>
+        <li><strong>Check a contact or switch:</strong> operate it and watch continuity make and break. A contact that never goes to ~0Ω when commanded closed is bad.</li>
+        <li><strong>Check a fuse:</strong> continuity across it = good; OL = blown.</li>
+      </ul>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;"><b style="color:#EF9F27;">Safety:</b> only test continuity on a circuit that is de-energized and verified dead with your voltage check first. Sending a continuity test into a live circuit gives false readings and can damage the meter — or you.</div>
+      <h2>The workflow</h2>
+      <p>Voltage first to localize the dead section while it’s live (half-split), then kill the power and use continuity to pinpoint the exact broken conductor, contact, or fuse. Volts find the <em>area</em>; ohms find the <em>part</em>.</p>
+      <h2>What to take away</h2>
+      <p>Voltage (measured across, power on) tells you what’s live and where the loop breaks — full voltage across a device means that device is your open. Continuity (measured across, power off) tells you what’s actually connected. Half-split with voltage to find the area, then confirm with continuity. This is the heart of electrical troubleshooting.</p>
+      <div class="cta">
+        <h2>Now build it yourself</h2>
+        <p>In the Sandbox, build a simple circuit, turn on the Meter, and read voltage across the source and across a load. Switch to Continuity mode and check a wire and a switch. Then hit Troubleshoot, and half-split with the meter to find the hidden fault.</p>
+        <a class="btn" href="/trainer.html">Open the Sandbox →</a>
+      </div>
+      <div class="pager">
+        <a href="/lesson-overcurrent.html">← Overcurrent Protection</a>
+        <a href="/lesson-on-off-delay.html">Next: On-Delay &amp; Off-Delay Timers →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>

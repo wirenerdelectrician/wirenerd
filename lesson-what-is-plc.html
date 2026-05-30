@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Is a PLC? — WireNerd</title>
+<style>
+  :root{--bg:#1a1a1a;--panel:#232323;--ink:#fff;--muted:#B4B2A9;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--line:#3a3a3a;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  header{border-bottom:1px solid var(--line);padding:20px 0;position:sticky;top:0;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;max-width:880px;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+  .brand span{color:var(--accent);}
+  nav a{font-size:14px;color:var(--muted);margin-left:22px;}
+  nav a:hover{color:var(--ink);}
+  .crumbs{padding:24px 0 0;font-size:13px;color:#777;}
+  .crumbs a:hover{color:var(--accent);}
+  article{padding:18px 0 40px;}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  article h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin:8px 0 10px;}
+  .lede{font-size:19px;color:var(--muted);margin-bottom:8px;}
+  article h2{font-size:24px;font-weight:700;margin:38px 0 12px;letter-spacing:-0.3px;}
+  article p{margin-bottom:16px;font-size:17px;}
+  article strong{color:#fff;}
+  .accent{color:var(--accent);font-weight:700;}
+  figure{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;margin:26px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{color:#777;font-size:13px;margin-top:14px;text-align:center;}
+  .callout{background:#1f2a33;border-left:3px solid var(--blue);border-radius:8px;padding:16px 20px;margin:22px 0;font-size:16px;}
+  .callout b{color:var(--blue);}
+  ul,ol{margin:0 0 16px 22px;}
+  li{margin-bottom:8px;font-size:17px;}
+  .cta{background:linear-gradient(135deg,#1f3329,#162019);border:1px solid var(--green);border-radius:14px;padding:28px;text-align:center;margin:40px 0 10px;}
+  .cta h2{font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);margin-bottom:18px;}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 26px;border-radius:8px;font-size:15px;}
+  .btn:hover{background:#27B888;}
+  .pager{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0;font-size:15px;gap:16px;}
+  .pager a{color:var(--accent);}
+  .pager .disabled{color:#555;}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:#777;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <a class="brand" href="/">wire<span>nerd</span></a>
+    <nav><a href="/lessons.html">Lessons</a><a href="/components.html">Components</a><a href="/trainer.html">Sandbox</a></nav>
+  </div></header>
+  <div class="wrap">
+    <div class="crumbs"><a href="/lessons.html">← All Lessons</a></div>
+    <article>
+      <div class="kicker">Lesson 16 · Automation</div>
+      <h1>What Is a PLC?</h1>
+      <p class="lede">A PLC is just relay logic that moved into software. Everything you learned about contacts, coils, and seal-ins is exactly how a PLC thinks.</p>
+      <h2>The short version</h2>
+      <p>A <span class="accent">PLC</span> — Programmable Logic Controller — is a ruggedized industrial computer that runs the control logic for a machine or process. Instead of dozens of physical relays wired together to make decisions, a PLC makes those same decisions in <strong>software</strong>, reading inputs and switching outputs hundreds of times per second.</p>
+      <h2>From relay logic to the PLC</h2>
+      <p>Everything you learned in the relay lessons — seal-ins, interlocks, sequencing — a PLC does the same logic, just in a program instead of in wire. In fact PLCs were invented to <em>replace</em> banks of relays, and the most common PLC programming language is called <span class="accent">ladder logic</span> precisely because it looks like the ladder diagrams you already read. The rungs, the contacts, the coils — same shapes, now drawn on a screen and executed by a processor.</p>
+      <h2>What’s inside</h2>
+      <ul>
+        <li><strong>Processor (CPU):</strong> runs your program, makes the decisions.</li>
+        <li><strong>Input modules:</strong> sense the outside world — buttons, switches, sensors.</li>
+        <li><strong>Output modules:</strong> drive the outside world — contactor coils, pilot lights, valves.</li>
+        <li><strong>Power supply</strong> and a <strong>rack or backplane</strong> that ties it together.</li>
+      </ul>
+      <p>The PLC runs a continuous loop called the <span class="accent">scan</span>: read all the inputs, solve the logic, update all the outputs — then do it again, typically in a few milliseconds.</p>
+      <h2>Why it took over</h2>
+      <p>A change that would mean rewiring a relay panel becomes a few minutes of editing a program. One PLC can replace hundreds of relays, timers, and counters, never wears out its contacts, and can talk to other systems. That’s why nearly every modern machine of any complexity is PLC-controlled.</p>
+      <h2>What to take away</h2>
+      <p>A PLC is an industrial computer that runs your control logic in software. It does the same job as a panel full of relays — often programmed in ladder logic that mirrors the diagrams you already know — but it’s flexible, compact, and reliable. The relay fundamentals you’ve learned are exactly the foundation you need to understand it.</p>
+      <div class="callout" style="border-left-color:#EF9F27;background:#332a1f;">
+        <b style="color:#EF9F27;">Concept lesson:</b> this one is about understanding equipment and ideas rather than wiring a circuit, so there’s no Sandbox build for it. Up next we break down its inputs and outputs.
+      </div>
+      <div class="pager">
+        <a href="/lesson-reduced-voltage.html">← Reduced-Voltage Starting</a>
+        <a href="/lesson-plc-io.html">Next: PLC Inputs and Outputs →</a>
+      </div>
+    </article>
+  </div>
+  <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+</body>
+</html>
