@@ -145,12 +145,12 @@ footer a{color:var(--text-dim)}
 <body>
 
 <nav class="topnav"><div class="wrap">
-  <div class="brand">Wire<b>Nerd</b></div>
+  <a class="brand" href="/">wire<b>nerd</b></a>
   <div class="navlinks">
-    <a href="/lessons">Lessons</a>
-    <a href="/build-guides">Build Guides</a>
-    <a href="/components">Components</a>
-    <a href="/sandbox">Sandbox</a>
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a>
     <a href="#" class="active">Exam Helper</a>
   </div>
 </div></nav>
@@ -238,10 +238,6 @@ footer a{color:var(--text-dim)}
     <div class="callout">
       <b>Get a clean copy of the code.</b> You'll want your own tabbed 2023 NEC for the open-book exam. To look things up online for free, NFPA offers a read-only edition at <a href="https://link.nfpa.org/free-access/publications/70/2023" target="_blank" rel="noopener">link.nfpa.org/free-access/publications/70/2023</a> (free registration; you can't download or print it).
     </div>
-
-    <h3>What the Utah exam covers</h3>
-    <p>The combined journeyman exam draws from 15 subject areas. The weights below tell you where to spend your study time — grounding, overcurrent, and services carry the most questions.</p>
-    <div id="weightTable"></div>
   </section>
 
   <!-- ===================== TOPIC PRACTICE ===================== -->
@@ -257,20 +253,9 @@ footer a{color:var(--text-dim)}
   <!-- ===================== TIMED MOCK ===================== -->
   <section class="tabpanel hidden" data-panel="mock">
     <div id="mockHome">
-      <h2>Timed mock exam</h2>
-      <p class="lead">A countdown timer, a question palette you can flag and jump around in, and a full score breakdown at the end with every solution reviewed. Question mix mirrors the Utah blueprint.</p>
-      <div class="grid">
-        <button class="btn topic-tile" id="startQuick">
-          <div class="tnum">QUICK MOCK</div>
-          <div class="tname">25 questions · 60 min</div>
-          <div class="tcount">Fast confidence check</div>
-        </button>
-        <button class="btn topic-tile" id="startFull">
-          <div class="tnum">FULL EXAM SIM</div>
-          <div class="tname">100 questions · 240 min</div>
-          <div class="tcount" id="fullNote"></div>
-        </button>
-      </div>
+      <h2>Timed mock exams</h2>
+      <p class="lead">A countdown timer, a question palette you can flag and jump around in, and a full breakdown at the end with every solution reviewed. The Quick Mock reshuffles every time; the numbered exams are fixed sets, so you can retake the same one and watch your score climb.</p>
+      <div class="grid" id="mockMenu"></div>
       <p class="muted" style="margin-top:16px;font-size:14px">No penalty for guessing — answer every question. The exam auto-submits when time runs out.</p>
     </div>
     <div id="mockRun" class="hidden"></div>
@@ -290,9 +275,9 @@ footer a{color:var(--text-dim)}
   <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
   <div>Built by Bryan Barrios</div>
   <div class="social">
-    <a href="#" rel="noopener">YouTube</a>
-    <a href="#" rel="noopener">TikTok</a>
-    <a href="#" rel="noopener">Instagram</a>
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
   </div>
   <div class="muted" style="font-size:12.5px;margin-top:6px">Practice questions are original to WireNerd and are not reproduced from NFPA 70. Code references point you to the 2023 NEC; verify against your own copy. WireNerd is not affiliated with NFPA or Utah DOPL.</div>
 </div></footer>
@@ -523,7 +508,464 @@ const BANK = [
    stem:"Utah's specific licensing rules for electricians — including license classifications and exam requirements — are found in which administrative rule?",
    choices:["R156-1","R156-55b","Title 58, Chapter 1","NFPA 70"],answer:1,
    solution:"The Utah Electricians Licensing Act Rule, R156-55b, contains the electrician-specific classifications and requirements. R156-1 is the general DOPL rule, and Title 58 Chapter 55 is the underlying Construction Trades Licensing Act.",
-   ref:"Utah Admin. Code R156-55b"}
+   ref:"Utah Admin. Code R156-55b"},
+
+  /* ===================== EXPANSION BATCH 1 ===================== */
+
+  /* Grounding & Bonding */
+  {id:"GB7",topic:"Grounding & Bonding",type:"code",
+   stem:"A 100-ampere overcurrent device protects a feeder wired with copper conductors. What is the minimum size copper equipment grounding conductor?",
+   choices:["10 AWG","8 AWG","6 AWG","4 AWG"],answer:1,
+   solution:"Size the EGC from the overcurrent device rating using Table 250.122. A 100 A device requires an 8 AWG copper EGC.",
+   ref:"Table 250.122"},
+  {id:"GB8",topic:"Grounding & Bonding",type:"code",
+   stem:"What is the minimum size copper equipment grounding conductor for a circuit protected by a 200-ampere overcurrent device?",
+   choices:["8 AWG","6 AWG","4 AWG","3 AWG"],answer:1,
+   solution:"From Table 250.122, a 200 A overcurrent device calls for a 6 AWG copper equipment grounding conductor.",
+   ref:"Table 250.122"},
+  {id:"GB9",topic:"Grounding & Bonding",type:"code",
+   stem:"When ungrounded conductors are increased in size (for voltage drop, say), the equipment grounding conductor must be:",
+   choices:["Left at the table size","Increased proportionally to the ungrounded conductors","Reduced one size","Omitted"],answer:1,
+   solution:"250.122(B) requires the EGC to be increased in size proportionally to the increase in circular-mil area of the ungrounded conductors.",
+   ref:"250.122(B)"},
+  {id:"GB10",topic:"Grounding & Bonding",type:"code",
+   stem:"A single driven ground rod that does not have a resistance to earth of 25 ohms or less must be:",
+   choices:["Replaced with a larger rod","Supplemented by one additional electrode","Bonded to the gas line","Left as is — there is no such rule"],answer:1,
+   solution:"250.53(A)(2) Exception: a single rod, pipe, or plate electrode not achieving 25 ohms or less must be augmented by one additional electrode.",
+   ref:"250.53(A)(2)"},
+  {id:"GB11",topic:"Grounding & Bonding",type:"code",
+   stem:"A rod-type grounding electrode must have at least how much length in contact with the soil?",
+   choices:["4 ft","6 ft","8 ft","10 ft"],answer:2,
+   solution:"250.53(G) requires rod and pipe electrodes to have at least 8 ft of length in contact with the soil.",
+   ref:"250.53(G)"},
+  {id:"GB12",topic:"Grounding & Bonding",type:"code",
+   stem:"A metal underground water pipe used as a grounding electrode must be:",
+   choices:["Used alone — nothing else needed","Supplemented by at least one additional electrode","Painted for identification","Limited to 6 AWG conductors"],answer:1,
+   solution:"250.53(D)(2) requires a metal underground water pipe electrode to be supplemented by an additional electrode (such as a rod or concrete-encased electrode).",
+   ref:"250.53(D)(2)"},
+
+  /* Overcurrent Protection */
+  {id:"OC7",topic:"Overcurrent Protection",type:"code",
+   stem:"Under the small-conductor rule, the maximum standard overcurrent device for a 14 AWG copper conductor is:",
+   choices:["10 A","15 A","20 A","25 A"],answer:1,
+   solution:"240.4(D) caps 14 AWG copper at a 15 A overcurrent device, regardless of the higher value in the ampacity table.",
+   ref:"240.4(D)"},
+  {id:"OC8",topic:"Overcurrent Protection",type:"code",
+   stem:"Overcurrent devices in a dwelling unit are NOT permitted to be located in:",
+   choices:["A hallway","A bathroom","A bedroom closet","An unfinished basement"],answer:1,
+   solution:"240.24(E) prohibits overcurrent devices from being located in the bathrooms of dwelling units and guest rooms.",
+   ref:"240.24(E)"},
+  {id:"OC9",topic:"Overcurrent Protection",type:"code",
+   stem:"The center of the grip of the operating handle of the highest overcurrent device, at its highest position, may not be more than what height above the floor or platform?",
+   choices:["5 ft 0 in","6 ft 0 in","6 ft 7 in","7 ft 6 in"],answer:2,
+   solution:"240.24(A) limits the highest operating handle to no more than 6 ft 7 in (2.0 m) above the floor or working platform.",
+   ref:"240.24(A)"},
+  {id:"OC10",topic:"Overcurrent Protection",type:"code",
+   stem:"Which of the following is NOT a standard ampere rating for overcurrent devices?",
+   choices:["1200 A","1500 A","1600 A","2000 A"],answer:1,
+   solution:"240.6(A) lists 1200 A and 1600 A but not 1500 A. Knowing the standard list lets you apply the next-size rule even at large ratings.",
+   ref:"240.6(A)"},
+  {id:"OC11",topic:"Overcurrent Protection",type:"code",
+   stem:"Circuit breakers or fuses may be connected in parallel only when they are:",
+   choices:["Copper-rated","Factory assembled in parallel and listed as a unit","Under 120 V","Never — it is always prohibited"],answer:1,
+   solution:"240.8 permits overcurrent devices in parallel only where factory assembled in parallel and listed as a unit.",
+   ref:"240.8"},
+  {id:"OC12",topic:"Overcurrent Protection",type:"code",
+   stem:"Under the 10-foot feeder tap rule, the tap conductors must not exceed what length?",
+   choices:["10 ft","15 ft","25 ft","No limit"],answer:0,
+   solution:"240.21(B)(1) — the '10-foot tap rule' — limits the tap conductors to 10 ft and sets conditions on their ampacity and enclosure.",
+   ref:"240.21(B)(1)"},
+
+  /* Services, Feeders & Branch Circuits */
+  {id:"SF7",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"Per 230.71, the maximum number of service disconnecting means permitted for a single service (each in a separate enclosure) is:",
+   choices:["Two","Four","Six","Eight"],answer:2,
+   solution:"230.71 permits up to six service disconnects, but in recent editions each must be in its own separate enclosure (or part of a listed assembly).",
+   ref:"230.71"},
+  {id:"SF8",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"AFCI protection is generally required for 120-volt, 15- and 20-ampere branch circuits supplying outlets in which dwelling areas?",
+   choices:["Bathrooms and garages","Kitchens, bedrooms, living rooms, and similar areas","Outdoors only","Unfinished basements only"],answer:1,
+   solution:"210.12 requires arc-fault protection for 120 V, 15/20 A branch circuits supplying outlets in most habitable dwelling areas (kitchens, bedrooms, living rooms, hallways, and more).",
+   ref:"210.12"},
+  {id:"SF9",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"In a dwelling, general-use receptacles must be placed so that no point measured horizontally along the wall line is more than what distance from a receptacle?",
+   choices:["4 ft","6 ft","8 ft","12 ft"],answer:1,
+   solution:"210.52(A) is the 6-foot rule: no point along the wall may be more than 6 ft from a receptacle, which yields a maximum 12-ft spacing.",
+   ref:"210.52(A)"},
+  {id:"SF10",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"The small-appliance branch circuits required in a dwelling kitchen must be rated:",
+   choices:["15 A","20 A","30 A","40 A"],answer:1,
+   solution:"210.11(C)(1) requires the two (or more) small-appliance circuits to be 20 A; 210.52(B) restricts what they may serve.",
+   ref:"210.11(C)(1)"},
+  {id:"SF11",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"A dwelling service or feeder load may be calculated using the standard method or the alternative method found in:",
+   choices:["220.82 (optional method)","Article 250","Chapter 9, Table 1","430.24"],answer:0,
+   solution:"220.82 provides the optional calculation method for a dwelling — an alternative to the standard Part III calculation in Article 220.",
+   ref:"220.82"},
+  {id:"SF12",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"Per the 2023 NEC, GFCI protection is required for the outlet supplying which dwelling appliance?",
+   choices:["A ceiling light","A dishwasher","A bedroom smoke alarm","An attic furnace"],answer:1,
+   solution:"210.8(D) requires GFCI protection for the branch circuit or outlet supplying certain dwelling appliances, including dishwashers.",
+   ref:"210.8(D)"},
+
+  /* Conductors & Cables */
+  {id:"CC5",topic:"Conductors & Cables",type:"code",
+   stem:"Conductor sizes larger than 4/0 AWG are expressed in:",
+   choices:["AWG only","kcmil (thousands of circular mils)","Square inches","Millimeters"],answer:1,
+   solution:"Above 4/0 AWG, conductors are sized in kcmil (thousands of circular mils) — for example 250 kcmil, 500 kcmil.",
+   ref:"Conductor sizing convention"},
+  {id:"CC6",topic:"Conductors & Cables",type:"code",
+   stem:"Type NM (nonmetallic-sheathed) cable is NOT permitted to be installed in:",
+   choices:["Dry interior walls","Wet or damp locations","Above a ceiling","A single-family dwelling"],answer:1,
+   solution:"334.12 lists prohibited uses for Type NM cable, which include wet and damp locations among others.",
+   ref:"334.12"},
+  {id:"CC7",topic:"Conductors & Cables",type:"code",
+   stem:"THHN insulation is rated for what maximum operating temperature in dry locations?",
+   choices:["60°C","75°C","90°C","105°C"],answer:2,
+   solution:"THHN is a 90°C dry-location insulation. (Its dual-rated THWN-2 form also provides 90°C in wet locations.)",
+   ref:"Table 310.4 insulation ratings"},
+  {id:"CC8",topic:"Conductors & Cables",type:"code",
+   stem:"The smallest copper conductor generally permitted for a 15-ampere general-purpose branch circuit is:",
+   choices:["16 AWG","14 AWG","12 AWG","10 AWG"],answer:1,
+   solution:"A 15 A general-purpose branch circuit uses 14 AWG copper minimum, consistent with 210.19 and the small-conductor protection rule 240.4(D).",
+   ref:"210.19; 240.4(D)"},
+  {id:"CC9",topic:"Conductors & Cables",type:"code",
+   stem:"For equipment and terminations rated over 100 amperes, conductor ampacity is generally based on which temperature column unless listed otherwise?",
+   choices:["60°C","75°C","90°C","Ambient"],answer:1,
+   solution:"110.14(C)(1)(b) bases terminations rated over 100 A on the 75°C column unless the equipment is listed and marked for a higher temperature.",
+   ref:"110.14(C)(1)(b)"},
+  {id:"CC10",topic:"Conductors & Cables",type:"code",
+   stem:"An ampacity adjustment factor must be applied when a raceway or cable contains more than how many current-carrying conductors?",
+   choices:["Two","Three","Four","Six"],answer:1,
+   solution:"310.15(C)(1) requires an adjustment factor when more than three current-carrying conductors share a raceway or cable.",
+   ref:"310.15(C)(1)"},
+
+  /* Raceways & Enclosures */
+  {id:"RW5",topic:"Raceways & Enclosures",type:"code",
+   stem:"Between pull points, the total of all bends in a run of conduit (such as EMT) must not exceed:",
+   choices:["180 degrees","270 degrees","360 degrees","450 degrees"],answer:2,
+   solution:"For EMT (358.26) and similar raceways, no run between pull points may contain more than the equivalent of four quarter-bends — 360 degrees total.",
+   ref:"358.26"},
+  {id:"RW6",topic:"Raceways & Enclosures",type:"code",
+   stem:"In a box-fill calculation, one or more internal cable clamps are counted as:",
+   choices:["Zero allowances","One conductor volume allowance","Two allowances","One per clamp"],answer:1,
+   solution:"314.16(B)(2) counts all internal clamps collectively as a single conductor volume allowance, based on the largest conductor in the box.",
+   ref:"314.16(B)(2)"},
+  {id:"RW7",topic:"Raceways & Enclosures",type:"code",
+   stem:"Minimum cover (burial depth) requirements for underground wiring methods are found in:",
+   choices:["Table 300.5","Table 310.16","Chapter 9, Table 1","Table 250.122"],answer:0,
+   solution:"Table 300.5 gives the minimum cover for the various underground wiring methods and circuit types. Use the table — don't memorize the numbers.",
+   ref:"Table 300.5"},
+  {id:"RW8",topic:"Raceways & Enclosures",type:"code",
+   stem:"The minimum width of working space in front of electrical equipment is the width of the equipment or what value, whichever is greater?",
+   choices:["24 in","30 in","36 in","42 in"],answer:1,
+   solution:"110.26(A)(2) sets the minimum working-space width at 30 in (or the width of the equipment, whichever is larger).",
+   ref:"110.26(A)(2)"},
+  {id:"RW9",topic:"Raceways & Enclosures",type:"code",
+   stem:"The minimum headroom of working space about electrical equipment such as panelboards is generally:",
+   choices:["6 ft","6.5 ft","7 ft","8 ft"],answer:1,
+   solution:"110.26(A)(3) requires minimum headroom of 6.5 ft (or the height of the equipment, whichever is greater).",
+   ref:"110.26(A)(3)"},
+  {id:"RW10",topic:"Raceways & Enclosures",type:"code",
+   stem:"A conductor that runs through a box without any splice or termination is counted in the box fill as:",
+   choices:["Zero allowances","One conductor volume allowance","Two allowances","One-half allowance"],answer:1,
+   solution:"314.16(B)(1) counts each conductor that passes through the box unbroken as one conductor volume allowance.",
+   ref:"314.16(B)(1)"},
+
+  /* Motors & Controllers */
+  {id:"MC5",topic:"Motors & Controllers",type:"code",
+   stem:"Feeder conductors supplying several motors must have an ampacity of at least 125% of the largest motor's full-load current plus:",
+   choices:["50% of the others","100% of the full-load currents of the other motors","125% of all motors","Nothing else"],answer:1,
+   solution:"430.24 sizes motor feeder conductors at 125% of the largest motor FLC plus the sum of the full-load currents of the remaining motors.",
+   ref:"430.24"},
+  {id:"MC6",topic:"Motors & Controllers",type:"code",
+   stem:"A motor disconnecting means must generally have an ampere rating of at least what percent of the motor full-load current?",
+   choices:["100%","115%","125%","250%"],answer:1,
+   solution:"430.110(A) requires the disconnecting means for a motor circuit to be rated at least 115% of the motor full-load current.",
+   ref:"430.110(A)"},
+  {id:"MC7",topic:"Motors & Controllers",type:"code",
+   stem:"For a motor without a service factor of 1.15 or greater (and not marked 40°C rise), overload protection is generally sized at not more than:",
+   choices:["100% of FLC","115% of FLC","125% of FLC","140% of FLC"],answer:1,
+   solution:"430.32(A)(1) sets overload protection at 115% of nameplate FLC for motors that don't qualify for the 125% allowance.",
+   ref:"430.32(A)(1)"},
+  {id:"MC8",topic:"Motors & Controllers",type:"code",
+   stem:"Running overload protection for a motor is most commonly provided by:",
+   choices:["The branch-circuit breaker alone","An overload relay sized to the motor","The disconnect switch","The grounding conductor"],answer:1,
+   solution:"Overloads (Part III of Article 430) protect the motor from sustained overcurrent and are separate from the short-circuit/ground-fault device — typically thermal overload relays sized to the motor.",
+   ref:"Article 430, Part III"},
+  {id:"MC9",topic:"Motors & Controllers",type:"code",
+   stem:"The full-load current values for three-phase AC motors used in NEC sizing are found in:",
+   choices:["Table 430.248","Table 430.250","Table 310.16","Table 220.12"],answer:1,
+   solution:"Table 430.250 lists three-phase motor full-load currents; Table 430.248 is for single-phase motors.",
+   ref:"Table 430.250"},
+  {id:"MC10",topic:"Motors & Controllers",type:"code",
+   stem:"Motor feeder short-circuit and ground-fault protection is sized at the largest branch-circuit protective device in the group plus:",
+   choices:["125% of the others","The sum of the full-load currents of the other motors","Nothing","250% of the largest"],answer:1,
+   solution:"430.62 sizes the feeder protective device at the largest motor branch-circuit short-circuit/ground-fault device rating plus the sum of the FLCs of the other motors.",
+   ref:"430.62"},
+
+  /* Current */
+  {id:"CU2",topic:"Current",type:"theory",
+   stem:"A 1,500-watt heater operates on 120 volts. What current does it draw?",
+   choices:["10 A","12.5 A","15 A","18 A"],answer:1,
+   solution:"I = P ÷ V = 1,500 ÷ 120 = 12.5 A.",
+   ref:"I = P / V"},
+  {id:"CU3",topic:"Current",type:"theory",
+   stem:"A 240-volt circuit supplies a 40-ohm resistive load. The current is:",
+   choices:["3 A","6 A","9.6 A","60 A"],answer:1,
+   solution:"I = V ÷ R = 240 ÷ 40 = 6 A.",
+   ref:"I = V / R"},
+  {id:"CU4",topic:"Current",type:"theory",
+   stem:"Two parallel branches draw 4 A and 6 A from the same source. The total source current is:",
+   choices:["2 A","5 A","10 A","24 A"],answer:2,
+   solution:"In a parallel circuit, branch currents add: 4 + 6 = 10 A.",
+   ref:"Parallel branch currents add"},
+  {id:"CU5",topic:"Current",type:"theory",
+   stem:"Three 120-volt, 60-watt lamps are connected in parallel. The total current drawn is:",
+   choices:["0.5 A","1.0 A","1.5 A","3.0 A"],answer:2,
+   solution:"Each lamp draws I = P ÷ V = 60 ÷ 120 = 0.5 A. Three in parallel: 3 × 0.5 = 1.5 A.",
+   ref:"I = P / V; parallel currents add"},
+  {id:"CU6",topic:"Current",type:"theory",
+   stem:"A circuit delivers 2,400 watts to a load at 240 volts and unity power factor. The current is:",
+   choices:["5 A","10 A","12 A","20 A"],answer:1,
+   solution:"I = P ÷ V = 2,400 ÷ 240 = 10 A.",
+   ref:"I = P / V"},
+
+  /* Resistance */
+  {id:"RE3",topic:"Resistance",type:"theory",
+   stem:"Two 60-ohm resistors are connected in parallel. The combined resistance is:",
+   choices:["30 ohms","60 ohms","120 ohms","15 ohms"],answer:0,
+   solution:"Equal resistors in parallel: 60 ÷ 2 = 30 ohms.",
+   ref:"Parallel: equal Rs halve"},
+  {id:"RE4",topic:"Resistance",type:"theory",
+   stem:"A conductor carries 2 amperes when 10 volts is applied across it. Its resistance is:",
+   choices:["0.2 ohms","5 ohms","12 ohms","20 ohms"],answer:1,
+   solution:"R = V ÷ I = 10 ÷ 2 = 5 ohms.",
+   ref:"R = V / I"},
+  {id:"RE5",topic:"Resistance",type:"theory",
+   stem:"Four 10-ohm resistors are connected in series. The total resistance is:",
+   choices:["2.5 ohms","10 ohms","40 ohms","400 ohms"],answer:2,
+   solution:"Series resistances add: 10 × 4 = 40 ohms.",
+   ref:"Series: Rs add"},
+  {id:"RE6",topic:"Resistance",type:"theory",
+   stem:"If the length of a conductor is doubled (same material and cross-section), its resistance:",
+   choices:["Is halved","Stays the same","Doubles","Is squared"],answer:2,
+   solution:"Resistance is directly proportional to length, so doubling the length doubles the resistance.",
+   ref:"R proportional to length"},
+  {id:"RE7",topic:"Resistance",type:"theory",
+   stem:"Using a larger-diameter wire (more cross-sectional area) has what effect on conductor resistance?",
+   choices:["Increases it","Decreases it","No effect","Doubles it"],answer:1,
+   solution:"Resistance is inversely proportional to cross-sectional area, so a larger conductor has lower resistance.",
+   ref:"R inversely proportional to area"},
+
+  /* Voltage */
+  {id:"VO2",topic:"Voltage",type:"theory",
+   stem:"What is the voltage across a 5-ohm resistor carrying 3 amperes?",
+   choices:["1.7 V","8 V","15 V","45 V"],answer:2,
+   solution:"V = I × R = 3 × 5 = 15 V.",
+   ref:"V = I × R"},
+  {id:"VO3",topic:"Voltage",type:"theory",
+   stem:"On a 208Y/120-volt three-phase system, the line-to-neutral voltage is approximately:",
+   choices:["120 V","208 V","240 V","277 V"],answer:0,
+   solution:"Line-to-neutral = line-to-line ÷ √3 = 208 ÷ 1.732 ≈ 120 V.",
+   ref:"V_LN = V_LL / √3"},
+  {id:"VO4",topic:"Voltage",type:"theory",
+   stem:"On a 480Y/277-volt three-phase system, the line-to-neutral voltage is:",
+   choices:["120 V","208 V","277 V","480 V"],answer:2,
+   solution:"480 ÷ √3 ≈ 277 V — the line-to-neutral voltage commonly used for commercial lighting.",
+   ref:"V_LN = V_LL / √3"},
+  {id:"VO5",topic:"Voltage",type:"theory",
+   stem:"A 120-volt source is applied across two equal series resistors. The voltage dropped across each is:",
+   choices:["30 V","60 V","120 V","240 V"],answer:1,
+   solution:"Equal series resistors split the source voltage evenly: 120 ÷ 2 = 60 V each.",
+   ref:"Series voltage divides by resistance"},
+  {id:"VO6",topic:"Voltage",type:"theory",
+   stem:"If a feeder has a 6-volt drop on a 120-volt source, the voltage available at the load is:",
+   choices:["108 V","114 V","120 V","126 V"],answer:1,
+   solution:"Load voltage = source − drop = 120 − 6 = 114 V.",
+   ref:"V_load = V_source − VD"},
+
+  /* Power */
+  {id:"PO3",topic:"Power",type:"theory",
+   stem:"A single-phase load draws 20 amperes at 240 volts at unity power factor. The power is:",
+   choices:["2,400 W","4,800 W","6,000 W","12,000 W"],answer:1,
+   solution:"P = V × I = 240 × 20 = 4,800 W.",
+   ref:"P = V × I"},
+  {id:"PO4",topic:"Power",type:"theory",
+   stem:"4,800 watts expressed in kilowatts is:",
+   choices:["0.48 kW","4.8 kW","48 kW","480 kW"],answer:1,
+   solution:"1 kW = 1,000 W, so 4,800 W ÷ 1,000 = 4.8 kW.",
+   ref:"1 kW = 1,000 W"},
+  {id:"PO5",topic:"Power",type:"theory",
+   stem:"Approximately how many watts are in 5 horsepower? (Use 1 HP ≈ 746 W.)",
+   choices:["1,492 W","2,238 W","3,730 W","7,460 W"],answer:2,
+   solution:"5 × 746 = 3,730 W.",
+   ref:"1 HP ≈ 746 W"},
+  {id:"PO6",topic:"Power",type:"theory",
+   stem:"A 120-volt source is applied across a 100-ohm resistor. The power dissipated is:",
+   choices:["120 W","144 W","1,200 W","14,400 W"],answer:1,
+   solution:"P = V² ÷ R = (120²) ÷ 100 = 14,400 ÷ 100 = 144 W.",
+   ref:"P = V² / R"},
+  {id:"PO7",topic:"Power",type:"theory",
+   stem:"A three-phase load draws 30 amperes at 208 volts with a power factor of 0.9. The approximate real power is:",
+   choices:["5.6 kW","9.7 kW","10.8 kW","18.7 kW"],answer:1,
+   solution:"P = √3 × V × I × PF = 1.732 × 208 × 30 × 0.9 ≈ 9,728 W ≈ 9.7 kW.",
+   ref:"P = √3 × V_L × I_L × PF"},
+
+  /* Voltage Drop */
+  {id:"VD2",topic:"Voltage Drop",type:"theory",
+   stem:"A 6-volt drop on a 120-volt circuit represents a percentage voltage drop of:",
+   choices:["3%","5%","6%","10%"],answer:1,
+   solution:"%VD = (VD ÷ source) × 100 = (6 ÷ 120) × 100 = 5%.",
+   ref:"%VD = VD / V_source × 100"},
+  {id:"VD3",topic:"Voltage Drop",type:"theory",
+   stem:"The NEC's informational note recommends that branch-circuit voltage drop not exceed approximately:",
+   choices:["1%","3%","8%","10%"],answer:1,
+   solution:"An informational note to 210.19 recommends a maximum 3% drop on a branch circuit (5% total for feeder plus branch). It's a recommendation, not a requirement.",
+   ref:"210.19 Informational Note"},
+  {id:"VD4",topic:"Voltage Drop",type:"theory",
+   stem:"For a fixed load and conductor, doubling the one-way circuit length will:",
+   choices:["Halve the voltage drop","Have no effect","Double the voltage drop","Quarter the voltage drop"],answer:2,
+   solution:"Voltage drop is directly proportional to length (VD = 2·K·I·L ÷ cmil), so doubling L doubles the drop.",
+   ref:"VD proportional to length"},
+  {id:"VD5",topic:"Voltage Drop",type:"theory",
+   stem:"Using a larger conductor (more circular mils) for the same load and distance will:",
+   choices:["Increase voltage drop","Decrease voltage drop","Not change voltage drop","Double voltage drop"],answer:1,
+   solution:"Circular-mil area is in the denominator of the voltage-drop formula, so a larger conductor reduces the drop.",
+   ref:"VD inversely proportional to cmil"},
+  {id:"VD6",topic:"Voltage Drop",type:"theory",
+   stem:"A single-phase 240-volt circuit carries 30 amperes 150 ft (one way) on 6 AWG copper (26,240 cmil). Using K = 12.9, the approximate voltage drop is:",
+   choices:["2.4 V","4.4 V","8.8 V","13.2 V"],answer:1,
+   solution:"VD = (2 × K × I × L) ÷ cmil = (2 × 12.9 × 30 × 150) ÷ 26,240 = 116,100 ÷ 26,240 ≈ 4.4 V.",
+   ref:"VD = 2·K·I·L / cmil"},
+
+  /* Definitions & General Requirements */
+  {id:"DG3",topic:"Definitions & General Requirements",type:"code",
+   stem:"By NEC definition, a continuous load is one where the maximum current is expected to continue for at least:",
+   choices:["1 hour","2 hours","3 hours","8 hours"],answer:2,
+   solution:"Article 100 defines a continuous load as one whose maximum current continues for 3 hours or more — the basis for the 125% sizing rule.",
+   ref:"Article 100 (Continuous Load)"},
+  {id:"DG4",topic:"Definitions & General Requirements",type:"code",
+   stem:"Equipment that is 'readily accessible' is best described as:",
+   choices:["Locked behind a panel","Reachable quickly without removing obstacles or using ladders","Located outdoors only","Accessible only to the utility"],answer:1,
+   solution:"Article 100 defines 'readily accessible' as capable of being reached quickly without having to climb over obstacles or resort to portable ladders.",
+   ref:"Article 100 (Readily Accessible)"},
+  {id:"DG5",topic:"Definitions & General Requirements",type:"code",
+   stem:"General requirements for electrical installations — working space, conductor terminations, and the like — are found primarily in:",
+   choices:["Article 90","Article 100","Article 110","Article 250"],answer:2,
+   solution:"Article 110 contains the general requirements, including 110.14 terminations and 110.26 working space.",
+   ref:"Article 110"},
+  {id:"DG6",topic:"Definitions & General Requirements",type:"code",
+   stem:"The 'authority having jurisdiction' (AHJ) is the entity responsible for:",
+   choices:["Manufacturing equipment","Enforcing the code and approving installations","Writing the NEC","Selling permits only"],answer:1,
+   solution:"Article 100 defines the AHJ as the office or individual responsible for enforcing the code and approving equipment, materials, installations, or procedures.",
+   ref:"Article 100 (AHJ)"},
+  {id:"DG7",topic:"Definitions & General Requirements",type:"code",
+   stem:"To qualify as a 'dwelling unit,' a space must include permanent provisions for:",
+   choices:["Parking and storage","Living, sleeping, cooking, and sanitation","Commercial use","Heating only"],answer:1,
+   solution:"Article 100 defines a dwelling unit as one or more rooms with permanent provisions for living, sleeping, cooking, and sanitation.",
+   ref:"Article 100 (Dwelling Unit)"},
+
+  /* Lighting & General Use Equipment */
+  {id:"LG1",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"A surface-mounted LED or incandescent luminaire in a clothes closet must keep a minimum clearance from the nearest point of the storage space of:",
+   choices:["6 in","12 in","18 in","24 in"],answer:1,
+   solution:"410.16(C) requires a 12-in clearance for surface-mounted incandescent/LED luminaires from the storage space (6 in for recessed types).",
+   ref:"410.16(C)"},
+  {id:"LG2",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"On a 20-ampere branch circuit supplying two or more receptacles, the receptacles may be rated:",
+   choices:["15 A only","20 A only","15 A or 20 A","30 A"],answer:2,
+   solution:"Table 210.21(B)(3) permits either 15 A or 20 A receptacles on a 20 A branch circuit serving multiple outlets.",
+   ref:"210.21(B)(3)"},
+  {id:"LG3",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"A single receptacle installed on an individual branch circuit must have an ampere rating:",
+   choices:["One size below the circuit","Not less than the rating of the branch circuit","Exactly half the circuit rating","Of any value"],answer:1,
+   solution:"210.21(B)(1) requires a single receptacle on an individual branch circuit to have a rating not less than that of the branch circuit.",
+   ref:"210.21(B)(1)"},
+  {id:"LG4",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"In a dwelling, at least one wall-switch-controlled lighting outlet is required in:",
+   choices:["Closets only","Every habitable room and bathroom","The garage only","Hallways over 20 ft only"],answer:1,
+   solution:"210.70(A)(1) requires at least one wall-switch-controlled lighting outlet in every habitable room and bathroom of a dwelling.",
+   ref:"210.70(A)(1)"},
+  {id:"LG5",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"A fixed storage-type water heater is treated as a continuous load, so its branch circuit must be rated at least:",
+   choices:["100% of the load","115% of the load","125% of the load","150% of the load"],answer:2,
+   solution:"422.13 deems a fixed storage water heater (120 gal or less) a continuous load, so the branch circuit is sized at a minimum of 125%.",
+   ref:"422.13"},
+  {id:"LG6",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"In a dwelling bathroom, at least one receptacle must be installed within what distance of the outside edge of each basin?",
+   choices:["1 ft","3 ft","4 ft","6 ft"],answer:1,
+   solution:"210.52(D) requires a receptacle within 3 ft of the outside edge of each basin in a dwelling bathroom.",
+   ref:"210.52(D)"},
+  {id:"LG7",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"A dwelling hallway that is at least 10 ft long requires:",
+   choices:["No receptacle","At least one receptacle outlet","A receptacle every 6 ft","Two GFCI receptacles"],answer:1,
+   solution:"210.52(H) requires at least one receptacle outlet in dwelling hallways 10 ft or more in length.",
+   ref:"210.52(H)"},
+  {id:"LG8",topic:"Lighting & General Use Equipment",type:"code",
+   stem:"Luminaires, lampholders, and lamps are primarily covered by which NEC article?",
+   choices:["Article 404","Article 406","Article 410","Article 422"],answer:2,
+   solution:"Article 410 covers luminaires, lampholders, and lamps. Article 404 is switches, 406 is receptacles, 422 is appliances.",
+   ref:"Article 410"},
+
+  /* Special Occupancies & Equipment */
+  {id:"SO1",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"Class I hazardous (classified) locations are those made hazardous by the presence of:",
+   choices:["Combustible dust","Ignitible fibers and flyings","Flammable gases or vapors","Excessive moisture"],answer:2,
+   solution:"500.5 defines Class I locations by flammable gases or vapors. Class II is combustible dust; Class III is ignitible fibers/flyings.",
+   ref:"500.5"},
+  {id:"SO2",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"In a Division 1 classified location, the hazardous atmosphere is present:",
+   choices:["Only after equipment fails","Under normal operating conditions","Never","Only during maintenance"],answer:1,
+   solution:"A Division 1 location is one where the hazard exists under normal operating conditions; Division 2 is where it exists only under abnormal conditions.",
+   ref:"500.5(B)"},
+  {id:"SO3",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"Commercial repair garages are covered by which NEC article?",
+   choices:["Article 511","Article 514","Article 517","Article 680"],answer:0,
+   solution:"Article 511 covers commercial garages (repair and storage). Article 514 is fuel dispensing, 517 health care, 680 pools.",
+   ref:"Article 511"},
+  {id:"SO4",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"Swimming pools, spas, and hot tubs are covered by which NEC article?",
+   choices:["Article 600","Article 640","Article 680","Article 690"],answer:2,
+   solution:"Article 680 covers swimming pools, fountains, spas, hot tubs, and similar installations, including equipotential bonding and clearances.",
+   ref:"Article 680"},
+  {id:"SO5",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"The branch circuit or outlets supplying a swimming pool pump motor are required to have:",
+   choices:["AFCI protection","GFCI protection","Surge protection only","No special protection"],answer:1,
+   solution:"680.21 requires GFCI protection for the branch circuit/outlets serving pool pump motors.",
+   ref:"680.21"},
+  {id:"SO6",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"Health care facilities and patient care spaces are covered by which NEC article?",
+   choices:["Article 511","Article 517","Article 547","Article 605"],answer:1,
+   solution:"Article 517 covers health care facilities, including patient care space categories and special grounding/redundancy requirements.",
+   ref:"Article 517"},
+  {id:"SO7",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"Motor fuel dispensing facilities (gas stations) are covered by which NEC article?",
+   choices:["Article 511","Article 514","Article 515","Article 518"],answer:1,
+   solution:"Article 514 covers motor fuel dispensing facilities, with classified-location requirements around the dispensers.",
+   ref:"Article 514"},
+  {id:"SO8",topic:"Special Occupancies & Equipment",type:"code",
+   stem:"The general requirements for hazardous (classified) locations are introduced in which NEC article?",
+   choices:["Article 250","Article 300","Article 500","Article 700"],answer:2,
+   solution:"Article 500 introduces hazardous (classified) locations and the Class/Division scheme; Articles 501–504 add the specifics.",
+   ref:"Article 500"},
+
+  /* State Laws & Rules (Utah) */
+  {id:"SL2",topic:"State Laws & Rules",type:"code",
+   stem:"The minimum passing score on the Utah journeyman electrician written exam is:",
+   choices:["65%","70%","75%","80%"],answer:2,
+   solution:"Per the Utah electrical Candidate Information Bulletin, a score of 75% is required to pass the journeyman written exam.",
+   ref:"Utah Electrical Candidate Information Bulletin"},
+  {id:"SL3",topic:"State Laws & Rules",type:"code",
+   stem:"As of 2025, the Utah journeyman electrician exam is based on which edition of the NEC?",
+   choices:["2017 NEC","2020 NEC","2023 NEC","2026 NEC"],answer:2,
+   solution:"Utah adopted the 2023 NEC statewide effective July 1, 2025, and the journeyman exam references that edition.",
+   ref:"Utah NEC adoption (2023)"},
+  {id:"SL4",topic:"State Laws & Rules",type:"code",
+   stem:"Beginning August 1, 2025, the Utah journeyman exam changed in what way?",
+   choices:["It became closed-book","Code and Theory were merged into one combined exam","It was eliminated","It moved to an oral format"],answer:1,
+   solution:"As of August 1, 2025, Utah combined the previously separate Code and Theory exams into a single journeyman written exam.",
+   ref:"Utah DOPL exam change (Aug 1, 2025)"}
 ];
 
 /* Utah Journeyman blueprint weights (questions per topic on the real 100-Q exam) */
@@ -539,7 +981,8 @@ const TOPIC_ORDER = Object.keys(BLUEPRINT);
 const $ = (s,root=document)=>root.querySelector(s);
 const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
 const LETTERS=["A","B","C","D"];
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffle(a,rng){rng=rng||Math.random;a=a.slice();for(let i=a.length-1;i>0;i--){const j=rng()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function mulberry32(seed){let t=seed>>>0;return function(){t+=0x6D2B79F5;let r=Math.imul(t^(t>>>15),1|t);r^=r+Math.imul(r^(r>>>7),61|r);return((r^(r>>>14))>>>0)/4294967296;};}
 function byTopic(t){return BANK.filter(q=>q.topic===t);}
 function topicsPresent(){return TOPIC_ORDER.filter(t=>byTopic(t).length>0);}
 function refLabel(q){return q.type==="code"?q.ref:q.ref;}
@@ -556,15 +999,103 @@ $$(".tab").forEach(tab=>{
   });
 });
 
-/* =========================== study-guide weight table =========================== */
-(function renderWeights(){
-  const max=Math.max(...Object.values(BLUEPRINT));
-  const rows=TOPIC_ORDER.map(t=>{
-    const n=BLUEPRINT[t];const w=(n/max*100).toFixed(0);
-    return `<div class="barrow"><div>${t}</div><div class="barpct">${n} Q</div></div>
-            <div class="bartrack" style="margin:-2px 0 4px"><div class="barfill" style="width:${w}%;background:var(--accent)"></div></div>`;
-  }).join("");
-  $("#weightTable").innerHTML=`<div class="bars" style="margin-top:10px">${rows}</div>`;
+/* =========================== generated calculation drills =========================== */
+/* The five math topics are generated deterministically: every answer is computed (so it's
+   always correct) and the fixed seed keeps the numbered mock exams repeatable. */
+(function generateCalcDrills(){
+  const MATH=["Current","Resistance","Voltage","Power","Voltage Drop"];
+  for(let i=BANK.length-1;i>=0;i--){ if(BANK[i].type==="theory" && MATH.includes(BANK[i].topic)) BANK.splice(i,1); }
+  const g=mulberry32(987654321);
+  const pick=a=>a[Math.floor(g()*a.length)];
+  const sn=n=>{const r=Math.round(n*100)/100;return (Number.isInteger(r)?r:parseFloat(r.toFixed(2))).toLocaleString("en-US");};
+  function build(correct,distract,unit){
+    const u=unit?(" "+unit):"";
+    const vals=[correct];
+    distract.forEach(d=>{ if(d>0 && vals.every(v=>Math.abs(v-d)>0.001) && vals.length<4) vals.push(d); });
+    let k=2;
+    while(vals.length<4){ const c=correct*(1+0.15*k); if(vals.every(v=>Math.abs(v-c)>0.001)) vals.push(c); k++; if(k>25)break; }
+    const order=vals.map((_,i)=>i);
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(g()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    return {choices:order.map(i=>sn(vals[i])+u),answer:order.indexOf(0)};
+  }
+  const VOLTS=[120,208,240,277,480];
+  const CMIL={"14":4107,"12":6530,"10":10380,"8":16510,"6":26240,"4":41740,"2":66360,"1/0":105600,"2/0":133100,"4/0":211600};
+  const gens={
+    "Current":[
+      ()=>{const I=pick([5,6,7.5,8,10,12,12.5,15,16,20,24,25,30,40]);const V=pick(VOLTS);const P=I*V;
+        return {stem:`A ${sn(P)}-watt load operates on ${V} volts. What current does it draw?`,...build(I,[I*2,I/2,I*0.75],"A"),
+          solution:`I = P ÷ V = ${sn(P)} ÷ ${V} = ${sn(I)} A.`,ref:"I = P / V"};},
+      ()=>{const I=pick([2,3,4,5,6,8,10,12,15,20]);const R=pick([4,5,6,8,10,12,15,20,24]);const V=I*R;
+        return {stem:`A ${sn(V)}-volt circuit supplies a ${R}-ohm resistive load. The current is:`,...build(I,[I*2,I/2,I+1],"A"),
+          solution:`I = V ÷ R = ${sn(V)} ÷ ${R} = ${sn(I)} A.`,ref:"I = V / R"};},
+      ()=>{const a=pick([2,3,4,5,6,7,8]);const b=pick([3,4,5,6,9,10,12]);
+        return {stem:`Two parallel branches draw ${a} A and ${b} A from the same source. The total source current is:`,...build(a+b,[Math.abs(a-b),Math.max(a,b),a*b],"A"),
+          solution:`Branch currents add in parallel: ${a} + ${b} = ${a+b} A.`,ref:"Parallel branch currents add"};}
+    ],
+    "Resistance":[
+      ()=>{const I=pick([2,3,4,5,6,8,10]);const R=pick([4,5,6,8,10,12,15,20,24,30]);const V=I*R;
+        return {stem:`A load drops ${sn(V)} V while carrying ${I} A. Its resistance is:`,...build(R,[V*I,R*2,R/2],"ohms"),
+          solution:`R = V ÷ I = ${sn(V)} ÷ ${I} = ${sn(R)} ohms.`,ref:"R = V / I"};},
+      ()=>{const n=pick([2,3,4,5]);const r=pick([5,8,10,12,15,20,25,30]);
+        return {stem:`${n} resistors of ${r} ohms each are connected in series. The total resistance is:`,...build(n*r,[r,r/n,n*r/2],"ohms"),
+          solution:`Series resistances add: ${n} × ${r} = ${n*r} ohms.`,ref:"Series: resistances add"};},
+      ()=>{const n=pick([2,3,4,5]);const r=pick([10,12,20,24,30,40,60]);
+        return {stem:`${n} resistors of ${r} ohms each are connected in parallel. The total resistance is:`,...build(r/n,[n*r,r,r*n/2],"ohms"),
+          solution:`Equal resistors in parallel: ${r} ÷ ${n} = ${sn(r/n)} ohms.`,ref:"Parallel: equal resistances divide by count"};}
+    ],
+    "Voltage":[
+      ()=>{const I=pick([2,3,4,5,6,8,10]);const R=pick([3,4,5,6,8,10,12,15,20]);const V=I*R;
+        return {stem:`What is the voltage across a ${R}-ohm resistor carrying ${I} A?`,...build(V,[I/R,R/I,V*2],"V"),
+          solution:`V = I × R = ${I} × ${R} = ${sn(V)} V.`,ref:"V = I × R"};},
+      ()=>{const p=pick([[480,277],[208,120],[240,139],[600,347]]);
+        return {stem:`On a ${p[0]}-volt three-phase wye system, the approximate line-to-neutral voltage is:`,...build(p[1],[p[0],Math.round(p[0]/2),Math.round(p[0]*1.732)],"V"),
+          solution:`V(L-N) = V(L-L) ÷ √3 = ${p[0]} ÷ 1.732 ≈ ${p[1]} V.`,ref:"V(L-N) = V(L-L) / √3"};},
+      ()=>{const n=pick([2,3,4]);const S=pick([120,208,240,277,480]);
+        return {stem:`A ${S}-volt source is applied across ${n} equal series resistors. The voltage across each is:`,...build(Math.round(S/n*100)/100,[S,S*n,Math.round(S/(n+1)*100)/100],"V"),
+          solution:`Equal series resistors split the source: ${S} ÷ ${n} ≈ ${sn(S/n)} V each.`,ref:"Series voltage divides equally for equal resistors"};}
+    ],
+    "Power":[
+      ()=>{const V=pick(VOLTS);const I=pick([5,8,10,12,15,20,25,30,40]);const P=V*I;
+        return {stem:`A single-phase load draws ${I} A at ${V} V (unity power factor). The power is:`,...build(P,[V/I,P/2,P*2],"W"),
+          solution:`P = V × I = ${V} × ${I} = ${sn(P)} W.`,ref:"P = V × I"};},
+      ()=>{const V=pick([120,240,277]);const R=pick([60,100,120,144,200,240]);const P=Math.round(V*V/R*100)/100;
+        return {stem:`A ${V}-volt source is applied across a ${R}-ohm resistor. The power dissipated is:`,...build(P,[V/R,V*R/100,P*2],"W"),
+          solution:`P = V² ÷ R = ${sn(V*V)} ÷ ${R} ≈ ${sn(P)} W.`,ref:"P = V² / R"};},
+      ()=>{const hp=pick([0.5,1,1.5,2,3,5,7.5,10]);const W=Math.round(hp*746);
+        return {stem:`Approximately how many watts are in ${hp} horsepower? (Use 1 HP ≈ 746 W.)`,...build(W,[Math.round(hp*746/2),Math.round(hp*746*2),hp*1000],"W"),
+          solution:`${hp} × 746 ≈ ${sn(W)} W.`,ref:"1 HP ≈ 746 W"};},
+      ()=>{const W=pick([1500,1800,2400,3600,4800,6000,7200,9600,12000]);const kW=W/1000;
+        return {stem:`Expressed in kilowatts, ${sn(W)} watts is:`,...build(kW,[W/100,W/10,W/10000],"kW"),
+          solution:`1 kW = 1,000 W, so ${sn(W)} ÷ 1,000 = ${sn(kW)} kW.`,ref:"1 kW = 1,000 W"};}
+    ],
+    "Voltage Drop":[
+      ()=>{const sizes=Object.keys(CMIL);const sz=pick(sizes);const cm=CMIL[sz];const I=pick([10,15,20,25,30,40]);const L=pick([50,75,100,125,150,200]);
+        const VD=Math.round((2*12.9*I*L/cm)*10)/10;
+        return {stem:`A single-phase circuit carries ${I} A for ${L} ft (one way) on ${sz} AWG copper (${sn(cm)} cmil). Using K = 12.9, the approximate voltage drop is:`,...build(VD,[Math.round((1.732*12.9*I*L/cm)*10)/10,Math.round((12.9*I*L/cm)*10)/10,Math.round((4*12.9*I*L/cm)*10)/10],"V"),
+          solution:`VD = (2 × K × I × L) ÷ cmil = (2 × 12.9 × ${I} × ${L}) ÷ ${sn(cm)} ≈ ${sn(VD)} V.`,ref:"VD(1Φ) = 2·K·I·L / cmil"};},
+      ()=>{const V=pick([120,208,240,277,480]);const p=pick([2,3,4,5,6]);const drop=Math.round(V*p/100*10)/10;
+        return {stem:`A ${sn(drop)}-volt drop on a ${V}-volt circuit represents a voltage drop of:`,...build(p,[p*2,p/2,p+1],"%"),
+          solution:`%VD = (VD ÷ source) × 100 = (${sn(drop)} ÷ ${V}) × 100 ≈ ${p}%.`,ref:"%VD = VD / V_source × 100"};},
+      ()=>{const sizes=Object.keys(CMIL).filter(s=>!["14","12"].includes(s));const sz=pick(sizes);const cm=CMIL[sz];const I=pick([20,25,30,40,50]);const L=pick([100,150,200,250,300]);
+        const VD=Math.round((1.732*12.9*I*L/cm)*10)/10;
+        return {stem:`A three-phase circuit carries ${I} A for ${L} ft on ${sz} AWG copper (${sn(cm)} cmil). Using K = 12.9, the approximate voltage drop is:`,...build(VD,[Math.round((2*12.9*I*L/cm)*10)/10,Math.round((12.9*I*L/cm)*10)/10,Math.round((1.732*12.9*I*L/cm)/2*10)/10],"V"),
+          solution:`VD = (√3 × K × I × L) ÷ cmil = (1.732 × 12.9 × ${I} × ${L}) ÷ ${sn(cm)} ≈ ${sn(VD)} V.`,ref:"VD(3Φ) = 1.732·K·I·L / cmil"};}
+    ]
+  };
+  Object.keys(gens).forEach(topic=>{
+    const fns=gens[topic];const seen=new Set();let made=0,tries=0,idx=1;
+    const tag=topic.replace(/[^A-Za-z]/g,"").toUpperCase();
+    while(made<50 && tries<8000){
+      tries++;
+      const q=fns[Math.floor(g()*fns.length)]();
+      if(seen.has(q.stem)) continue;
+      if(new Set(q.choices).size!==4) continue;
+      if(q.answer<0||q.answer>3) continue;
+      seen.add(q.stem);
+      BANK.push({id:`G-${tag}-${idx++}`,topic,type:"theory",stem:q.stem,choices:q.choices,answer:q.answer,solution:q.solution,ref:q.ref});
+      made++;
+    }
+  });
 })();
 
 /* =========================== TOPIC PRACTICE =========================== */
@@ -584,7 +1115,7 @@ const practiceRun=$("#practiceRun");
   });
   const note=document.createElement("p");
   note.className="muted";note.style.cssText="grid-column:1/-1;font-size:13.5px;margin-top:4px";
-  note.textContent="Starter bank — more topics and questions are added over time. All 15 exam subjects appear in the blueprint above.";
+  note.textContent="Pick any subject to drill it untimed. The bank grows over time — more questions are added per topic regularly.";
   topicGrid.appendChild(note);
 })();
 
@@ -643,35 +1174,52 @@ function startPractice(topic){
 
 /* =========================== TIMED MOCK =========================== */
 const mockHome=$("#mockHome"),mockRun=$("#mockRun"),mockResult=$("#mockResult");
-const totalBank=BANK.length;
-$("#fullNote").textContent = totalBank>=100
-  ? "Full Utah blueprint" : `Preview: uses all ${totalBank} questions so far`;
 
-function buildExam(target){
+function buildExam(target,rng){
+  rng=rng||Math.random;
   // weighted sample by blueprint across available questions, no repeats
   const present=topicsPresent();
   const weightSum=present.reduce((s,t)=>s+BLUEPRINT[t],0);
   let picked=[];
   present.forEach(t=>{
-    const pool=shuffle(byTopic(t));
+    const pool=shuffle(byTopic(t),rng);
     const want=Math.round(target*(BLUEPRINT[t]/weightSum));
     picked.push(...pool.slice(0,Math.min(want,pool.length)));
   });
   // top up or trim to as close to target as the bank allows
   if(picked.length<target){
-    const remaining=shuffle(BANK.filter(q=>!picked.includes(q)));
+    const remaining=shuffle(BANK.filter(q=>!picked.includes(q)),rng);
     picked.push(...remaining.slice(0,target-picked.length));
   }
-  picked=shuffle(picked).slice(0,Math.min(target,BANK.length));
+  picked=shuffle(picked,rng).slice(0,Math.min(target,BANK.length));
   return picked;
 }
 
-$("#startQuick").addEventListener("click",()=>runMock(25,60));
-$("#startFull").addEventListener("click",()=>runMock(100,240));
+const MOCKS=[
+  {name:"Quick Mock",q:25,min:60,note:"Fresh random set each time",seed:null},
+  {name:"Mock Exam 1",q:50,min:120,note:"Fixed set · retake to compare",seed:10111},
+  {name:"Mock Exam 2",q:50,min:120,note:"Fixed set · different questions",seed:20222},
+  {name:"Mock Exam 3",q:50,min:120,note:"Fixed set · different questions",seed:30333},
+  {name:"Mock Exam 4",q:50,min:120,note:"Fixed set · different questions",seed:40444},
+  {name:"Full Exam Sim",q:100,min:240,note:"Real length · random draw",seed:null}
+];
+(function buildMockMenu(){
+  const menu=$("#mockMenu");menu.innerHTML="";
+  MOCKS.forEach((m,i)=>{
+    const avail=Math.min(m.q,BANK.length);
+    const b=document.createElement("button");
+    b.className="btn topic-tile";b.style.animationDelay=(i*40)+"ms";
+    const line=avail<m.q?`${avail} of ${m.q} q · ${m.min} min`:`${m.q} q · ${m.min} min`;
+    b.innerHTML=`<div class="tnum">${m.name.toUpperCase()}</div><div class="tname">${line}</div><div class="tcount">${m.note}</div>`;
+    b.addEventListener("click",()=>runMock(m.q,m.min,m.seed));
+    menu.appendChild(b);
+  });
+})();
 
 let examTimer=null;
-function runMock(targetCount,targetMin){
-  const exam=buildExam(targetCount);
+function runMock(targetCount,targetMin,seed){
+  const rng=(seed==null)?Math.random:mulberry32(seed>>>0);
+  const exam=buildExam(targetCount,rng);
   const count=exam.length;
   // scale time proportionally if the bank can't fill the target yet
   const minutes=count>=targetCount?targetMin:Math.max(5,Math.round(count*(targetMin/targetCount)));
