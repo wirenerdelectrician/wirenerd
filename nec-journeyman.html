@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NEC Journeyman Exam Helper · WireNerd</title>
+<meta name="description" content="Study guide, topic practice, and timed mock exams for the Utah Journeyman Electrician exam — built around the 2023 NEC and the 2025 Utah exam format. Original questions, worked solutions, and code references." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --purple:#C9A0FF;
+  --panel-2:#2b2b2b; --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--display);font-weight:400;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 12% -10%, rgba(239,159,39,.06), transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(133,183,235,.05), transparent 35%);
+  background-attachment:fixed;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+/* top nav */
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+.brand{font-weight:800;letter-spacing:.5px;font-size:20px;color:var(--text);white-space:nowrap}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a.active{color:var(--accent)}
+
+/* hero */
+.hero{padding:46px 0 26px;border-bottom:1px solid var(--line)}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(30px,5vw,46px);font-weight:800;margin:10px 0 8px;line-height:1.05}
+.hero p{color:var(--text-dim);max-width:640px;font-size:17px;margin:0}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.badge{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:6px;padding:5px 9px;color:var(--text-dim);background:var(--panel)}
+.badge b{color:var(--text)}
+
+/* tabs */
+.tabs{display:flex;gap:4px;margin:22px 0 4px;flex-wrap:wrap}
+.tab{font-family:var(--display);font-weight:600;font-size:15px;color:var(--text-dim);background:transparent;border:1px solid var(--line);border-radius:8px 8px 0 0;border-bottom:none;padding:11px 16px;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+.tabpanel{border:1px solid var(--line);border-radius:0 10px 10px 10px;background:var(--panel);padding:26px 24px;margin-bottom:40px}
+
+/* generic */
+h2{font-size:25px;font-weight:700;margin:0 0 6px}
+h3{font-size:19px;font-weight:600;margin:26px 0 6px;color:var(--text)}
+.lead{color:var(--text-dim);margin-top:0}
+.card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:18px 18px;margin:14px 0}
+.ref{font-family:var(--mono);font-size:13px;color:var(--accent);background:rgba(239,159,39,.10);border:1px solid rgba(239,159,39,.3);border-radius:5px;padding:2px 7px;white-space:nowrap;display:inline-block}
+.muted{color:var(--text-dim)}
+ul.tight li{margin:6px 0}
+.callout{border-left:3px solid var(--blue);background:rgba(133,183,235,.07);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--accent);background:rgba(239,159,39,.07)}
+
+/* buttons */
+.btn{font-family:var(--display);font-weight:600;font-size:15px;border-radius:8px;padding:11px 18px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--text)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+/* topic + mock grids */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:16px}
+.topic-tile{text-align:left;animation:rise .5s both}
+.topic-tile .tnum{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.topic-tile .tname{font-weight:600;font-size:16px;margin-top:3px}
+.topic-tile .tcount{font-size:13px;color:var(--text-dim);margin-top:2px}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* question UI */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.qmeta{font-family:var(--mono);font-size:12px;color:var(--text-dim)}
+.qtopic{font-family:var(--mono);font-size:12px;color:var(--blue)}
+.qstem{font-size:18px;font-weight:500;margin:10px 0 16px;line-height:1.5}
+.choices{display:flex;flex-direction:column;gap:9px}
+.choice{display:flex;gap:11px;align-items:flex-start;text-align:left;width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);color:var(--text);cursor:pointer;font-family:var(--display);font-size:15.5px;line-height:1.4}
+.choice:hover{border-color:var(--muted)}
+.choice .lbl{font-family:var(--mono);font-weight:700;color:var(--accent);flex:none}
+.choice.selected{border-color:var(--accent);background:rgba(239,159,39,.08)}
+.choice.correct{border-color:var(--green);background:rgba(29,158,117,.12)}
+.choice.correct .lbl{color:var(--green)}
+.choice.wrong{border-color:var(--red);background:rgba(226,75,74,.12)}
+.choice.wrong .lbl{color:var(--red)}
+.choice[disabled]{cursor:default}
+
+.review{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.review .verdict{font-weight:700;font-size:16px;margin-bottom:6px}
+.review .verdict.ok{color:var(--green)}
+.review .verdict.no{color:var(--red)}
+.review .sol{color:var(--text);font-size:15.5px}
+.review .reftag{margin-top:10px}
+
+/* timer bar */
+.examtop{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:14px;position:sticky;top:62px;z-index:20}
+.timer{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:1px}
+.timer.warn{color:var(--accent)}
+.timer.danger{color:var(--red)}
+.examtop .lab{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
+.progress{font-family:var(--mono);font-size:13px;color:var(--text-dim)}
+
+/* palette */
+.palette{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0}
+.pcell{width:34px;height:34px;border-radius:6px;border:1px solid var(--line);background:var(--panel-2);color:var(--text-dim);font-family:var(--mono);font-size:13px;cursor:pointer}
+.pcell.answered{border-color:var(--green);color:var(--green)}
+.pcell.flagged{border-color:var(--accent);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.pcell.current{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+
+/* results */
+.scorebig{font-size:64px;font-weight:800;line-height:1;font-family:var(--mono)}
+.scorebig.pass{color:var(--green)} .scorebig.fail{color:var(--red)}
+.bars{margin-top:14px}
+.barrow{display:grid;grid-template-columns:1fr 46px;gap:10px;align-items:center;margin:7px 0;font-size:14px}
+.bartrack{height:9px;background:var(--panel);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.barfill{height:100%;background:var(--green)}
+.barfill.low{background:var(--red)} .barfill.mid{background:var(--accent)}
+.barpct{font-family:var(--mono);font-size:13px;text-align:right;color:var(--text-dim)}
+
+/* history */
+.histrow{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:11px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);margin:8px 0;font-size:14px}
+.histrow .hscore{font-family:var(--mono);font-weight:700}
+.hidden{display:none}
+
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}
+.social{display:flex;gap:16px}
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="wrap">
+  <div class="brand">Wire<b>Nerd</b></div>
+  <div class="navlinks">
+    <a href="/lessons">Lessons</a>
+    <a href="/build-guides">Build Guides</a>
+    <a href="/components">Components</a>
+    <a href="/sandbox">Sandbox</a>
+    <a href="#" class="active">Exam Helper</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">NEC Journeyman Exam Helper</div>
+  <h1>Pass the code, by knowing the book.</h1>
+  <p>Study how to navigate the National Electrical Code, drill original practice questions by topic, then sit a timed mock built around Utah's 2025 exam format. Every answer shows the worked solution and where to find it in the code.</p>
+  <div class="badges">
+    <span class="badge">Code edition: <b>2023 NEC</b></span>
+    <span class="badge">Format: <b>2025 Utah update</b></span>
+    <span class="badge"><b>100</b> questions</span>
+    <span class="badge"><b>240</b> minutes</span>
+    <span class="badge"><b>75%</b> to pass</span>
+    <span class="badge">Open book</span>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-view="guide">Study Guide</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="practice">Topic Practice</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="mock">Timed Mock</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="history">My Scores</button>
+  </div>
+
+  <!-- ===================== STUDY GUIDE ===================== -->
+  <section class="tabpanel" data-panel="guide">
+    <h2>How to use the code book</h2>
+    <p class="lead">The journeyman exam is open book. It is not a memory test — it is a <em>navigation</em> test. The people who pass are the ones who can find a rule in seconds, not the ones who try to remember it. This guide teaches that skill. It does not reproduce the code; you'll use your own tabbed copy or NFPA's free reader.</p>
+
+    <div class="callout warn">
+      <b>What changed in 2025 (Utah).</b> Utah adopted the 2023 NEC statewide on July 1, 2025, and on August 1, 2025 the old separate Code and Theory exams were merged into one combined Journeyman exam. So you now face NEC look-ups <em>and</em> electrical theory/calculations in a single sitting: 100 questions, 240 minutes, 75% to pass. Both the current and the previous edition code book are permitted.
+    </div>
+
+    <h3>The shape of the book</h3>
+    <p>The NEC is built from the general toward the specific. Knowing the neighborhood a rule lives in is half the battle:</p>
+    <ul class="tight">
+      <li><span class="ref">Article 90</span> — Introduction: purpose, scope, how the code is arranged, and the order in which chapters apply.</li>
+      <li><span class="ref">Chapters 1–4</span> — General rules that apply to <em>every</em> installation (definitions, wiring and protection, wiring methods, equipment for general use).</li>
+      <li><span class="ref">Chapters 5–7</span> — Special occupancies, special equipment, and special conditions. These <em>modify or override</em> the general chapters.</li>
+      <li><span class="ref">Chapter 8</span> — Communications systems.</li>
+      <li><span class="ref">Chapter 9</span> — Tables (conduit fill, conductor properties, and more).</li>
+      <li><span class="ref">Annexes A–K</span> — Informative material, including the handy conduit-fill tables in Annex C. Annexes are reference, not enforceable rules.</li>
+    </ul>
+    <p>The single most useful idea, from Article 90.3: a rule in Chapters 5, 6, or 7 can change a general rule from Chapters 1–4. So when a question mentions a pool, a hospital, a hazardous location, or a sign, expect the governing answer to live in the back half of the book.</p>
+
+    <h3>Reading a citation</h3>
+    <p>NEC addresses read left to right, from broad to narrow — for example <span class="ref">240.4(D)(5)</span>: Article 240 (Overcurrent Protection) → Section .4 (Protection of Conductors) → subsection (D) (small conductors) → item (5) (12 AWG copper). Learn to "walk the address" and you can jump straight to a rule from a topic.</p>
+    <p>Two things that trip people up:</p>
+    <ul class="tight">
+      <li><b>Exceptions</b> are part of the rule and can flip the answer. Always read them.</li>
+      <li><b>Informational Notes</b> are <em>not</em> enforceable — they explain or point elsewhere. The classic example is the 3% / 5% voltage-drop guidance, which is recommended, not required.</li>
+    </ul>
+
+    <h3>Finding things fast</h3>
+    <ul class="tight">
+      <li><b>Table of Contents</b> when you know the subject area ("motors" → Article 430).</li>
+      <li><b>Index</b> when you know a keyword but not the article. The index is your fastest tool under time pressure — practice with it.</li>
+      <li><b>Tabs.</b> Tab the articles you'll use most: 100, 110, 210, 220, 230, 240, 250, 310, 314, 430, plus Chapter 9 tables. Permanent tabs are allowed; sticky notes and loose paper are not.</li>
+      <li><b>Mental map.</b> Build the habit of asking "general or special?" before you open the book. It tells you which half to be in.</li>
+    </ul>
+
+    <h3>The calculations worth drilling</h3>
+    <p>About a third of the combined exam is theory and math. These are the recurring ones, and where to anchor each:</p>
+    <ul class="tight">
+      <li>Ohm's law and power — <span class="ref">V=IR</span>, <span class="ref">P=VI</span>, <span class="ref">P=I²R</span>; three-phase <span class="ref">P=√3·V·I·PF</span>.</li>
+      <li>Conductor ampacity and the right temperature column — <span class="ref">Table 310.16</span> with <span class="ref">110.14(C)</span> and <span class="ref">310.15</span>.</li>
+      <li>Overcurrent device sizing — <span class="ref">240.4</span>, the small-conductor rule <span class="ref">240.4(D)</span>, standard ratings <span class="ref">240.6(A)</span>.</li>
+      <li>Equipment grounding conductor — <span class="ref">Table 250.122</span>; grounding electrode conductor — <span class="ref">250.66</span>.</li>
+      <li>Conduit fill — <span class="ref">Chapter 9, Table 1</span> (and Annex C); box fill — <span class="ref">314.16</span>.</li>
+      <li>Motors — full-load current from <span class="ref">Tables 430.247–430.250</span>, conductors <span class="ref">430.22</span>, overloads <span class="ref">430.32</span>, protection <span class="ref">430.52</span>.</li>
+      <li>Voltage drop — single-phase <span class="ref">VD = 2·K·I·L ÷ cmil</span>, three-phase uses <span class="ref">√3</span> instead of 2.</li>
+      <li>Load calculations — Article <span class="ref">220</span>.</li>
+    </ul>
+
+    <h3>Exam-day tactics</h3>
+    <ul class="tight">
+      <li>240 minutes ÷ 100 questions ≈ <b>2.4 minutes each</b>. Theory questions you know go fast; bank that time for look-ups.</li>
+      <li>There's no penalty for guessing — never leave a question blank. Flag the hard ones and come back.</li>
+      <li>Answer the quick theory and definition questions first to build a time cushion.</li>
+      <li>Practice with the exact calculator allowed at your test center so it's muscle memory.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Get a clean copy of the code.</b> You'll want your own tabbed 2023 NEC for the open-book exam. To look things up online for free, NFPA offers a read-only edition at <a href="https://link.nfpa.org/free-access/publications/70/2023" target="_blank" rel="noopener">link.nfpa.org/free-access/publications/70/2023</a> (free registration; you can't download or print it).
+    </div>
+
+    <h3>What the Utah exam covers</h3>
+    <p>The combined journeyman exam draws from 15 subject areas. The weights below tell you where to spend your study time — grounding, overcurrent, and services carry the most questions.</p>
+    <div id="weightTable"></div>
+  </section>
+
+  <!-- ===================== TOPIC PRACTICE ===================== -->
+  <section class="tabpanel hidden" data-panel="practice">
+    <div id="practiceHome">
+      <h2>Topic practice</h2>
+      <p class="lead">Untimed. Pick a subject, answer one question at a time, and see the worked solution and code reference right after each. Use this to build accuracy before you worry about the clock.</p>
+      <div class="grid" id="topicGrid"></div>
+    </div>
+    <div id="practiceRun" class="hidden"></div>
+  </section>
+
+  <!-- ===================== TIMED MOCK ===================== -->
+  <section class="tabpanel hidden" data-panel="mock">
+    <div id="mockHome">
+      <h2>Timed mock exam</h2>
+      <p class="lead">A countdown timer, a question palette you can flag and jump around in, and a full score breakdown at the end with every solution reviewed. Question mix mirrors the Utah blueprint.</p>
+      <div class="grid">
+        <button class="btn topic-tile" id="startQuick">
+          <div class="tnum">QUICK MOCK</div>
+          <div class="tname">25 questions · 60 min</div>
+          <div class="tcount">Fast confidence check</div>
+        </button>
+        <button class="btn topic-tile" id="startFull">
+          <div class="tnum">FULL EXAM SIM</div>
+          <div class="tname">100 questions · 240 min</div>
+          <div class="tcount" id="fullNote"></div>
+        </button>
+      </div>
+      <p class="muted" style="margin-top:16px;font-size:14px">No penalty for guessing — answer every question. The exam auto-submits when time runs out.</p>
+    </div>
+    <div id="mockRun" class="hidden"></div>
+    <div id="mockResult" class="hidden"></div>
+  </section>
+
+  <!-- ===================== HISTORY ===================== -->
+  <section class="tabpanel hidden" data-panel="history">
+    <h2>My scores</h2>
+    <p class="lead">Saved on this device only — nothing leaves your browser. Track your mock results over time and watch your weak topics shrink.</p>
+    <div id="historyList"></div>
+    <div class="btn-row"><button class="btn ghost" id="clearHistory">Clear history</button></div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
+  <div>Built by Bryan Barrios</div>
+  <div class="social">
+    <a href="#" rel="noopener">YouTube</a>
+    <a href="#" rel="noopener">TikTok</a>
+    <a href="#" rel="noopener">Instagram</a>
+  </div>
+  <div class="muted" style="font-size:12.5px;margin-top:6px">Practice questions are original to WireNerd and are not reproduced from NFPA 70. Code references point you to the 2023 NEC; verify against your own copy. WireNerd is not affiliated with NFPA or Utah DOPL.</div>
+</div></footer>
+
+<script>
+/* =========================================================
+   QUESTION BANK  (original WireNerd questions)
+   Each: {id, topic, type:'code'|'theory', stem, choices[4],
+          answer:index, solution, ref}
+   ref is a short pointer to the 2023 NEC location (code type)
+   or the formula/concept (theory type). No NEC text/tables
+   are reproduced; values used in stems are stated as givens.
+   ========================================================= */
+const BANK = [
+  /* ---- Grounding & Bonding ---- */
+  {id:"GB1",topic:"Grounding & Bonding",type:"code",
+   stem:"A 40-ampere inverse-time circuit breaker protects a branch circuit wired with copper conductors. What is the minimum size copper equipment grounding conductor (EGC) required?",
+   choices:["12 AWG","10 AWG","8 AWG","6 AWG"],answer:1,
+   solution:"The EGC is sized from the rating of the overcurrent device protecting the circuit, using Table 250.122 — not from the load. For an OCPD up to and including 60 A, the table calls for a 10 AWG copper EGC.",
+   ref:"250.122; Table 250.122"},
+  {id:"GB2",topic:"Grounding & Bonding",type:"code",
+   stem:"A ground rod is the only grounding electrode present. The grounding electrode conductor connecting to that rod is never required to be larger than which copper size?",
+   choices:["8 AWG","6 AWG","4 AWG","2 AWG"],answer:1,
+   solution:"When the grounding electrode conductor (or bonding jumper) is the sole connection to a made electrode such as a rod, pipe, or plate, 250.66(A) caps the required size at 6 AWG copper, regardless of service size.",
+   ref:"250.66(A)"},
+  {id:"GB3",topic:"Grounding & Bonding",type:"code",
+   stem:"The portion of the grounding electrode conductor that is the sole connection to a concrete-encased electrode is not required to be larger than which copper size?",
+   choices:["6 AWG","4 AWG","2 AWG","1/0 AWG"],answer:1,
+   solution:"250.66(B) limits the GEC to a concrete-encased electrode to no larger than 4 AWG copper when that is its only connection. (Compare with 250.66(A), which caps a rod/pipe/plate connection at 6 AWG.)",
+   ref:"250.66(B)"},
+  {id:"GB4",topic:"Grounding & Bonding",type:"code",
+   stem:"In a service-supplied system, the main bonding jumper provides the connection between the equipment grounding/enclosure and which conductor?",
+   choices:["The ungrounded (hot) conductor","The grounded (neutral) service conductor","The grounding electrode conductor only","The largest phase conductor"],answer:1,
+   solution:"The main bonding jumper ties the service equipment enclosure and EGC to the grounded (neutral) conductor at the service, establishing the ground-fault return path. See 250.24(B) and 250.28.",
+   ref:"250.24(B); 250.28"},
+  {id:"GB5",topic:"Grounding & Bonding",type:"code",
+   stem:"Which of the following is NOT permitted to be used as a grounding electrode?",
+   choices:["A concrete-encased electrode","A metal underground gas piping system","A ground ring","A metal underground water pipe with 10 ft or more in contact with earth"],answer:1,
+   solution:"250.52(B) specifically prohibits metal underground gas piping from being used as a grounding electrode. The other three are recognized electrodes under 250.52(A).",
+   ref:"250.52(A) and (B)"},
+  {id:"GB6",topic:"Grounding & Bonding",type:"code",
+   stem:"Which of the following is recognized by the NEC as an equipment grounding conductor?",
+   choices:["A green-insulated copper conductor","The grounded neutral conductor on the load side of the service","A separate cold-water pipe","Building steel that is not bonded"],answer:0,
+   solution:"250.118 lists the recognized types of EGC, including a bare or insulated copper conductor (commonly green-insulated). The grounded neutral is generally not permitted as an EGC on the load side of the service disconnect.",
+   ref:"250.118"},
+
+  /* ---- Overcurrent Protection ---- */
+  {id:"OC1",topic:"Overcurrent Protection",type:"code",
+   stem:"Which of the following is NOT a standard ampere rating for fuses and inverse-time circuit breakers?",
+   choices:["45 A","55 A","70 A","110 A"],answer:1,
+   solution:"240.6(A) lists the standard ratings (…40, 45, 50, 60, 70, 80, 90, 100, 110, 125…). 55 A is not among them. Knowing this list lets you apply the 'next standard size' rule quickly.",
+   ref:"240.6(A)"},
+  {id:"OC2",topic:"Overcurrent Protection",type:"code",
+   stem:"With no other applicable rules, what is the maximum overcurrent device permitted to protect a 12 AWG copper branch-circuit conductor?",
+   choices:["15 A","20 A","25 A","30 A"],answer:1,
+   solution:"The small-conductor rule in 240.4(D) overrides the ampacity table for small wire. For 12 AWG copper, the maximum overcurrent protection is 20 A.",
+   ref:"240.4(D)"},
+  {id:"OC3",topic:"Overcurrent Protection",type:"code",
+   stem:"A feeder conductor has an allowable ampacity of 95 A after all corrections. The circuit does not supply receptacle loads and the rating is below 800 A. What is the largest standard overcurrent device permitted?",
+   choices:["90 A","95 A","100 A","110 A"],answer:2,
+   solution:"When the conductor ampacity does not match a standard device rating, 240.4(B) permits the next higher standard size (for devices 800 A or less, not supplying multiple receptacles). The next standard rating above 95 A from 240.6(A) is 100 A.",
+   ref:"240.4(B); 240.6(A)"},
+  {id:"OC4",topic:"Overcurrent Protection",type:"code",
+   stem:"As a general rule, overcurrent protection for an ungrounded conductor must be located:",
+   choices:["At the load end of the conductor","At the point where the conductor receives its supply","At the midpoint of the run","At each receptacle outlet"],answer:1,
+   solution:"240.21 requires overcurrent protection at the point where the conductor receives its supply, except where one of the specific tap or transformer rules applies.",
+   ref:"240.21"},
+  {id:"OC5",topic:"Overcurrent Protection",type:"code",
+   stem:"Under the small-conductor rule, the maximum standard overcurrent device for a 10 AWG copper conductor is:",
+   choices:["25 A","30 A","35 A","40 A"],answer:1,
+   solution:"240.4(D) limits 10 AWG copper to a maximum 30 A overcurrent device, regardless of the higher ampacity shown in Table 310.16.",
+   ref:"240.4(D)"},
+  {id:"OC6",topic:"Overcurrent Protection",type:"code",
+   stem:"Conductors, other than flexible cords and fixture wires, must generally be protected against overcurrent in accordance with their:",
+   choices:["Voltage rating","Ampacity","Insulation color","Physical length"],answer:1,
+   solution:"240.4 is the core principle: conductors are protected at their ampacity, subject to the specific exceptions and the small-conductor rule that follow.",
+   ref:"240.4"},
+
+  /* ---- Services, Feeders & Branch Circuits ---- */
+  {id:"SF1",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"In a dwelling unit, GFCI protection for 125-volt receptacles is required in which of the following locations?",
+   choices:["Bedrooms","Bathrooms","The living room","General-use hallways"],answer:1,
+   solution:"210.8(A) lists the dwelling locations requiring GFCI protection, which include bathrooms (along with garages, outdoors, kitchens, basements, and more). Bedrooms and living rooms are not on that list.",
+   ref:"210.8(A)"},
+  {id:"SF2",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"A branch circuit supplies a continuous load. The branch-circuit conductors and the overcurrent device must each be rated at not less than what percentage of the continuous load?",
+   choices:["80%","100%","125%","150%"],answer:2,
+   solution:"For continuous loads, 210.19(A) and 210.20(A) require the conductor and the OCPD to be sized at a minimum of 125% of the continuous load (the 125% factor is the inverse of the 80% rule).",
+   ref:"210.19(A); 210.20(A)"},
+  {id:"SF3",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"For a one-family dwelling, the 2023 NEC requires an emergency disconnect to be installed in what location?",
+   choices:["Inside, next to the panelboard","In a readily accessible outdoor location","In the attic above the service","At the utility meter only, inside the wall"],answer:1,
+   solution:"230.85 (expanded in recent editions) requires an emergency disconnect for one- and two-family dwellings in a readily accessible outdoor location, so first responders can kill power without entering the structure.",
+   ref:"230.85"},
+  {id:"SF4",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"Per 230.42, the minimum size of ungrounded service-entrance conductors is based primarily on:",
+   choices:["The size of the service raceway","The calculated load determined under Article 220","The utility transformer rating","The meter socket rating"],answer:1,
+   solution:"230.42 ties service-entrance conductor sizing to the load calculated under Article 220 (with the continuous/non-continuous factors applied). The raceway and meter follow from that, not the other way around.",
+   ref:"230.42; Article 220"},
+  {id:"SF5",topic:"Services, Feeders & Branch Circuits",type:"code",
+   stem:"A dwelling unit kitchen must be served by at least how many 20-ampere small-appliance branch circuits?",
+   choices:["1","2","3","4"],answer:1,
+   solution:"210.11(C)(1) requires a minimum of two 20 A small-appliance branch circuits to serve the receptacle outlets in the kitchen, pantry, dining, and similar areas of a dwelling.",
+   ref:"210.11(C)(1)"},
+  {id:"SF6",topic:"Services, Feeders & Branch Circuits",type:"theory",
+   stem:"For load-calculation purposes the general lighting load of a dwelling is computed at 3 VA per square foot (per 220.12). What is the general lighting load for a 2,000 sq ft dwelling?",
+   choices:["3,000 VA","6,000 VA","9,000 VA","12,000 VA"],answer:1,
+   solution:"General lighting load = area × unit load = 2,000 ft² × 3 VA/ft² = 6,000 VA. The 3 VA/ft² figure comes from 220.12; the arithmetic is yours.",
+   ref:"220.12 (unit load); calculation"},
+
+  /* ---- Conductors & Cables ---- */
+  {id:"CC1",topic:"Conductors & Cables",type:"code",
+   stem:"For equipment rated 100 A or less, conductor ampacity is generally based on which temperature column unless the terminations are listed for a higher temperature?",
+   choices:["60°C","75°C","90°C","Ambient temperature"],answer:0,
+   solution:"110.14(C)(1) limits the usable ampacity to the 60°C column for terminations on equipment rated 100 A or less, unless the equipment/terminals are listed and marked for 75°C. The 90°C column is generally only a starting point for correction math.",
+   ref:"110.14(C)"},
+  {id:"CC2",topic:"Conductors & Cables",type:"code",
+   stem:"The 90°C ampacity column of Table 310.16 is primarily used for:",
+   choices:["Sizing terminations directly","Applying ambient-temperature and conductor-bundling correction/adjustment factors","Nothing — it is informational only","Aluminum conductors only"],answer:1,
+   solution:"The 90°C column is the starting ampacity for applying temperature-correction and bundling-adjustment factors (310.15). The final result must still respect the termination temperature limit of 110.14(C).",
+   ref:"310.15; 110.14(C); Table 310.16"},
+  {id:"CC3",topic:"Conductors & Cables",type:"code",
+   stem:"A 6 AWG THWN copper conductor has an allowable ampacity of 65 A at 75°C (Table 310.16). With 75°C-rated terminations and no adjustments required, its usable ampacity is:",
+   choices:["55 A","65 A","75 A","95 A"],answer:1,
+   solution:"With 75°C terminations and no corrections, you read the 75°C column for the conductor: 65 A. The 90°C value (75 A) can't be used at the terminals, and the 60°C value (55 A) would only apply if the terminations were limited to 60°C.",
+   ref:"Table 310.16; 110.14(C)"},
+  {id:"CC4",topic:"Conductors & Cables",type:"code",
+   stem:"Which Chapter 9 table lists conductor properties such as DC resistance and cross-sectional area in circular mils, used in voltage-drop work?",
+   choices:["Table 1","Table 4","Table 8","Table 310.16"],answer:2,
+   solution:"Chapter 9, Table 8 gives conductor properties (area in circular mils, DC resistance, etc.). Table 1 is raceway fill percentages; Table 4 is raceway areas; Table 310.16 is ampacity.",
+   ref:"Chapter 9, Table 8"},
+
+  /* ---- Raceways & Enclosures ---- */
+  {id:"RW1",topic:"Raceways & Enclosures",type:"code",
+   stem:"When a raceway contains more than two conductors, the maximum allowable fill is what percentage of the raceway's interior cross-sectional area?",
+   choices:["31%","40%","53%","60%"],answer:1,
+   solution:"Chapter 9, Table 1 sets the fill limits: 53% for one conductor, 31% for two, and 40% for more than two conductors.",
+   ref:"Chapter 9, Table 1"},
+  {id:"RW2",topic:"Raceways & Enclosures",type:"code",
+   stem:"A raceway containing only one conductor may be filled to a maximum of what percent of its area?",
+   choices:["40%","53%","60%","80%"],answer:1,
+   solution:"Per Chapter 9, Table 1, a single conductor in a raceway is permitted up to 53% fill.",
+   ref:"Chapter 9, Table 1"},
+  {id:"RW3",topic:"Raceways & Enclosures",type:"code",
+   stem:"When calculating box fill, a single device or yoke (such as a receptacle or switch) is counted as how many conductor volume allowances?",
+   choices:["1","2","3","4"],answer:1,
+   solution:"314.16(B)(4) counts each yoke or strap containing a device as two conductor volume allowances, based on the largest conductor connected to the device.",
+   ref:"314.16(B)(4)"},
+  {id:"RW4",topic:"Raceways & Enclosures",type:"code",
+   stem:"In a box-fill calculation, all equipment grounding conductors entering a box together are counted as:",
+   choices:["Zero allowances","One conductor volume allowance","One allowance per conductor","Two allowances"],answer:1,
+   solution:"314.16(B)(5) counts all EGCs collectively as a single conductor volume allowance, based on the largest equipment grounding conductor present.",
+   ref:"314.16(B)(5)"},
+
+  /* ---- Motors & Controllers ---- */
+  {id:"MC1",topic:"Motors & Controllers",type:"code",
+   stem:"Branch-circuit conductors supplying a single continuous-duty motor must have an ampacity of not less than what percent of the motor's full-load current?",
+   choices:["100%","115%","125%","150%"],answer:2,
+   solution:"430.22 requires conductors for a single continuous-duty motor to be rated at a minimum of 125% of the motor full-load current value.",
+   ref:"430.22"},
+  {id:"MC2",topic:"Motors & Controllers",type:"code",
+   stem:"For sizing motor branch-circuit conductors, the full-load current value used is taken from:",
+   choices:["The motor nameplate FLA","The NEC motor tables (430.247–430.250)","The calculated horsepower","The breaker rating"],answer:1,
+   solution:"430.6(A)(1) directs you to use the full-load current values in Tables 430.247 through 430.250 for conductor and protection sizing — not the nameplate. Nameplate current is used for overload sizing.",
+   ref:"430.6(A)(1)"},
+  {id:"MC3",topic:"Motors & Controllers",type:"code",
+   stem:"For a motor with a marked service factor of 1.15 or greater, overload protection is generally sized at not more than what percent of the motor nameplate full-load current?",
+   choices:["115%","125%","140%","250%"],answer:1,
+   solution:"430.32(A)(1) permits overload protection at a maximum of 125% of nameplate FLC for motors with a service factor of 1.15 or higher (or a temperature rise not over 40°C). Other motors use 115%.",
+   ref:"430.32(A)(1)"},
+  {id:"MC4",topic:"Motors & Controllers",type:"code",
+   stem:"Motor branch-circuit short-circuit and ground-fault protection is sized using which table to find the maximum percentage of full-load current?",
+   choices:["Table 430.52","Table 310.16","Table 250.122","Table 220.12"],answer:0,
+   solution:"Table 430.52 gives the maximum rating or setting (as a percent of FLC) for the various device types protecting a motor branch circuit against short circuits and ground faults.",
+   ref:"430.52; Table 430.52"},
+
+  /* ---- Theory: Current / Resistance / Voltage / Power / VD ---- */
+  {id:"TH1",topic:"Current",type:"theory",
+   stem:"A 120-volt source supplies a purely resistive load of 24 ohms. What is the current?",
+   choices:["2 A","5 A","10 A","24 A"],answer:1,
+   solution:"Ohm's law: I = V ÷ R = 120 ÷ 24 = 5 A.",
+   ref:"Ohm's law: I = V / R"},
+  {id:"TH2",topic:"Power",type:"theory",
+   stem:"A device draws 12 A at 240 V at unity power factor. What is its power?",
+   choices:["1,440 W","2,880 W","2,000 W","20 W"],answer:1,
+   solution:"Power in a resistive (unity PF) circuit: P = V × I = 240 × 12 = 2,880 W.",
+   ref:"P = V × I"},
+  {id:"TH3",topic:"Resistance",type:"theory",
+   stem:"Three resistors of 10 Ω, 20 Ω, and 30 Ω are connected in series. What is the total resistance?",
+   choices:["5.45 Ω","20 Ω","60 Ω","600 Ω"],answer:2,
+   solution:"Series resistances add directly: 10 + 20 + 30 = 60 Ω.",
+   ref:"Series: R_total = R1 + R2 + R3"},
+  {id:"TH4",topic:"Resistance",type:"theory",
+   stem:"Two 100 Ω resistors are connected in parallel. What is the combined resistance?",
+   choices:["50 Ω","100 Ω","200 Ω","0.02 Ω"],answer:0,
+   solution:"Equal resistors in parallel share current evenly, so the combined value is half of one: 100 ÷ 2 = 50 Ω. (General form: 1/R = 1/R1 + 1/R2.)",
+   ref:"Parallel: 1/R = 1/R1 + 1/R2"},
+  {id:"TH5",topic:"Power",type:"theory",
+   stem:"A current of 10 A flows through a 5 Ω resistance. How much power is dissipated?",
+   choices:["50 W","250 W","500 W","5,000 W"],answer:2,
+   solution:"P = I² × R = (10)² × 5 = 100 × 5 = 500 W.",
+   ref:"P = I² × R"},
+  {id:"TH6",topic:"Voltage Drop",type:"theory",
+   stem:"A single-phase 120 V circuit carries 16 A over a one-way distance of 100 ft using 12 AWG copper (6,530 cmil). Using K = 12.9, the approximate voltage drop is:",
+   choices:["3.2 V","6.3 V","12.6 V","1.6 V"],answer:1,
+   solution:"Single-phase VD = (2 × K × I × L) ÷ cmil = (2 × 12.9 × 16 × 100) ÷ 6,530 = 41,280 ÷ 6,530 ≈ 6.3 V. (Length L is the one-way distance; the 2 accounts for the round trip.)",
+   ref:"VD = 2·K·I·L / cmil"},
+  {id:"TH7",topic:"Voltage",type:"theory",
+   stem:"A three-phase load draws 20 A at 480 V with a power factor of 0.85. The approximate real power is:",
+   choices:["8.2 kW","14.1 kW","16.6 kW","28.3 kW"],answer:1,
+   solution:"Three-phase real power: P = √3 × V × I × PF = 1.732 × 480 × 20 × 0.85 ≈ 14,130 W ≈ 14.1 kW.",
+   ref:"P = √3 × V_L × I_L × PF"},
+
+  /* ---- Definitions & General Requirements ---- */
+  {id:"DG1",topic:"Definitions & General Requirements",type:"code",
+   stem:"Where are the NEC definitions of general application — such as 'Dwelling Unit' — primarily found?",
+   choices:["Article 90","Article 100","Article 110","The index"],answer:1,
+   solution:"Article 100 contains the definitions that apply generally throughout the code. (Definitions used in only one article are given at the start of that article.)",
+   ref:"Article 100"},
+  {id:"DG2",topic:"Definitions & General Requirements",type:"code",
+   stem:"Article 90 of the NEC primarily covers:",
+   choices:["Definitions","The introduction — purpose, scope, and arrangement","Grounding and bonding","The tables"],answer:1,
+   solution:"Article 90 is the introduction: it states the code's purpose and scope, how the chapters are arranged and applied, and matters of enforcement and examination of equipment.",
+   ref:"Article 90"},
+
+  /* ---- State Laws & Rules (Utah) ---- */
+  {id:"SL1",topic:"State Laws & Rules",type:"code",
+   stem:"Utah's specific licensing rules for electricians — including license classifications and exam requirements — are found in which administrative rule?",
+   choices:["R156-1","R156-55b","Title 58, Chapter 1","NFPA 70"],answer:1,
+   solution:"The Utah Electricians Licensing Act Rule, R156-55b, contains the electrician-specific classifications and requirements. R156-1 is the general DOPL rule, and Title 58 Chapter 55 is the underlying Construction Trades Licensing Act.",
+   ref:"Utah Admin. Code R156-55b"}
+];
+
+/* Utah Journeyman blueprint weights (questions per topic on the real 100-Q exam) */
+const BLUEPRINT = {
+  "Grounding & Bonding":10,"Overcurrent Protection":9,"Services, Feeders & Branch Circuits":8,
+  "Conductors & Cables":7,"Lighting & General Use Equipment":7,"Raceways & Enclosures":7,
+  "Voltage Drop":7,"Current":6,"Definitions & General Requirements":6,"Motors & Controllers":6,
+  "Resistance":6,"Special Occupancies & Equipment":6,"Voltage":6,"Power":5,"State Laws & Rules":4
+};
+const TOPIC_ORDER = Object.keys(BLUEPRINT);
+
+/* =========================== helpers =========================== */
+const $ = (s,root=document)=>root.querySelector(s);
+const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
+const LETTERS=["A","B","C","D"];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function byTopic(t){return BANK.filter(q=>q.topic===t);}
+function topicsPresent(){return TOPIC_ORDER.filter(t=>byTopic(t).length>0);}
+function refLabel(q){return q.type==="code"?q.ref:q.ref;}
+
+/* =========================== view switching =========================== */
+$$(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    $$(".tab").forEach(t=>t.setAttribute("aria-selected","false"));
+    tab.setAttribute("aria-selected","true");
+    const v=tab.dataset.view;
+    $$("[data-panel]").forEach(p=>p.classList.toggle("hidden",p.dataset.panel!==v));
+    if(v==="history") renderHistory();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
+
+/* =========================== study-guide weight table =========================== */
+(function renderWeights(){
+  const max=Math.max(...Object.values(BLUEPRINT));
+  const rows=TOPIC_ORDER.map(t=>{
+    const n=BLUEPRINT[t];const w=(n/max*100).toFixed(0);
+    return `<div class="barrow"><div>${t}</div><div class="barpct">${n} Q</div></div>
+            <div class="bartrack" style="margin:-2px 0 4px"><div class="barfill" style="width:${w}%;background:var(--accent)"></div></div>`;
+  }).join("");
+  $("#weightTable").innerHTML=`<div class="bars" style="margin-top:10px">${rows}</div>`;
+})();
+
+/* =========================== TOPIC PRACTICE =========================== */
+const topicGrid=$("#topicGrid");
+const practiceHome=$("#practiceHome");
+const practiceRun=$("#practiceRun");
+
+(function buildTopicGrid(){
+  topicGrid.innerHTML="";
+  topicsPresent().forEach((t,i)=>{
+    const n=byTopic(t).length;
+    const b=document.createElement("button");
+    b.className="btn topic-tile";b.style.animationDelay=(i*40)+"ms";
+    b.innerHTML=`<div class="tnum">TOPIC</div><div class="tname">${t}</div><div class="tcount">${n} question${n>1?"s":""}</div>`;
+    b.addEventListener("click",()=>startPractice(t));
+    topicGrid.appendChild(b);
+  });
+  const note=document.createElement("p");
+  note.className="muted";note.style.cssText="grid-column:1/-1;font-size:13.5px;margin-top:4px";
+  note.textContent="Starter bank — more topics and questions are added over time. All 15 exam subjects appear in the blueprint above.";
+  topicGrid.appendChild(note);
+})();
+
+function startPractice(topic){
+  const qs=shuffle(byTopic(topic));
+  let idx=0;
+  practiceHome.classList.add("hidden");
+  practiceRun.classList.remove("hidden");
+  function draw(){
+    const q=qs[idx];let answered=false;
+    practiceRun.innerHTML=`
+      <div class="btn-row"><button class="btn ghost" id="backTopics">← All topics</button></div>
+      <div class="card">
+        <div class="qhead">
+          <span class="qtopic">${q.topic}${q.type==="theory"?" · theory":""}</span>
+          <span class="qmeta">${idx+1} / ${qs.length}</span>
+        </div>
+        <div class="qstem">${q.stem}</div>
+        <div class="choices" id="choices"></div>
+        <div id="revslot"></div>
+      </div>`;
+    $("#backTopics").addEventListener("click",exit);
+    const cbox=$("#choices");
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement("button");
+      btn.className="choice";btn.innerHTML=`<span class="lbl">${LETTERS[i]}</span><span>${c}</span>`;
+      btn.addEventListener("click",()=>{if(answered)return;answered=true;reveal(i);});
+      cbox.appendChild(btn);
+    });
+    function reveal(picked){
+      const kids=$$(".choice",cbox);
+      kids.forEach((k,i)=>{
+        k.setAttribute("disabled","");
+        if(i===q.answer)k.classList.add("correct");
+        if(i===picked&&picked!==q.answer)k.classList.add("wrong");
+      });
+      const ok=picked===q.answer;
+      $("#revslot").innerHTML=`
+        <div class="review">
+          <div class="verdict ${ok?"ok":"no"}">${ok?"Correct":"Not quite"}</div>
+          <div class="sol">${q.solution}</div>
+          <div class="reftag"><span class="ref">${refLabel(q)}</span></div>
+          <div class="btn-row">
+            ${idx<qs.length-1?'<button class="btn primary" id="next">Next question →</button>':'<button class="btn primary" id="next">Finish topic</button>'}
+          </div>
+        </div>`;
+      $("#next").addEventListener("click",()=>{
+        if(idx<qs.length-1){idx++;draw();window.scrollTo({top:0,behavior:"smooth"});}
+        else exit();
+      });
+    }
+  }
+  function exit(){practiceRun.classList.add("hidden");practiceRun.innerHTML="";practiceHome.classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});}
+  draw();
+}
+
+/* =========================== TIMED MOCK =========================== */
+const mockHome=$("#mockHome"),mockRun=$("#mockRun"),mockResult=$("#mockResult");
+const totalBank=BANK.length;
+$("#fullNote").textContent = totalBank>=100
+  ? "Full Utah blueprint" : `Preview: uses all ${totalBank} questions so far`;
+
+function buildExam(target){
+  // weighted sample by blueprint across available questions, no repeats
+  const present=topicsPresent();
+  const weightSum=present.reduce((s,t)=>s+BLUEPRINT[t],0);
+  let picked=[];
+  present.forEach(t=>{
+    const pool=shuffle(byTopic(t));
+    const want=Math.round(target*(BLUEPRINT[t]/weightSum));
+    picked.push(...pool.slice(0,Math.min(want,pool.length)));
+  });
+  // top up or trim to as close to target as the bank allows
+  if(picked.length<target){
+    const remaining=shuffle(BANK.filter(q=>!picked.includes(q)));
+    picked.push(...remaining.slice(0,target-picked.length));
+  }
+  picked=shuffle(picked).slice(0,Math.min(target,BANK.length));
+  return picked;
+}
+
+$("#startQuick").addEventListener("click",()=>runMock(25,60));
+$("#startFull").addEventListener("click",()=>runMock(100,240));
+
+let examTimer=null;
+function runMock(targetCount,targetMin){
+  const exam=buildExam(targetCount);
+  const count=exam.length;
+  // scale time proportionally if the bank can't fill the target yet
+  const minutes=count>=targetCount?targetMin:Math.max(5,Math.round(count*(targetMin/targetCount)));
+  const answers=new Array(count).fill(null);
+  const flags=new Array(count).fill(false);
+  let cur=0;
+  let remaining=minutes*60;
+
+  mockHome.classList.add("hidden");mockResult.classList.add("hidden");
+  mockRun.classList.remove("hidden");
+
+  const shortfall = count<targetCount
+    ? `<div class="callout warn" style="margin-top:0">Running <b>${count}</b> of ${targetCount} questions — full length unlocks as the question bank grows. Timer scaled to match.</div>`:"";
+
+  mockRun.innerHTML=`
+    ${shortfall}
+    <div class="examtop">
+      <div><div class="lab">Time remaining</div><div class="timer" id="timer">--:--</div></div>
+      <div style="text-align:right"><div class="lab">Progress</div><div class="progress" id="prog"></div></div>
+    </div>
+    <div class="card" id="qcard"></div>
+    <div>
+      <div class="lab" style="font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--text-dim)">QUESTION MAP — tap to jump</div>
+      <div class="palette" id="palette"></div>
+    </div>
+    <div class="btn-row"><button class="btn" id="submitExam">Submit exam</button></div>`;
+
+  const timerEl=$("#timer"),progEl=$("#prog"),paletteEl=$("#palette"),qcard=$("#qcard");
+
+  function fmt(s){const h=s/3600|0,m=(s%3600)/60|0,sec=s%60;
+    const mm=String(m).padStart(2,"0"),ss=String(sec).padStart(2,"0");
+    return h>0?`${h}:${mm}:${ss}`:`${mm}:${ss}`;}
+  function tick(){
+    timerEl.textContent=fmt(remaining);
+    timerEl.className="timer"+(remaining<=60?" danger":remaining<=300?" warn":"");
+    if(remaining<=0){clearInterval(examTimer);finish(true);return;}
+    remaining--;
+  }
+  tick();examTimer=setInterval(tick,1000);
+
+  function buildPalette(){
+    paletteEl.innerHTML="";
+    exam.forEach((q,i)=>{
+      const c=document.createElement("button");c.className="pcell";c.textContent=i+1;
+      if(answers[i]!=null)c.classList.add("answered");
+      if(flags[i])c.classList.add("flagged");
+      if(i===cur)c.classList.add("current");
+      c.addEventListener("click",()=>{cur=i;draw();});
+      paletteEl.appendChild(c);
+    });
+  }
+  function draw(){
+    const q=exam[cur];
+    progEl.textContent=`${answers.filter(a=>a!=null).length} answered · ${cur+1}/${count}`;
+    qcard.innerHTML=`
+      <div class="qhead">
+        <span class="qtopic">${q.topic}</span>
+        <span class="qmeta">Question ${cur+1} of ${count}</span>
+      </div>
+      <div class="qstem">${q.stem}</div>
+      <div class="choices" id="ch"></div>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn ghost" id="prev" ${cur===0?"disabled":""}>← Prev</button>
+        <button class="btn" id="flag">${flags[cur]?"★ Flagged":"☆ Flag"}</button>
+        <button class="btn primary" id="nextq" ${cur===count-1?"disabled":""}>Next →</button>
+      </div>`;
+    const ch=$("#ch");
+    q.choices.forEach((c,i)=>{
+      const b=document.createElement("button");
+      b.className="choice"+(answers[cur]===i?" selected":"");
+      b.innerHTML=`<span class="lbl">${LETTERS[i]}</span><span>${c}</span>`;
+      b.addEventListener("click",()=>{answers[cur]=i;draw();buildPalette();});
+      ch.appendChild(b);
+    });
+    $("#prev").addEventListener("click",()=>{if(cur>0){cur--;draw();buildPalette();}});
+    $("#nextq").addEventListener("click",()=>{if(cur<count-1){cur++;draw();buildPalette();}});
+    $("#flag").addEventListener("click",()=>{flags[cur]=!flags[cur];draw();buildPalette();});
+    buildPalette();
+  }
+  $("#submitExam").addEventListener("click",()=>{
+    const unanswered=answers.filter(a=>a==null).length;
+    const msg=unanswered>0?`You have ${unanswered} unanswered question${unanswered>1?"s":""}. Submit anyway?`:"Submit your exam now?";
+    if(confirm(msg))finish(false);
+  });
+  draw();
+
+  function finish(auto){
+    clearInterval(examTimer);
+    mockRun.classList.add("hidden");
+    let correct=0;const perTopic={};
+    exam.forEach((q,i)=>{
+      const ok=answers[i]===q.answer;if(ok)correct++;
+      const t=q.topic;perTopic[t]=perTopic[t]||{c:0,n:0};perTopic[t].n++;if(ok)perTopic[t].c++;
+    });
+    const pct=Math.round(correct/count*100);
+    const pass=pct>=75;const timeUsed=minutes*60-remaining-1;
+    saveAttempt({date:Date.now(),pct,correct,count,pass,timeUsedSec:Math.max(0,timeUsed),perTopic});
+    showResult({exam,answers,correct,count,pct,pass,auto,perTopic,timeUsed:Math.max(0,timeUsed)});
+  }
+}
+
+function pad2(n){return String(n).padStart(2,"0");}
+function fmtDur(s){const m=s/60|0,sec=s%60;return `${m}m ${pad2(sec)}s`;}
+
+function showResult(r){
+  mockResult.classList.remove("hidden");
+  const barRows=TOPIC_ORDER.filter(t=>r.perTopic[t]).map(t=>{
+    const d=r.perTopic[t];const p=Math.round(d.c/d.n*100);
+    const cls=p>=75?"":p>=50?"mid":"low";
+    return `<div class="barrow"><div>${t} <span class="muted">(${d.c}/${d.n})</span></div><div class="barpct">${p}%</div></div>
+            <div class="bartrack" style="margin:-2px 0 4px"><div class="barfill ${cls}" style="width:${p}%"></div></div>`;
+  }).join("");
+  mockResult.innerHTML=`
+    <h2>${r.pass?"Pass":"Keep going"}</h2>
+    ${r.auto?'<div class="callout warn" style="margin-top:0">Time expired — the exam was submitted automatically.</div>':""}
+    <div class="card" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <div><div class="scorebig ${r.pass?"pass":"fail"}">${r.pct}%</div></div>
+      <div style="font-size:15px;line-height:1.8">
+        <div><b>${r.correct}</b> of <b>${r.count}</b> correct</div>
+        <div class="muted">Passing mark: 75%</div>
+        <div class="muted">Time used: ${fmtDur(r.timeUsed)}</div>
+      </div>
+    </div>
+    <h3>By topic</h3>
+    <div class="bars">${barRows}</div>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn primary" id="reviewBtn">Review every question</button>
+      <button class="btn" id="retake">Back to mock menu</button>
+    </div>
+    <div id="reviewSlot"></div>`;
+  $("#retake").addEventListener("click",()=>{mockResult.classList.add("hidden");mockHome.classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});});
+  $("#reviewBtn").addEventListener("click",()=>{
+    const slot=$("#reviewSlot");
+    slot.innerHTML="<h3>Full review</h3>"+r.exam.map((q,i)=>{
+      const picked=r.answers[i];const ok=picked===q.answer;
+      const choiceHtml=q.choices.map((c,ci)=>{
+        let cls="choice";if(ci===q.answer)cls+=" correct";if(ci===picked&&!ok)cls+=" wrong";
+        return `<div class="${cls}" disabled><span class="lbl">${LETTERS[ci]}</span><span>${c}</span></div>`;
+      }).join("");
+      return `<div class="card">
+        <div class="qhead"><span class="qtopic">${q.topic}</span>
+          <span class="qmeta">Q${i+1} · <span style="color:${ok?'var(--green)':'var(--red)'}">${picked==null?"skipped":(ok?"correct":"missed")}</span></span></div>
+        <div class="qstem">${q.stem}</div>
+        <div class="choices">${choiceHtml}</div>
+        <div class="review"><div class="sol">${q.solution}</div>
+          <div class="reftag"><span class="ref">${refLabel(q)}</span></div></div>
+      </div>`;
+    }).join("");
+    $("#reviewBtn").setAttribute("disabled","");
+    slot.scrollIntoView({behavior:"smooth"});
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* =========================== SCORE HISTORY (localStorage) =========================== */
+const HKEY="wirenerd_nec_journeyman_scores_v1";
+function loadHistory(){try{return JSON.parse(localStorage.getItem(HKEY))||[];}catch(e){return [];}}
+function saveAttempt(a){
+  try{const h=loadHistory();h.unshift(a);localStorage.setItem(HKEY,JSON.stringify(h.slice(0,50)));}catch(e){}
+}
+function renderHistory(){
+  const list=$("#historyList");const h=loadHistory();
+  if(!h.length){list.innerHTML='<p class="muted">No attempts yet. Take a timed mock and your results will show up here.</p>';return;}
+  // weakest topics across history
+  const agg={};
+  h.forEach(a=>{Object.entries(a.perTopic||{}).forEach(([t,d])=>{agg[t]=agg[t]||{c:0,n:0};agg[t].c+=d.c;agg[t].n+=d.n;});});
+  const weak=Object.entries(agg).map(([t,d])=>({t,p:d.c/d.n})).filter(x=>x.p<0.75).sort((a,b)=>a.p-b.p).slice(0,3);
+  const weakHtml=weak.length?`<div class="callout" style="margin-top:0"><b>Focus next:</b> ${weak.map(w=>`${w.t} (${Math.round(w.p*100)}%)`).join(" · ")}</div>`:"";
+  const rows=h.map(a=>{
+    const d=new Date(a.date);
+    const dstr=`${d.getMonth()+1}/${d.getDate()}/${String(d.getFullYear()).slice(2)} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    return `<div class="histrow">
+      <div>${dstr}</div>
+      <div class="muted">${a.correct}/${a.count}</div>
+      <div class="muted">${fmtDur(a.timeUsedSec||0)}</div>
+      <div class="hscore" style="color:${a.pass?'var(--green)':'var(--red)'}">${a.pct}%</div>
+    </div>`;
+  }).join("");
+  list.innerHTML=weakHtml+rows;
+}
+$("#clearHistory").addEventListener("click",()=>{
+  if(confirm("Clear all saved scores on this device?")){try{localStorage.removeItem(HKEY);}catch(e){}renderHistory();}
+});
+</script>
+</body>
+</html>
