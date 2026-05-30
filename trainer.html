@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WireNerd — Wiring Sandbox</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; background: #1a1a1a; color: #fff; padding: 16px; max-width: 1280px; margin: 0 auto; }
+    h1 { font-size: 20px; margin-bottom: 2px; }
+    .subtitle { color: #B4B2A9; font-size: 13px; margin-bottom: 14px; }
+    .palette { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; padding: 10px; background: #232323; border-radius: 8px; }
+    .palette-label { width: 100%; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .device-btn { padding: 7px 11px; background: #2f2f2f; border: 1px solid #555; border-radius: 6px; font-size: 12px; cursor: pointer; color: #ddd; }
+    .device-btn:hover { background: #3a3a3a; border-color: #888; }
+    .layout { display: flex; gap: 14px; align-items: flex-start; }
+    .canvas-wrap { flex: 1; min-width: 0; position: relative; }
+    #panel { width: 100%; background: #222; border: 1px solid #444; border-radius: 8px; display: block; }
+    .sidebar { width: 240px; flex-shrink: 0; background: #232323; border: 1px solid #444; border-radius: 8px; padding: 14px; font-size: 12px; line-height: 1.5; max-height: 640px; overflow-y: auto; }
+    .sidebar h3 { font-size: 13px; margin-bottom: 8px; color: #EF9F27; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar .item { margin-bottom: 10px; }
+    .sidebar .item b { color: #fff; }
+    .sidebar .item span { color: #aaa; }
+    .legend-row { display:flex; align-items:center; gap:6px; margin:3px 0; }
+    .swatch { width:16px; height:10px; border-radius:2px; border:1px solid #555; display:inline-block; }
+    .controls { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    button.action { padding: 9px 18px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-energize { background: #1D9E75; color: #fff; }
+    .btn-energize:hover { background: #27B888; }
+    .btn-pdf { background: #185FA5; color: #fff; }
+    .btn-pdf:hover { background: #2070BD; }
+    .btn-clear { background: #3a3a3a; color: #fff; }
+    .status { margin-top: 12px; padding: 11px 15px; background: #2a2a2a; border-radius: 6px; font-size: 13px; color: #B4B2A9; min-height: 42px; display: flex; align-items: center; }
+    .meter-display { width: 100%; background: #0c1410; border: 2px solid #1D9E75; border-radius: 10px; padding: 10px 14px; font-family: 'SF Mono', Menlo, monospace; display: none; margin-bottom: 14px; }
+    .meter-display.on { display: block; }
+    .meter-display .mlabel { font-size: 10px; color: #1D9E75; text-transform: uppercase; letter-spacing: 1px; }
+    .meter-display .mvalue { font-size: 34px; font-weight: 700; color: #4ade80; line-height: 1.1; }
+    .meter-display .munit { font-size: 16px; color: #4ade80; }
+    .meter-display .mwhere { font-size: 11px; color: #7a8a82; margin-top: 2px; min-height: 14px; }
+    .hint { margin-top: 8px; font-size: 12px; color: #777; line-height: 1.5; }
+    .found-banner { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8); background:#1D9E75; color:#fff; font-size:22px; font-weight:700; padding:16px 28px; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); opacity:0; pointer-events:none; z-index:20; transition:opacity .25s, transform .25s; text-align:center; }
+    .found-banner.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    @keyframes repairGlow { 0%,100%{ filter:none; } 50%{ filter:drop-shadow(0 0 8px #27B888); } }
+    .repaired-glow { animation: repairGlow 0.4s ease-in-out 3; stroke:#27B888 !important; }
+    @keyframes flowDash { to { stroke-dashoffset: -24; } }
+    .flowing { stroke-dasharray: 6 6; animation: flowDash 0.5s linear infinite; }
+    .flow-off .flowing { animation: none; stroke-dasharray: none; }
+    @media print {
+      body { background: #fff; color: #000; }
+      .palette, .controls, .hint, h1, .subtitle, .status, .sidebar { display: none; }
+      .layout { display: block; }
+      #panel { border: 1px solid #000; background: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Wiring Sandbox</h1>
+  <div class="subtitle">A load runs only when current completes a full loop at the right voltage. Conductors are color-coded by leg.</div>
+
+  <div class="palette">
+    <div class="palette-label">Power &amp; Loads</div>
+    <button class="device-btn" data-type="power">⚡ Power Source</button>
+    <button class="device-btn" data-type="light">💡 Light</button>
+    <button class="device-btn" data-type="motor">⚙️ Motor</button>
+    <button class="device-btn" data-type="coil">◯ Coil (relay)</button>
+    <button class="device-btn" data-type="contactor">▭ Contactor (3-pole)</button>
+    <button class="device-btn" data-type="transformer">⧉ Transformer</button>
+  </div>
+  <div class="palette">
+    <div class="palette-label">Control &amp; Switches</div>
+    <button class="device-btn" data-type="button_no">⏺ Push Button (NO)</button>
+    <button class="device-btn" data-type="button_nc">⏺ Push Button (NC)</button>
+    <button class="device-btn" data-type="button_dual">⏯ Push Button (NO+NC)</button>
+    <button class="device-btn" data-type="selector">⇄ Selector (H-O-A)</button>
+    <button class="device-btn" data-type="overload">⊗ Overload Relay</button>
+    <button class="device-btn" data-type="pilot">○ Pilot Light</button>
+    <button class="device-btn" data-type="contact_no">⊣⊢ NO Contact</button>
+    <button class="device-btn" data-type="contact_nc">⫼ NC Contact</button>
+    <button class="device-btn" data-type="sp_switch">⎏ Single-Pole Switch</button>
+    <button class="device-btn" data-type="three_way">⌥ 3-Way Switch</button>
+    <button class="device-btn" data-type="four_way">⋈ 4-Way Switch</button>
+    <button class="device-btn" data-type="limit">⌐ Limit Switch</button>
+    <button class="device-btn" data-type="float">⊻ Float Switch</button>
+    <button class="device-btn" data-type="prox">◎ Prox Switch</button>
+  </div>
+
+  <div class="layout">
+    <div class="canvas-wrap">
+      <svg id="panel" viewBox="0 0 720 640"></svg>
+    </div>
+    <div class="sidebar" id="sidebar">
+      <div class="meter-display" id="meterDisplay">
+        <div class="mlabel">DC/AC Volts</div>
+        <div><span class="mvalue" id="meterValue">---</span> <span class="munit">V</span></div>
+        <div class="mwhere" id="meterWhere">click two points</div>
+      </div>
+      <h3>Conductor Colors</h3>
+      <div class="legend-row"><span class="swatch" style="background:#000"></span> L1 / L — black (≤240V)</div>
+      <div class="legend-row"><span class="swatch" style="background:#e02b2b"></span> L2 — red (≤240V)</div>
+      <div class="legend-row"><span class="swatch" style="background:#2b6fe0"></span> L3 — blue (208V 3φ)</div>
+      <div class="legend-row"><span class="swatch" style="background:#fff"></span> Neutral — white (≤240V)</div>
+      <div class="legend-row"><span class="swatch" style="background:#7a4a2b"></span> L1 — brown (277/480V)</div>
+      <div class="legend-row"><span class="swatch" style="background:#e8821e"></span> L2 — orange (277/480V)</div>
+      <div class="legend-row"><span class="swatch" style="background:#f2d024"></span> L3 — yellow (277/480V)</div>
+      <div class="legend-row"><span class="swatch" style="background:#9aa0a6"></span> Neutral — gray (277/480V)</div>
+      <h3 style="margin-top:14px;">Quick Guide</h3>
+      <div class="item"><b>Contactor</b><br><span>3 poles L1/L2/L3 → T1/T2/T3. Give it a letter; a <b>Coil</b> with the same letter closes it.</span></div>
+      <div class="item"><b>Push Buttons</b><br><span>Hold to press, release to spring back.</span></div>
+      <div class="item"><b>Contacts</b><br><span>Click the contact to assign which coil letter it follows. Shift-click to manually toggle it for testing.</span></div>
+      <div class="item"><b>🔧 Troubleshoot</b><br><span>Builds a hidden fault into your circuit (open wire, stuck/welded contact, open coil, or blown overload). Energize, then hunt it down.</span></div>
+      <div class="item"><b>🔌 Meter</b><br><span>Click Meter, then click two terminals to read the voltage between them. Half-split the circuit to find the dead section. Reading full voltage across a point = open there.</span></div>
+      <div class="item"><b>Repair</b><br><span>When you find the fault, click the bad wire or device to fix it. The circuit comes back to life when you nail it.</span></div>
+      <div class="item"><b>Transformer</b><br><span>Primary H1/H2, secondary X1/X2. Energize the primary and the secondary powers your control circuit at the stepped-down voltage. Click to change ratio (e.g. 480→120).</span></div>
+      <div class="item"><b>Selector (H-O-A)</b><br><span>Click to cycle Hand / Off / Auto. HAND=COM→T1, AUTO=COM→T2.</span></div>
+      <div class="item"><b>Overload Relay</b><br><span>Passes motor power; its NC aux (AUX1-AUX2) sits in the control circuit. Click to trip/reset — tripping opens the aux and drops the coil.</span></div>
+      <div class="item"><b>Pilot Light</b><br><span>Lights when its circuit completes. Click to change color (green/red/amber).</span></div>
+      <div class="item"><b>Wires</b><br><span>Drag the round handle on a wire to route it manually. Click the wire body to delete.</span></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="action btn-energize" id="energizeBtn">⚡ Energize</button>
+    <button class="action btn-pdf" id="pdfBtn">🖼 Save as PNG</button>
+    <button class="action btn-clear" id="flowBtn">🌊 Flow: ON</button>
+    <button class="action btn-clear" id="troubleBtn">🔧 Troubleshoot</button>
+    <button class="action" id="foundBtn" style="display:none; background:#EF9F27; color:#1a1a1a;">🎯 I Found It!</button>
+    <button class="action btn-clear" id="meterBtn">🔌 Meter</button>
+    <button class="action btn-clear" id="clearBtn">Clear All</button>
+  </div>
+
+  <div class="status" id="status">Add a Power Source, then loads and switches. Complete the loop to run a load.</div>
+  <div class="hint">Click a device body to configure. Click a terminal then another to wire. Drag a wire's handle to route it; click the wire to delete. Then Energize.</div>
+
+  <script>
+    const svg = document.getElementById('panel');
+    const statusBox = document.getElementById('status');
+    const NS = 'http://www.w3.org/2000/svg';
+
+    let deviceCount = 0;
+    const devices = {};
+    const terminals = {};
+    const wires = [];
+    let selectedTerminal = null, selectedDot = null, dragMoved = false;
+    let energized = false;
+    let activeFault = null;   // {type, deviceId?, wireId?} hidden until found
+    let meterMode = false; let meterA = null;
+    let diagnosing = false;   // true after 'I Found It' pressed, waiting for the guess click
+    let wireSeq = 0;
+    let wireLane = 0;
+
+    const deviceTypes = {
+      power:      { w: 95, label: 'Power', role:'source', voltage:120, phase:1 },
+      light:      { w: 75, label: 'Light', role:'load', voltage:120, phase:0 },
+      motor:      { w: 90, label: 'Motor', role:'load', voltage:240, phase:1 },
+      coil:       { w: 85, label: 'Coil',  role:'coil', voltage:120, letter:'M' },
+      contactor:  { w: 110, label: 'Contactor', role:'contactor', letter:'M' },
+      transformer:{ w: 120, label: 'XFMR', role:'transformer', primaryV:480, secondaryV:120 },
+      button_no:  { w: 85, label: 'PB-NO', role:'contact', normally:'open', kind:'momentary' },
+      button_nc:  { w: 85, label: 'PB-NC', role:'contact', normally:'closed', kind:'momentary' },
+      button_dual:{ w: 110, label: 'PB 2-blk', role:'dualbtn', kind:'momentary' },
+      selector:  { w: 100, label: 'Selector', role:'selector', position:1 },
+      overload:  { w: 110, label: 'Overload', role:'overload', tripped:false },
+      pilot:     { w: 85, label: 'Pilot', role:'pilot', voltage:120, phase:0, color:'green' },
+      contact_no: { w: 85, label: 'NO',    role:'contact', normally:'open', kind:'relay', letter:'M' },
+      contact_nc: { w: 85, label: 'NC',    role:'contact', normally:'closed', kind:'relay', letter:'M' },
+      sp_switch:  { w: 90, label: 'SP Switch', role:'switch', normally:'open', kind:'manual' },
+      three_way:  { w: 95, label: '3-Way', role:'switch3', normally:'open', kind:'manual' },
+      four_way:   { w: 95, label: '4-Way', role:'switch4', normally:'open', kind:'manual' },
+      limit:      { w: 90, label: 'Limit', role:'switch', normally:'open', kind:'manual' },
+      float:      { w: 90, label: 'Float', role:'switch', normally:'open', kind:'manual' },
+      prox:       { w: 90, label: 'Prox',  role:'switch', normally:'open', kind:'manual' },
+    };
+
+    const DEAD_WIRE = '#6a6a6a';
+    // Real-world source systems: voltage (for fault math) + which conductors are present.
+    const SOURCE_SYSTEMS=[
+      {id:'120_1ph',     label:'120V 1φ',     volts:120, terms:['L1','N']},
+      {id:'120_240_1ph', label:'120/240V 1φ', volts:240, terms:['L1','L2','N']},
+      {id:'120_240_3ph', label:'120/240V 3φ', volts:240, terms:['L1','L2','L3','N']},
+      {id:'480_3ph',     label:'480V 3φ',     volts:480, terms:['L1','L2','L3']},
+      {id:'480_3ph_n',   label:'480V 3φ+N',   volts:480, terms:['L1','L2','L3','N']},
+      {id:'480_1ph',     label:'480V 1φ',     volts:480, terms:['L1','L2']},
+    ];
+    function sysOf(d){ return SOURCE_SYSTEMS.find(x=>x.id===d.system) || SOURCE_SYSTEMS[0]; }
+
+    function legColor(leg, voltage){
+      const high = voltage>=277;
+      if (leg==='N') return high ? '#9aa0a6' : '#ffffff';
+      if (leg==='L' || leg==='L1') return high ? '#7a4a2b' : '#000000';
+      if (leg==='L2') return high ? '#e8821e' : '#e02b2b';
+      if (leg==='L3') return high ? '#f2d024' : '#2b6fe0';
+      return '#27B888';
+    }
+
+    function setStatus(msg, color){ statusBox.textContent = msg; statusBox.style.color = color||'#B4B2A9'; }
+
+    function getTermLabels(d){
+      if (d.role==='source') return sysOf(d).terms.slice();
+      if (d.role==='load' && d.type==='motor') return d.phase===3 ? ['T1','T2','T3'] : ['A','B'];
+      if (d.role==='load') return ['A','B'];
+      if (d.role==='dualbtn') return ['NC_IN','NC_OUT','NO_IN','NO_OUT'];
+      if (d.role==='selector') return ['COM','T1','T2'];
+      if (d.role==='overload') return ['L1','T1','L2','T2','L3','T3','AUX1','AUX2'];
+      if (d.role==='pilot') return ['X1','X2'];
+      if (d.role==='transformer') return ['H1','X1','H2','X2'];
+      if (d.role==='coil') return ['A1','A2'];
+      if (d.role==='contactor') return ['L1','T1','L2','T2','L3','T3'];
+      if (d.role==='switch3') return ['COM','T1','T2'];
+      if (d.role==='switch4') return ['IN1','IN2','OUT1','OUT2'];
+      return ['IN','OUT'];
+    }
+    function deviceHeight(d){ const n=getTermLabels(d).length; return Math.max(60, 34 + Math.ceil(n/2)*22); }
+
+    function addDevice(type){
+      const def = deviceTypes[type];
+      deviceCount++;
+      const id = type + '-' + deviceCount;
+      const x = 40 + (deviceCount % 4) * 165 + Math.random()*10;
+      const y = 50 + Math.floor(deviceCount/4) * 150 + Math.random()*10;
+      const device = { id, type, x, y, role:def.role, w:def.w, voltage:def.voltage, phase:def.phase||0, system:(def.role==='source'?'120_1ph':null), normally:def.normally, kind:def.kind, letter:def.letter, state:(def.normally||'open'), faulted:false, pressed:false, position:0, terminals:[] };
+      devices[id] = device;
+      const g = document.createElementNS(NS,'g'); g.style.cursor='grab'; device.el=g; svg.appendChild(g);
+      buildDeviceGraphics(device); makeDraggable(g, device);
+      setStatus('Added '+def.label+'. Click its body to configure.');
+    }
+
+    function buildDeviceGraphics(d){
+      const def = deviceTypes[d.type]; const g = d.el;
+      d.terminals.forEach(t => delete terminals[t]); d.terminals = [];
+      while (g.firstChild) g.removeChild(g.firstChild);
+      const h = deviceHeight(d); d.h = h;
+      g.setAttribute('transform','translate('+d.x+','+d.y+')');
+      const box = document.createElementNS(NS,'rect');
+      box.setAttribute('width',d.w); box.setAttribute('height',h);
+      box.setAttribute('fill','#2f2f2f'); box.setAttribute('stroke','#888'); box.setAttribute('stroke-width',2); box.setAttribute('rx',6);
+      g.appendChild(box); d.box = box;
+      const label = document.createElementNS(NS,'text');
+      label.setAttribute('x',d.w/2); label.setAttribute('y',18); label.setAttribute('text-anchor','middle');
+      label.setAttribute('fill','#ccc'); label.setAttribute('font-size',12); label.setAttribute('font-weight','600');
+      label.textContent = def.label; g.appendChild(label);
+      const info = document.createElementNS(NS,'text');
+      info.setAttribute('x',d.w/2); info.setAttribute('y',32); info.setAttribute('text-anchor','middle'); info.setAttribute('font-size',10);
+      g.appendChild(info); d.info = info;
+      const labels = getTermLabels(d);
+      labels.forEach((tl, i) => {
+        const termId = d.id+':'+tl;
+        const onLeft = (i % 2 === 0);
+        const tx = onLeft ? 0 : d.w;
+        const ty = 46 + Math.floor(i/2)*22;
+        terminals[termId] = { x:d.x+tx, y:d.y+ty, deviceId:d.id, label:tl, lx:tx, ly:ty };
+        d.terminals.push(termId);
+        drawTerminalDot(termId, tl, tx, ty, onLeft, g);
+      });
+      makeConfigurable(box, d);
+      if (d.role==='contact' && d.kind==='momentary'){
+        const press=()=>{ d.pressed=true; d.state=(d.normally==='open')?'closed':'open'; updateDeviceInfo(d); setStatus('Button PRESSED (hold)'); if(energized) runSimulation(); };
+        const release=()=>{ if(!d.pressed) return; d.pressed=false; d.state=d.normally; updateDeviceInfo(d); setStatus('Button released'); if(energized) runSimulation(); };
+        box.dataset.momentary='1';
+        box._press=press; box._release=release;
+        window.addEventListener('mouseup', release);
+      }
+      if (d.role==='dualbtn'){
+        const press=()=>{ d.pressed=true; updateDeviceInfo(d); setStatus('Button PRESSED — NO closed, NC open'); if(energized) runSimulation(); };
+        const release=()=>{ if(!d.pressed) return; d.pressed=false; updateDeviceInfo(d); setStatus('Button released — NO open, NC closed'); if(energized) runSimulation(); };
+        box.dataset.momentary='1';
+        box._press=press; box._release=release;
+        window.addEventListener('mouseup', release);
+      }
+      updateDeviceInfo(d);
+    }
+
+    function updateDeviceInfo(d){
+      if (d.role==='source'){ const sy=sysOf(d); d.voltage=sy.volts; d.info.textContent = sy.label; d.info.setAttribute('fill','#EF9F27'); }
+      else if (d.role==='load'){ d.info.textContent = d.voltage+'V'+(d.phase?' '+d.phase+'φ':''); d.info.setAttribute('fill','#85B7EB'); }
+      else if (d.role==='coil'){ d.info.textContent = '['+d.letter+'] '+d.voltage+'V'; d.info.setAttribute('fill','#C9A0FF'); }
+      else if (d.role==='transformer'){ d.info.textContent = d.primaryV+' → '+d.secondaryV+'V'; d.info.setAttribute('fill', d.live?'#27B888':'#85B7EB'); }
+      else if (d.role==='contactor'){ d.info.textContent = '['+d.letter+'] '+(d.state==='closed'?'CLOSED':'OPEN'); d.info.setAttribute('fill', d.state==='closed'?'#27B888':'#C9A0FF'); }
+      else if (d.role==='contact'){ d.info.textContent = (d.kind==='relay'?'['+d.letter+'] ':'')+d.state.toUpperCase(); d.info.setAttribute('fill', d.state==='closed'?'#27B888':'#888'); }
+      else if (d.role==='switch'){ d.info.textContent = d.state==='closed'?'CLOSED':'OPEN'; d.info.setAttribute('fill', d.state==='closed'?'#27B888':'#888'); }
+      else if (d.role==='dualbtn'){ d.info.textContent = d.pressed?'PRESSED':'NO open / NC closed'; d.info.setAttribute('fill', d.pressed?'#27B888':'#888'); }
+      else if (d.role==='selector'){ d.info.textContent = ['HAND','OFF','AUTO'][d.position]; d.info.setAttribute('fill', d.position===1?'#888':'#85B7EB'); }
+      else if (d.role==='overload'){ d.info.textContent = d.tripped?'TRIPPED':'OK (aux closed)'; d.info.setAttribute('fill', d.tripped?'#E24B4A':'#27B888'); }
+      else if (d.role==='pilot'){ d.info.textContent = (d.lit?'● ':'○ ')+d.color.toUpperCase(); d.info.setAttribute('fill', d.lit?({green:'#27B888',red:'#E24B4A',amber:'#EF9F27'}[d.color]||'#27B888'):'#888'); }
+      else if (d.role==='switch3'){ d.info.textContent = 'COM-T'+(d.position+1); d.info.setAttribute('fill','#85B7EB'); }
+      else if (d.role==='switch4'){ d.info.textContent = d.position===0?'STRAIGHT':'CROSSED'; d.info.setAttribute('fill','#85B7EB'); }
+    }
+
+    function makeConfigurable(box,d){
+      box.addEventListener('click',function(e){
+        if (dragMoved) return; e.stopPropagation();
+        // While the meter is active: you can still OPERATE inputs (flip switches/selector,
+        // shift-click contacts, press buttons) so you can watch readings change — but
+        // CONFIGURATION (voltage, coil letters, transformer ratios) is locked so probing
+        // near a device never accidentally cycles its setup.
+        if (meterMode){
+          const isConfig = (d.role==='source'||d.role==='load'||d.role==='coil'||d.role==='contactor'||d.role==='transformer');
+          if (isConfig) return;
+          if (d.role==='contact' && !e.shiftKey) return;  // contact letter-assign locked; shift-click toggle allowed
+          // otherwise fall through so switches/selector/contact operate normally
+        }
+        // During a fault: a plain click attempts repair. Config (voltage/letters/ratios) stays
+        // locked so you can't corrupt the scenario, but you can still OPERATE inputs
+        // (press buttons, flip switches/selector, shift-click contacts) to diagnose.
+        if (activeFault){
+          const isConfig = (d.role==='source'||d.role==='load'||d.role==='coil'||d.role==='contactor'||d.role==='transformer');
+          if (diagnosing){ tryRepair({deviceId:d.id}); return; }   // armed: this click is the guess
+          if (isConfig) return;               // not armed: config devices stay locked
+          if (d.role==='contact' && !e.shiftKey) return;  // contact letter-assign locked; shift-click toggle allowed below
+          // otherwise fall through so switches/selector/contact-toggle operate normally for diagnosis
+        }
+        if (d.role==='source'){
+          let i=SOURCE_SYSTEMS.findIndex(x=>x.id===d.system); i=(i+1)%SOURCE_SYSTEMS.length;
+          const before=sysOf(d).terms.join(','); d.system=SOURCE_SYSTEMS[i].id; d.voltage=SOURCE_SYSTEMS[i].volts;
+          const after=sysOf(d).terms.join(',');
+          if (before!==after) rebuildKeepingWires(d);
+          updateDeviceInfo(d); setStatus('Power: '+sysOf(d).label); if(energized) runSimulation();
+        } else if (d.role==='load'){
+          const opts = d.type==='motor' ? [{v:120,p:1},{v:240,p:1},{v:240,p:3},{v:480,p:3}] : [{v:120,p:0},{v:240,p:0},{v:277,p:0},{v:480,p:0}];
+          let i=opts.findIndex(o=>o.v===d.voltage&&(o.p||0)===(d.phase||0)); i=(i+1)%opts.length;
+          const oldP=d.phase; d.voltage=opts[i].v; d.phase=opts[i].p||0;
+          if (oldP!==d.phase) rebuildKeepingWires(d);
+          updateDeviceInfo(d); setStatus(d.type+' rated '+d.voltage+'V'+(d.phase?' '+d.phase+'φ':'')); if(energized) runSimulation();
+        } else if (d.role==='coil' || d.role==='contactor'){
+          const l=prompt('Letter (e.g. M, M1, CR1):', d.letter);
+          if (l){ d.letter=l.toUpperCase().trim(); updateDeviceInfo(d); setStatus((d.role==='contactor'?'Contactor':'Coil')+' ['+d.letter+'] set.'); if(energized) runSimulation(); }
+        } else if (d.role==='transformer'){
+          const ratios=[[480,120],[480,240],[240,120],[480,277],[208,120]];
+          let i=ratios.findIndex(r=>r[0]===d.primaryV&&r[1]===d.secondaryV); i=(i+1)%ratios.length;
+          d.primaryV=ratios[i][0]; d.secondaryV=ratios[i][1]; updateDeviceInfo(d); setStatus('Transformer '+d.primaryV+'→'+d.secondaryV+'V'); if(energized) runSimulation();
+        } else if (d.role==='contact'){
+          if (d.kind==='relay'){
+            // Plain click = assign coil letter (the primary thing you do with a contact).
+            // Shift-click = manually toggle state for testing.
+            if (e.shiftKey){ d.state=(d.state==='open')?'closed':'open'; updateDeviceInfo(d); setStatus('Contact manually '+d.state.toUpperCase()+' (shift-click toggles)'); if(energized) runSimulation(); }
+            else {
+              const letters=[...new Set(Object.values(devices).filter(x=>x.role==='coil'||x.role==='contactor').map(x=>x.letter))];
+              const hint = letters.length ? ' (existing: '+letters.join(', ')+')' : '';
+              const l=prompt('This contact follows which coil letter?'+hint, d.letter);
+              if(l){ d.letter=l.toUpperCase().trim(); updateDeviceInfo(d); setStatus('Contact now follows coil ['+d.letter+'].'); if(energized) runSimulation(); }
+            }
+          }
+          /* momentary handled by press/release listeners */
+        } else if (d.role==='switch'){ d.state=(d.state==='open')?'closed':'open'; updateDeviceInfo(d); setStatus(deviceTypes[d.type].label+' '+d.state.toUpperCase()); if(energized) runSimulation(); }
+        else if (d.role==='selector'){ d.position=(d.position+1)%3; updateDeviceInfo(d); setStatus('Selector: '+['HAND','OFF','AUTO'][d.position]); if(energized) runSimulation(); }
+        else if (d.role==='overload'){ d.tripped=!d.tripped; updateDeviceInfo(d); setStatus(d.tripped?'⚠️ Overload TRIPPED — aux contact open, coil drops out':'Overload reset — aux closed'); if(energized) runSimulation(); }
+        else if (d.role==='pilot'){ const cols=['green','red','amber']; d.color=cols[(cols.indexOf(d.color)+1)%3]; updateDeviceInfo(d); setStatus('Pilot light: '+d.color); if(energized) runSimulation(); }
+        else if (d.role==='switch3'){ d.position=d.position===0?1:0; updateDeviceInfo(d); setStatus('3-Way COM-T'+(d.position+1)); if(energized) runSimulation(); }
+        else if (d.role==='switch4'){ d.position=d.position===0?1:0; updateDeviceInfo(d); setStatus('4-Way '+(d.position===0?'STRAIGHT':'CROSSED')); if(energized) runSimulation(); }
+      });
+    }
+
+    function rebuildKeepingWires(d){
+      for (let i=wires.length-1;i>=0;i--){ const w=wires[i]; if ((terminals[w.from]&&terminals[w.from].deviceId===d.id)||(terminals[w.to]&&terminals[w.to].deviceId===d.id)){ w.lineEl.remove(); if(w.hitEl)w.hitEl.remove(); (w.handles||[]).forEach(h=>h.remove()); wires.splice(i,1); } }
+      buildDeviceGraphics(d);
+      setStatus('Phase changed — terminals updated, wires on this device removed. Re-wire as needed.','#EF9F27');
+    }
+
+    function drawTerminalDot(termId,label,lx,ly,onLeft,parentG){
+      const dot=document.createElementNS(NS,'circle');
+      dot.setAttribute('cx',lx); dot.setAttribute('cy',ly); dot.setAttribute('r',6);
+      dot.setAttribute('fill','#1D9E75'); dot.setAttribute('stroke','#fff'); dot.setAttribute('stroke-width',2);
+      dot.style.cursor='pointer'; dot.dataset.termId=termId;
+      dot.addEventListener('click',function(e){ e.stopPropagation(); if(meterMode){ meterRead(termId); return; } handleTerminalClick(termId,dot); });
+      parentG.appendChild(dot);
+      const t=document.createElementNS(NS,'text');
+      t.setAttribute('x', onLeft ? lx+11 : lx-11); t.setAttribute('y',ly+3);
+      t.setAttribute('text-anchor', onLeft ? 'start' : 'end');
+      t.setAttribute('fill','#aaa'); t.setAttribute('font-size',9); t.textContent=label.replace('_','-');
+      parentG.appendChild(t);
+    }
+
+    function handleTerminalClick(termId,dot){
+      if (!selectedTerminal){ selectedTerminal=termId; selectedDot=dot; dot.setAttribute('fill','#EF9F27'); setStatus('Selected. Click another terminal.'); }
+      else if (selectedTerminal===termId){ selectedTerminal=null; selectedDot=null; dot.setAttribute('fill','#1D9E75'); setStatus('Cancelled.'); }
+      else { const dup=wires.some(w=>(w.from===selectedTerminal&&w.to===termId)||(w.from===termId&&w.to===selectedTerminal)); if (dup) setStatus('Already connected.'); else { addWire(selectedTerminal,termId); setStatus('Wired. Total: '+wires.length); } if (selectedDot) selectedDot.setAttribute('fill','#1D9E75'); selectedTerminal=null; selectedDot=null; }
+    }
+
+    // USER-ROUTED WIRES: clean L-shape by default; user adds/drags waypoints. No auto-routing.
+    function stub(t){ const dir=(t.lx===0)?-1:1; return {x:t.x+dir*16, y:t.y}; }
+    function wirePoints(w){
+      const a=terminals[w.from], b=terminals[w.to];
+      const sa=stub(a), sb=stub(b);
+      return [{x:a.x,y:a.y}, sa, ...(w.waypoints||[]), sb, {x:b.x,y:b.y}];
+    }
+    function wirePathStr(w){
+      const pts=wirePoints(w);
+      let d='M '+pts[0].x+' '+pts[0].y;
+      for(let i=1;i<pts.length;i++){
+        const p=pts[i-1], q=pts[i];
+        if(p.x!==q.x && p.y!==q.y){ d+=' L '+q.x+' '+p.y+' L '+q.x+' '+q.y; }   // one orthogonal bend
+        else { d+=' L '+q.x+' '+q.y; }
+      }
+      return d;
+    }
+
+    function addWire(fromId,toId){
+      const path=document.createElementNS(NS,'path');
+      const w={id:'w'+(++wireSeq),from:fromId,to:toId,lineEl:path,waypoints:[],handles:[]};
+      // Wide invisible hit area BEHIND the visible wire so clicks land easily on the thin line.
+      const hit=document.createElementNS(NS,'path');
+      hit.setAttribute('stroke','transparent'); hit.setAttribute('stroke-width',16); hit.setAttribute('fill','none'); hit.style.cursor='pointer';
+      w.hitEl=hit;
+      path.setAttribute('stroke',DEAD_WIRE); path.setAttribute('stroke-width',3); path.setAttribute('fill','none'); path.setAttribute('stroke-linejoin','round'); path.style.pointerEvents='none';
+      svg.insertBefore(path,svg.firstChild);
+      svg.insertBefore(hit,path);   // hit area sits just under the visible wire, still catches events
+      wires.push(w);
+      // double-click adds a waypoint where you clicked
+      hit.addEventListener('dblclick',function(e){ e.stopPropagation(); e.preventDefault(); const p=svgPoint(e); w.waypoints.push({x:p.x,y:p.y}); rebuildHandles(w); refreshWire(w); setStatus('Bend added. Drag the orange handle to route it.'); });
+      // right-click deletes the wire
+      hit.addEventListener('contextmenu',function(e){ e.preventDefault(); e.stopPropagation(); removeWire(w); });
+      hit.addEventListener('click',function(e){ if(activeFault&&diagnosing){ e.stopPropagation(); tryRepair({wireId:w.id}); } });
+      refreshWire(w);
+      recolorWiresStatic();
+      setStatus('Wired. Double-click the wire to add a bend; right-click to delete.');
+    }
+    function removeWire(w){ w.lineEl.remove(); if(w.hitEl)w.hitEl.remove(); (w.handles||[]).forEach(h=>h.remove()); const i=wires.indexOf(w); if(i>-1)wires.splice(i,1); recolorWiresStatic(); setStatus('Removed wire. Total: '+wires.length); }
+
+    function rebuildHandles(w){
+      (w.handles||[]).forEach(h=>h.remove());
+      w.handles=(w.waypoints||[]).map((pt,idx)=>{
+        const h=document.createElementNS(NS,'circle');
+        h.setAttribute('r',6); h.setAttribute('fill','#EF9F27'); h.setAttribute('stroke','#fff'); h.setAttribute('stroke-width',1.5);
+        h.style.cursor='move'; svg.appendChild(h);
+        makeWaypointDraggable(w, idx, h);
+        // right-click a handle removes just that bend
+        h.addEventListener('contextmenu',function(e){ e.preventDefault(); e.stopPropagation(); w.waypoints.splice(idx,1); rebuildHandles(w); refreshWire(w); setStatus('Bend removed.'); });
+        return h;
+      });
+      positionHandles(w);
+    }
+    function positionHandles(w){ (w.handles||[]).forEach((h,i)=>{ const pt=w.waypoints[i]; if(pt){ h.setAttribute('cx',pt.x); h.setAttribute('cy',pt.y); } }); }
+    function refreshWire(w){ const d=wirePathStr(w); w.lineEl.setAttribute('d', d); if(w.hitEl)w.hitEl.setAttribute('d', d); positionHandles(w); }
+
+    function makeWaypointDraggable(w, idx, handle){
+      let dragging=false;
+      handle.addEventListener('mousedown',function(e){ e.stopPropagation(); e.preventDefault(); dragging=true; });
+      window.addEventListener('mousemove',function(e){ if(!dragging)return; const p=svgPoint(e); if(w.waypoints[idx]){ w.waypoints[idx].x=p.x; w.waypoints[idx].y=p.y; refreshWire(w); } });
+      window.addEventListener('mouseup',function(){ dragging=false; });
+    }
+
+    // Color wires by the source leg they connect to, the moment they are wired (not just on energize).
+    function legOfTerminalStatic(){
+      // Build adjacency through wires AND through-device conduction is NOT used here;
+      // we trace pure copper (wires only) so a wire shows its leg even before energize.
+      const adj={}; const add=(a,b)=>{ (adj[a]=adj[a]||new Set()).add(b); (adj[b]=adj[b]||new Set()).add(a); };
+      wires.forEach(w=>add(w.from,w.to));
+      const tagOf={};
+      const sources=Object.values(devices).filter(d=>d.role==='source');
+      sources.forEach(s=>{
+        const legs = sysOf(s).terms.map(t=>[t,t]);
+        legs.forEach(([term,leg])=>{
+          const start=s.id+':'+term; const seen=new Set([start]); const st=[start];
+          while(st.length){ const t=st.pop(); if(!tagOf[t]) tagOf[t]={leg:leg,volt:s.voltage}; (adj[t]||[]).forEach(n=>{ if(!seen.has(n)){seen.add(n); st.push(n);} }); }
+        });
+      });
+      return tagOf;
+    }
+    function recolorWiresStatic(){
+      const tag=legOfTerminalStatic();
+      wires.forEach(w=>{
+        w.lineEl.classList.remove('flowing');
+        const t = tag[w.from] || tag[w.to];
+        w.lineEl.setAttribute('stroke', t ? legColor(t.leg, t.volt) : DEAD_WIRE);
+      });
+    }
+    function updateAllWiresFor(deviceId){ wires.forEach(refreshWire); }
+
+    function makeDraggable(g,device){
+      let dragging=false,sx,sy,ox,oy;
+      g.addEventListener('mousedown',function(e){
+        if(e.target.dataset.termId)return;
+        // momentary button: fire press, but still allow drag if user moves
+        if(e.target.dataset.momentary==='1' && e.target._press){ e.target._press(); }
+        dragging=true; dragMoved=false; g.style.cursor='grabbing';
+        const p=svgPoint(e); sx=p.x; sy=p.y; ox=device.x; oy=device.y; e.preventDefault();
+      });
+      window.addEventListener('mousemove',function(e){ if(!dragging)return; const p=svgPoint(e); const dx=p.x-sx,dy=p.y-sy; if(Math.abs(dx)>3||Math.abs(dy)>3)dragMoved=true; device.x=ox+dx; device.y=oy+dy; g.setAttribute('transform','translate('+device.x+','+device.y+')'); device.terminals.forEach(termId=>{ const tt=terminals[termId]; tt.x=device.x+tt.lx; tt.y=device.y+tt.ly; }); updateAllWiresFor(device.id); });
+      window.addEventListener('mouseup',function(){ if(dragging){ dragging=false; g.style.cursor='grab'; setTimeout(()=>{dragMoved=false;},50); } });
+    }
+    function svgPoint(e){ const r=svg.getBoundingClientRect(); const vb=svg.viewBox.baseVal; return { x:(e.clientX-r.left)/r.width*vb.width, y:(e.clientY-r.top)/r.height*vb.height }; }
+
+    function conductsPairs(d){
+      if(activeFault&&activeFault.deviceId===d.id){
+        if(activeFault.type==='stuckopen') return [];
+        if(activeFault.type==='stuckclosed'&&(d.role==='contact'||d.role==='switch')) return [['IN','OUT']];
+        if(activeFault.type==='blownol'&&d.role==='overload') return [];
+      }
+      if (d.role==='contactor') return d.state==='closed' ? [['L1','T1'],['L2','T2'],['L3','T3']] : [];
+      if (d.role==='switch3')  return d.position===0 ? [['COM','T1']] : [['COM','T2']];
+      if (d.role==='switch4')  return d.position===0 ? [['IN1','OUT1'],['IN2','OUT2']] : [['IN1','OUT2'],['IN2','OUT1']];
+      if (d.role==='contact' || d.role==='switch') return d.state==='closed' ? [['IN','OUT']] : [];
+      if (d.role==='dualbtn'){ const out=[]; if(d.pressed) out.push(['NO_IN','NO_OUT']); else out.push(['NC_IN','NC_OUT']); return out; }
+      if (d.role==='selector'){ if(d.position===0) return [['COM','T1']]; if(d.position===2) return [['COM','T2']]; return []; }
+      if (d.role==='overload'){ const out=[['L1','T1'],['L2','T2'],['L3','T3']]; if(!d.tripped) out.push(['AUX1','AUX2']); return out; }
+      return [];
+    }
+    function buildGraph(){
+      const adj={}; const add=(a,b)=>{ (adj[a]=adj[a]||new Set()).add(b); (adj[b]=adj[b]||new Set()).add(a); };
+      wires.forEach(w=>{ if(activeFault&&activeFault.type==='openwire'&&activeFault.wireId===w.id) return; add(w.from,w.to); });
+      Object.values(devices).forEach(d=>conductsPairs(d).forEach(p=>add(d.id+':'+p[0], d.id+':'+p[1])));
+      return adj;
+    }
+    // flood that also records which source-leg + voltage reached each terminal (for coloring)
+    function floodTag(starts, volt, leg, adj, voltMap, tagMap){
+      const seen=new Set(starts); const st=[...starts];
+      starts.forEach(t=>{ if((voltMap[t]||0)<=volt){ voltMap[t]=volt; tagMap[t]={leg:leg,volt:volt}; } });
+      while(st.length){ const t=st.pop(); (adj[t]||[]).forEach(n=>{ if(!seen.has(n)||(voltMap[n]||0)<volt){ seen.add(n); if((voltMap[n]||0)<=volt){ voltMap[n]=volt; tagMap[n]={leg:leg,volt:volt}; } st.push(n);} }); }
+      return seen;
+    }
+    function reachable(starts,adj){ const seen=new Set(starts); const st=[...starts]; while(st.length){ const t=st.pop(); (adj[t]||[]).forEach(n=>{ if(!seen.has(n)){seen.add(n);st.push(n);} }); } return seen; }
+
+    function runSimulation(){
+      Object.values(devices).forEach(d=>{ d.faulted=false; if(d.role==='pilot')d.lit=false; if(d.role==='transformer')d.live=false; d.box.setAttribute('fill','#2f2f2f'); d.box.setAttribute('stroke','#888'); });
+      document.querySelectorAll('.fire-effect').forEach(f=>f.remove());
+      const sources=Object.values(devices).filter(d=>d.role==='source');
+      if (sources.length===0){ setStatus('No power source. Add one.','#EF9F27'); return; }
+
+      let stable=false, loops=0, hotV={}, retSet=new Set(), hotSet=new Set(), tag={};
+      const energizedCoils=new Set();
+      Object.values(devices).forEach(d=>{
+        if(d.role==='contact'&&d.kind==='relay'){ const closed=(d.state==='closed'); if((d.normally==='open'&&closed)||(d.normally==='closed'&&!closed)) energizedCoils.add(d.letter); }
+        if(d.role==='contactor'&&d.state==='closed') energizedCoils.add(d.letter);
+      });
+      while(!stable && loops<60){
+        loops++;
+        const prev=new Set(energizedCoils);
+        Object.values(devices).forEach(d=>{
+          if (d.role==='contact'&&d.kind==='relay'){ const on=energizedCoils.has(d.letter); d.state=(d.normally==='open')?(on?'closed':'open'):(on?'open':'closed'); updateDeviceInfo(d); }
+          if (d.role==='contactor'){ const on=energizedCoils.has(d.letter); d.state=on?'closed':'open'; updateDeviceInfo(d); }
+        });
+        const adj=buildGraph();
+        hotV={}; tag={}; const retStarts=[];
+        sources.forEach(s=>{
+          const terms=sysOf(s).terms;
+          const hots=terms.filter(t=>t[0]==='L');
+          const rets=terms.filter(t=>t==='N');
+          // first hot is the primary hot; remaining hots double as returns for cross-leg loads
+          hots.forEach((h,idx)=>{ floodTag([s.id+':'+h], s.voltage, h, adj, hotV, tag); if(idx>0) retStarts.push(s.id+':'+h); });
+          rets.forEach(n=>retStarts.push(s.id+':'+n));
+          if(rets.length===0 && hots.length>=2){ /* no neutral: L2/L3 already pushed as returns */ }
+        });
+        hotSet=new Set(Object.keys(hotV));
+        retSet=reachable(retStarts, adj);
+        // Transformers: if a primary (H1/H2) sees hot on one side and return on the other,
+        // the secondary becomes a live source — X1 hot at secondaryV, X2 the return.
+        Object.values(devices).forEach(d=>{
+          if (d.role!=='transformer') return;
+          const h1=d.id+':H1', h2=d.id+':H2', x1=d.id+':X1', x2=d.id+':X2';
+          const primaryLive=(hotSet.has(h1)&&retSet.has(h2))||(hotSet.has(h2)&&retSet.has(h1));
+          d.live=primaryLive;
+          if (primaryLive){
+            floodTag([x1], d.secondaryV, 'L1', adj, hotV, tag);
+            retStarts.push(x2);
+          }
+        });
+        // re-resolve hot/return after any transformer secondaries came online
+        hotSet=new Set(Object.keys(hotV));
+        retSet=reachable(retStarts, adj);
+        sources.forEach(s=>{
+          sysOf(s).terms.forEach(term=>{
+            reachable([s.id+':'+term],adj).forEach(t=>{ if(!tag[t]) tag[t]={leg:term,volt:s.voltage}; });
+          });
+        });
+        energizedCoils.clear();
+        Object.values(devices).forEach(d=>{
+          if (d.role==='coil'){ const a1=d.id+':A1',a2=d.id+':A2'; const failed=(activeFault&&activeFault.deviceId===d.id&&activeFault.type==='failedcoil'); if(!failed&&((hotSet.has(a1)&&retSet.has(a2))||(hotSet.has(a2)&&retSet.has(a1)))) energizedCoils.add(d.letter); }
+        });
+        stable=(prev.size===energizedCoils.size)&&[...energizedCoils].every(c=>prev.has(c));
+      }
+
+      meterV=Object.assign({}, hotV); meterRet=new Set(retSet);
+      let running=0, faults=0, under=0;
+      Object.values(devices).forEach(d=>{
+        if (d.role==='pilot'){
+          const x1=d.id+':X1', x2=d.id+':X2';
+          d.lit = (hotSet.has(x1)&&retSet.has(x2))||(hotSet.has(x2)&&retSet.has(x1));
+          if(d.lit){ const c={green:'#1f4d3a',red:'#5a1a1a',amber:'#3a3320'}[d.color]||'#1f4d3a'; const st={green:'#27B888',red:'#E24B4A',amber:'#EF9F27'}[d.color]||'#27B888'; d.box.setAttribute('fill',c); d.box.setAttribute('stroke',st); }
+          updateDeviceInfo(d);
+          return;
+        }
+        if (d.role!=='load') return;
+        const labs=getTermLabels(d);
+        let appliedV=0, hot=false, ret=false;
+        labs.forEach(l=>{ const t=d.id+':'+l; if(hotSet.has(t)){hot=true; appliedV=Math.max(appliedV, hotV[t]||0);} if(retSet.has(t))ret=true; });
+        if (hot&&ret){
+          if (appliedV>d.voltage){ d.faulted=true; faults++; d.box.setAttribute('fill','#5a1a1a'); d.box.setAttribute('stroke','#E24B4A'); drawFire(d); }
+          else if (appliedV===d.voltage){ d.box.setAttribute('fill','#1f4d3a'); d.box.setAttribute('stroke','#27B888'); running++; }
+          else { d.box.setAttribute('fill','#3a3320'); d.box.setAttribute('stroke','#EF9F27'); under++; }
+        }
+      });
+      Object.values(devices).forEach(d=>{
+        if (d.role==='coil' && energizedCoils.has(d.letter)){ d.box.setAttribute('fill','#1f4d3a'); d.box.setAttribute('stroke','#27B888'); }
+        if (d.role==='contactor' && d.state==='closed'){ d.box.setAttribute('stroke','#27B888'); }
+      });
+
+      const anyOn=(running>0)||(faults>0)||(energizedCoils.size>0);
+      wires.forEach(w=>{
+        // a wire's color = the tag of whichever end is on a live conductor
+        let t = tag[w.from] || tag[w.to];
+        const onLive = hotSet.has(w.from)||hotSet.has(w.to)||retSet.has(w.from)||retSet.has(w.to);
+        if (anyOn && onLive && t){
+          w.lineEl.setAttribute('stroke', legColor(t.leg, t.volt));
+          w.lineEl.classList.add('flowing');
+        } else {
+          w.lineEl.setAttribute('stroke', DEAD_WIRE);
+          w.lineEl.classList.remove('flowing');
+        }
+      });
+
+      if (faults>0) setStatus('🔥 FAULT! '+faults+' load(s) over their voltage rating. Match the supply voltage.','#E24B4A');
+      else if (under>0 && running===0) setStatus('⚠️ Load under-voltaged (supply below its rating) - it will not run properly.','#EF9F27');
+      else if (running>0||energizedCoils.size>0) setStatus('⚡ Live! '+running+' load(s) running at correct voltage. Energized: '+([...energizedCoils].join(', ')||'none'),'#27B888');
+      else setStatus('No complete loop yet. A load needs HOT on one side and a return on the other.','#EF9F27');
+    }
+
+    function drawFire(d){ const f=document.createElementNS(NS,'text'); f.setAttribute('x',d.x+d.w/2); f.setAttribute('y',d.y-6); f.setAttribute('text-anchor','middle'); f.setAttribute('font-size',22); f.setAttribute('class','fire-effect'); f.textContent='🔥'; svg.appendChild(f); const a=document.createElementNS(NS,'animate'); a.setAttribute('attributeName','opacity'); a.setAttribute('values','1;0.4;1'); a.setAttribute('dur','0.4s'); a.setAttribute('repeatCount','indefinite'); f.appendChild(a); }
+
+    function energize(){ energized=true; runSimulation(); }
+    function clearAll(){ diagnosing=false; const fb=document.getElementById('foundBtn'); if(fb){fb.style.display='none'; fb.textContent='🎯 I Found It!'; fb.style.background='#EF9F27';} svg.innerHTML=''; Object.keys(devices).forEach(k=>delete devices[k]); Object.keys(terminals).forEach(k=>delete terminals[k]); wires.length=0; deviceCount=0; wireLane=0; energized=false; selectedTerminal=null; selectedDot=null; setStatus('Cleared. Add a Power Source to begin.'); }
+
+    document.querySelectorAll('.device-btn').forEach(b=>b.addEventListener('click',()=>addDevice(b.dataset.type)));
+    document.getElementById('energizeBtn').addEventListener('click',energize);
+
+    // ---- TROUBLESHOOTING MODE ----
+    function injectFault(){
+      clearFault(true);
+      const candidates=[];
+      wires.forEach(w=>candidates.push({type:'openwire', wireId:w.id, label:'open conductor'}));
+      Object.values(devices).forEach(d=>{
+        if(d.role==='contact'&&d.kind==='relay'){ candidates.push({type:'stuckopen',deviceId:d.id,label:'contact stuck open'}); candidates.push({type:'stuckclosed',deviceId:d.id,label:'contact welded closed'}); }
+        if(d.role==='coil') candidates.push({type:'failedcoil',deviceId:d.id,label:'open coil'});
+        if(d.role==='overload') candidates.push({type:'blownol',deviceId:d.id,label:'open overload heater'});
+      });
+      if(candidates.length===0){ setStatus('Add a circuit first, then inject a fault.','#EF9F27'); return; }
+      activeFault = candidates[Math.floor(Math.random()*candidates.length)];
+      energized=true; runSimulation();
+      diagnosing=false;
+      const fbtn=document.getElementById('foundBtn'); fbtn.style.display='inline-block'; fbtn.textContent='🎯 I Found It!'; fbtn.style.background='#EF9F27';
+      setStatus('🔧 A hidden fault was placed. Diagnose with the Meter. When ready, press \u201cI Found It!\u201d then click the bad part.','#EF9F27');
+    }
+    function faultLabel(f){
+      if(f.type==='openwire') return 'Open conductor';
+      if(f.type==='stuckopen') return 'Contact stuck open';
+      if(f.type==='stuckclosed') return 'Contact welded closed';
+      if(f.type==='failedcoil') return 'Open (failed) coil';
+      if(f.type==='blownol') return 'Open overload heater';
+      return 'Fault';
+    }
+    function showFoundBanner(text){
+      let b=document.getElementById('foundBanner');
+      if(!b){ b=document.createElement('div'); b.id='foundBanner'; b.className='found-banner'; document.querySelector('.canvas-wrap').appendChild(b); }
+      b.textContent='✓ FOUND IT! '+text+' — repaired';
+      b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
+      setTimeout(()=>b.classList.remove('show'), 3500);
+    }
+    function glowRepaired(target){
+      let el=null;
+      if(target.wireId){ const w=wires.find(x=>x.id===target.wireId); if(w) el=w.lineEl; }
+      else if(target.deviceId){ const d=devices[target.deviceId]; if(d) el=d.box; }
+      if(!el) return;
+      el.classList.add('repaired-glow');
+      setTimeout(()=>el.classList.remove('repaired-glow'), 1600);
+    }
+    function clearFault(silent){
+      activeFault=null;
+      if(!silent){ if(energized) runSimulation(); }
+    }
+    function tryRepair(target){
+      if(!activeFault) return false;
+      const isMatch = (activeFault.type==='openwire' && target.wireId===activeFault.wireId)
+                    || (activeFault.deviceId && target.deviceId===activeFault.deviceId);
+      if(isMatch){
+        const label=faultLabel(activeFault);
+        glowRepaired(target);
+        clearFault(false);
+        energized=true; runSimulation();
+        showFoundBanner(label);
+        diagnosing=false;
+        document.getElementById('foundBtn').style.display='none';
+        const fb=document.getElementById('foundBtn'); fb.textContent='🎯 I Found It!'; fb.style.background='#EF9F27';
+        setStatus('✓ FOUND IT! '+label+' — repaired. Circuit is live again.','#27B888');
+        return true;
+      } else {
+        diagnosing=false;
+        const fb=document.getElementById('foundBtn'); fb.textContent='🎯 I Found It!'; fb.style.background='#EF9F27';
+        setStatus('Not the fault — keep checking, then press \u201cI Found It!\u201d to guess again.','#EF9F27');
+        return false;
+      }
+    }
+
+    // ---- VIRTUAL METER ----
+    let meterV={}, meterRet=new Set();
+    function probeDot(termId, on, color){ const dot=svg.querySelector('[data-term-id="'+termId+'"]'); if(dot) dot.setAttribute('fill', on?(color||'#EF9F27'):'#1D9E75'); }
+    function setMeterDisplay(value, where){
+      document.getElementById('meterValue').textContent = (value===null?'---':value);
+      document.getElementById('meterWhere').textContent = where||'';
+    }
+    function clearProbeLeads(){ svg.querySelectorAll('.probe-lead').forEach(el=>el.remove()); }
+    function drawProbeLead(termId, color){
+      const t=terminals[termId]; if(!t) return;
+      const c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx',t.x); c.setAttribute('cy',t.y); c.setAttribute('r',9);
+      c.setAttribute('fill','none'); c.setAttribute('stroke',color); c.setAttribute('stroke-width',3);
+      c.setAttribute('class','probe-lead'); c.setAttribute('pointer-events','none');
+      svg.appendChild(c);
+    }
+    function meterRead(termId){
+      if(!meterA){
+        meterA=termId; clearProbeLeads(); drawProbeLead(termId,'#E24B4A'); // red probe
+        setMeterDisplay(null, 'red probe on '+termId.split(':')[1]+' — click 2nd point');
+        setStatus('🔌 Red probe on '+termId.split(':')[1]+'. Click the second point (black probe).','#85B7EB');
+        return;
+      }
+      const a=meterA, b=termId;
+      drawProbeLead(b,'#222'); // black probe (dark ring)
+      const va = (meterV[a]!=null)?meterV[a]:(meterRet.has(a)?0:null);
+      const vb = (meterV[b]!=null)?meterV[b]:(meterRet.has(b)?0:null);
+      const A=(va===null?0:va), B=(vb===null?0:vb);
+      const reading=Math.abs(A-B);
+      setMeterDisplay(reading, a.split(':')[1]+' ↔ '+b.split(':')[1]);
+      setStatus('🔌 Meter reads '+reading+' V  ('+a.split(':')[1]+' ↔ '+b.split(':')[1]+'). Click two more points to keep probing.', reading>0?'#27B888':'#EF9F27');
+      meterA=null;
+    }
+
+    document.getElementById('troubleBtn').addEventListener('click',injectFault);
+    document.getElementById('foundBtn').addEventListener('click',function(){
+      if(!activeFault){ return; }
+      diagnosing=true;
+      if(meterMode){ meterMode=false; meterA=null; const mb=document.getElementById('meterBtn'); mb.textContent='🔌 Meter'; mb.style.background='#3a3a3a'; document.getElementById('meterDisplay').classList.remove('on'); clearProbeLeads(); }
+      this.textContent='👉 Click the faulty part'; this.style.background='#27B888';
+      setStatus('Now click the wire or device you believe is faulted.','#27B888');
+    });
+    document.getElementById('meterBtn').addEventListener('click',function(){
+      meterMode=!meterMode; meterA=null;
+      this.textContent = meterMode?'🔌 Meter: ON':'🔌 Meter';
+      this.style.background = meterMode?'#1D9E75':'#3a3a3a';
+      document.getElementById('meterDisplay').classList.toggle('on', meterMode);
+      if(meterMode){
+        energized=true; runSimulation();
+        setMeterDisplay(null,'click two points');
+        setStatus('🔌 Meter ON — click any two terminals to read the voltage between them.','#85B7EB');
+      } else {
+        clearProbeLeads();
+        setStatus('Meter off.','#B4B2A9');
+      }
+    });
+
+    document.getElementById('clearBtn').addEventListener('click',clearAll);
+    document.getElementById('flowBtn').addEventListener('click',function(){
+      const off=document.body.classList.toggle('flow-off');
+      this.textContent = off ? '🌊 Flow: OFF' : '🌊 Flow: ON';
+    });
+    document.getElementById('pdfBtn').addEventListener('click',function(){
+      const vb=svg.viewBox.baseVal;
+      const scale=2;
+      const W=Math.round(vb.width*scale), H=Math.round(vb.height*scale);
+      const clone=svg.cloneNode(true);
+      clone.querySelectorAll('.flowing').forEach(el=>{ el.classList.remove('flowing'); el.style.strokeDasharray='none'; }); // solid wires in the saved image
+      clone.setAttribute('width',W); clone.setAttribute('height',H);
+      clone.setAttribute('viewBox','0 0 '+vb.width+' '+vb.height);
+      const bg=document.createElementNS(NS,'rect');
+      bg.setAttribute('x',0); bg.setAttribute('y',0); bg.setAttribute('width',vb.width); bg.setAttribute('height',vb.height); bg.setAttribute('fill','#1f1f1f');
+      clone.insertBefore(bg, clone.firstChild);
+      const xml=new XMLSerializer().serializeToString(clone);
+      const svg64=btoa(unescape(encodeURIComponent(xml)));
+      const img=new Image();
+      img.onload=function(){
+        const canvas=document.createElement('canvas'); canvas.width=W; canvas.height=H;
+        const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,W,H);
+        canvas.toBlob(function(blob){
+          if(!blob){ setStatus('Export failed — try again.','#E24B4A'); return; }
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement('a'); a.href=url; a.download='wirenerd-circuit.png';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(()=>URL.revokeObjectURL(url),1000);
+          setStatus('Saved wirenerd-circuit.png to your Downloads.','#27B888');
+        },'image/png');
+      };
+      img.onerror=function(){ setStatus('Could not render image for export.','#E24B4A'); };
+      img.src='data:image/svg+xml;base64,'+svg64;
+    });
+  </script>
+</body>
+</html>
