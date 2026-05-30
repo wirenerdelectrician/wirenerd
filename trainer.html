@@ -114,6 +114,8 @@
       <div class="item"><b>Repair</b><br><span>When you find the fault, click the bad wire or device to fix it. The circuit comes back to life when you nail it.</span></div>
       <div class="item"><b>Transformer</b><br><span>Primary H1/H2, secondary X1/X2. Energize the primary and the secondary powers your control circuit at the stepped-down voltage. Click to change ratio (e.g. 480→120).</span></div>
       <div class="item"><b>Selector (H-O-A)</b><br><span>Click to cycle Hand / Off / Auto. HAND=COM→T1, AUTO=COM→T2.</span></div>
+      <div class="item"><b>⏱ Timer</b><br><span>Click the timer — it walks you through 3 questions: <b>1)</b> type (1=ON-delay waits then turns on, 2=OFF-delay turns on now then waits to turn off), <b>2)</b> how many seconds, <b>3)</b> a letter. Contacts with that letter follow it. Wire power to A1/A2 to trigger it; energize and watch it count down.</span></div>
+      <div class="item"><b>🔢 Counter</b><br><span>Click to set the count target and a letter. Pulse its A1/A2 input to count up (once per pulse); at the target, its letter energizes. Wire power to RST to reset the count.</span></div>
       <div class="item"><b>Overload Relay</b><br><span>Passes motor power; its NC aux (AUX1-AUX2) sits in the control circuit. Click to trip/reset — tripping opens the aux and drops the coil.</span></div>
       <div class="item"><b>Pilot Light</b><br><span>Lights when its circuit completes. Click to change color (green/red/amber).</span></div>
       <div class="item"><b>Wires</b><br><span>Drag the round handle on a wire to route it manually. Click the wire body to delete.</span></div>
@@ -319,7 +321,7 @@
       if (d.role==='source'){ const sy=sysOf(d); d.voltage=sy.volts; d.info.textContent = sy.label; d.info.setAttribute('fill','#EF9F27'); }
       else if (d.role==='load'){ d.info.textContent = d.voltage+'V'+(d.phase?' '+d.phase+'φ':''); d.info.setAttribute('fill','#85B7EB'); }
       else if (d.role==='coil'){ d.info.textContent = '['+d.letter+'] '+d.voltage+'V'; d.info.setAttribute('fill','#C9A0FF'); }
-      else if (d.role==='timer'){ const md=d.mode==='on'?'TON':'TOF'; const rem=d.output?'done':(d.elapsed>0?(Math.max(0,d.preset-d.elapsed)).toFixed(1)+'s':d.preset+'s'); d.info.textContent='['+d.letter+'] '+md+' '+rem; d.info.setAttribute('fill', d.output?'#27B888':'#C9A0FF'); }
+      else if (d.role==='timer'){ const md=d.mode==='on'?'ON-dly':'OFF-dly'; const rem=d.output?'DONE':(d.elapsed>0?(Math.max(0,d.preset-d.elapsed)).toFixed(1)+'s':d.preset+'s'); d.info.textContent='['+d.letter+'] '+md+' '+rem; d.info.setAttribute('fill', d.output?'#27B888':'#C9A0FF'); }
       else if (d.role==='counter'){ d.info.textContent='['+d.letter+'] '+d.count+'/'+d.preset; d.info.setAttribute('fill', d.output?'#27B888':'#C9A0FF'); }
       else if (d.role==='transformer'){ d.info.textContent = d.primaryV+' → '+d.secondaryV+'V'; d.info.setAttribute('fill', d.live?'#27B888':'#85B7EB'); }
       else if (d.role==='contactor'){ d.info.textContent = '['+d.letter+'] '+(d.state==='closed'?'CLOSED':'OPEN'); d.info.setAttribute('fill', d.state==='closed'?'#27B888':'#C9A0FF'); }
@@ -372,11 +374,23 @@
           const choice=prompt('Counter ['+d.letter+'] — enter a LETTER to assign, or a NUMBER for the count preset.', String(d.preset));
           if(choice){ const num=parseInt(choice,10); if(!isNaN(num)&&num>0){ d.preset=num; setStatus('Counter preset = '+num); } else { d.letter=choice.toUpperCase().trim(); setStatus('Counter follows letter ['+d.letter+'].'); } updateDeviceInfo(d); if(energized) runSimulation(); }
         } else if (d.role==='timer'){
-          if (e.shiftKey){ d.mode = (d.mode==='on'?'off':'on'); updateDeviceInfo(d); setStatus('Timer mode: '+(d.mode==='on'?'ON-delay (TON)':'OFF-delay (TOF)')); if(energized) runSimulation(); }
-          else {
-            const choice=prompt('Timer ['+d.letter+'] — enter: a LETTER to assign, or a NUMBER for preset seconds. (Shift-click toggles ON/OFF-delay.)', String(d.preset));
-            if(choice){ const num=parseFloat(choice); if(!isNaN(num)&&num>0){ d.preset=num; setStatus('Timer preset = '+num+'s'); } else { d.letter=choice.toUpperCase().trim(); setStatus('Timer follows letter ['+d.letter+'].'); } updateDeviceInfo(d); if(energized) runSimulation(); }
-          }
+          // Guided setup: 3 clear questions — mode, time, letter.
+          const curMode = d.mode==='on'?'1':'2';
+          const m = prompt('TIMER SETUP  (step 1 of 3)\n\nWhich type of timer?\n\n  1 = ON-delay  (waits, THEN turns on)\n  2 = OFF-delay (turns on now, waits, THEN turns off)\n\nType 1 or 2:', curMode);
+          if(m===null){ return; }                       // cancelled
+          if(m.trim()==='1') d.mode='on';
+          else if(m.trim()==='2') d.mode='off';
+          // (any other entry leaves the mode unchanged)
+
+          const t = prompt('TIMER SETUP  (step 2 of 3)\n\nHow many SECONDS should it wait?\n\nType a number (e.g. 3 or 5):', String(d.preset));
+          if(t!==null){ const num=parseFloat(t); if(!isNaN(num)&&num>0) d.preset=num; }
+
+          const l = prompt('TIMER SETUP  (step 3 of 3)\n\nGive the timer a LETTER. Contacts with the\nsame letter will follow this timer.\n\nType a letter (e.g. T):', d.letter);
+          if(l!==null && l.trim()!=='') d.letter=l.toUpperCase().trim();
+
+          updateDeviceInfo(d);
+          setStatus('Timer ['+d.letter+'] set: '+(d.mode==='on'?'ON-delay':'OFF-delay')+', '+d.preset+'s.', '#27B888');
+          if(energized) runSimulation();
         } else if (d.role==='coil' || d.role==='contactor'){
           const l=prompt('Letter (e.g. M, M1, CR1):', d.letter);
           if (l){ d.letter=l.toUpperCase().trim(); updateDeviceInfo(d); setStatus((d.role==='contactor'?'Contactor':'Coil')+' ['+d.letter+'] set.'); if(energized) runSimulation(); }
