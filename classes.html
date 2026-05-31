@@ -264,9 +264,11 @@ footer a:hover{color:var(--text)}
     <div class="eyebrow">Early Access</div>
     <h2>Be first in the room</h2>
     <p>Drop your email and you'll get the class schedule before anyone else, plus an early-bird price when seats open. No spam — just the launch and the dates.</p>
+    <div id="pickedClass" class="form-note" style="display:none;color:var(--accent);margin-bottom:12px"></div>
     <div class="form-row">
       <input type="text" id="nameField" placeholder="First name" autocomplete="given-name">
       <input type="email" id="emailField" placeholder="you@email.com" autocomplete="email">
+      <input type="checkbox" id="hpField" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
       <button class="btn primary" id="notifyBtn">Notify me</button>
     </div>
     <div class="thanks" id="thanksMsg">You're on the list — talk soon. Watch your inbox for the schedule.</div>
@@ -298,35 +300,65 @@ footer a:hover{color:var(--text)}
 
 <script>
 (function(){
+  /* ================= EMAIL DELIVERY =================
+     Every signup is emailed to wirenerd@gmail.com through Web3Forms.
+     Get a FREE access key (no account needed): go to https://web3forms.com,
+     enter  wirenerd@gmail.com , and they email you a key instantly.
+     Paste that key between the quotes on the next line. ===================== */
+  var WEB3FORMS_KEY = "90f37bdf-26ee-4bc0-b277-e4df06e07b7c";
+  /* ================================================== */
+
   var KEY="wirenerd_class_waitlist_v1";
-  function save(entry){
+  var selectedClass="General — any class";
+  var emailField=document.getElementById("emailField");
+  var nameField=document.getElementById("nameField");
+  var thanks=document.getElementById("thanksMsg");
+  var picked=document.getElementById("pickedClass");
+
+  function saveLocal(entry){
     var list=[];
     try{ list=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ list=[]; }
     list.push(entry);
     try{ localStorage.setItem(KEY, JSON.stringify(list)); }catch(e){}
   }
-  var emailField=document.getElementById("emailField");
-  var nameField=document.getElementById("nameField");
-  var thanks=document.getElementById("thanksMsg");
 
-  document.getElementById("notifyBtn").addEventListener("click",function(){
+  function submit(){
+    var hp=document.getElementById("hpField");
+    if(hp && hp.checked){ thanks.classList.add("show"); return; } // bot trap: silently ignore
     var email=(emailField.value||"").trim();
+    var name=(nameField.value||"").trim();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-      emailField.focus();
-      emailField.style.borderColor="var(--red)";
-      return;
+      emailField.focus(); emailField.style.borderColor="var(--red)"; return;
     }
     emailField.style.borderColor="var(--line)";
-    save({name:(nameField.value||"").trim(), email:email, when:new Date().toISOString(), interest:"general"});
+    saveLocal({name:name, email:email, interest:selectedClass, when:new Date().toISOString()});
+
+    var payload={
+      access_key: WEB3FORMS_KEY,
+      subject: "New WireNerd class signup — " + selectedClass,
+      from_name: "WireNerd Classes",
+      name: name || "(no name given)",
+      email: email,
+      "Interested class": selectedClass
+    };
+    fetch("https://api.web3forms.com/submit",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body: JSON.stringify(payload)
+    }).catch(function(){ /* signup is still saved locally as a backup */ });
+
     thanks.classList.add("show");
     emailField.value=""; nameField.value="";
-  });
+  }
 
-  // per-class "notify me" buttons scroll to the form and pre-fill interest
-  Array.prototype.forEach.call(document.querySelectorAll(".wait"),function(btn){
-    btn.addEventListener("click",function(){
-      var cls=btn.getAttribute("data-class")||"general";
-      save({name:"", email:"", when:new Date().toISOString(), interest:cls, clickedOnly:true});
+  document.getElementById("notifyBtn").addEventListener("click", submit);
+  emailField.addEventListener("keydown", function(e){ if(e.key==="Enter") submit(); });
+
+  /* per-class buttons: remember which class, show it, jump to the form */
+  Array.prototype.forEach.call(document.querySelectorAll(".wait"), function(btn){
+    btn.addEventListener("click", function(){
+      selectedClass = btn.getAttribute("data-class") || "General — any class";
+      if(picked){ picked.textContent = "Asking about: " + selectedClass; picked.style.display="block"; }
       document.getElementById("notify").scrollIntoView({behavior:"smooth"});
       setTimeout(function(){ emailField.focus(); }, 500);
     });
