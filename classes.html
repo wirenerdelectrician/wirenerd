@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Zoom Classes · WireNerd</title>
+<meta name="description" content="Live, instructor-led Zoom classes from WireNerd — industrial electrical and NEC exam prep, taught by Bryan Barrios. Coming soon. Join the list to get first access.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --purple:#C9A0FF;
+  --panel-2:#2b2b2b; --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--display);font-weight:400;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:var(--text);text-decoration:none}
+
+/* nav */
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:18px;padding:14px 20px}
+.brand{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.5px}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text)}
+.navlinks a.active{color:var(--accent)}
+
+/* hero */
+.hero{position:relative;padding:58px 0 40px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(620px 280px at 78% -10%, rgba(239,159,39,.13), transparent 70%),
+  radial-gradient(520px 300px at 8% 120%, rgba(133,183,235,.08), transparent 70%);
+  pointer-events:none}
+.hero .wrap{position:relative}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.soonflag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(239,159,39,.4);background:rgba(239,159,39,.08);border-radius:999px;padding:6px 13px;margin-bottom:18px}
+.soonflag .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(239,159,39,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,159,39,.55)}70%{box-shadow:0 0 0 9px rgba(239,159,39,0)}100%{box-shadow:0 0 0 0 rgba(239,159,39,0)}}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.5px;margin:6px 0 16px}
+h1 .alt{color:var(--accent)}
+.sub{color:var(--text-dim);font-size:18px;max-width:640px;margin:0 0 26px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{font-family:var(--display);font-weight:600;font-size:15.5px;border-radius:9px;padding:13px 22px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--text);display:inline-block;transition:transform .12s ease,border-color .12s ease}
+.btn:hover{transform:translateY(-1px);border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+.btn.primary:hover{background:#f4ab3e}
+
+/* stat strip */
+.stats{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
+.stat .n{font-family:var(--mono);font-size:22px;color:var(--accent);font-weight:700}
+.stat .l{font-size:13px;color:var(--text-dim)}
+
+/* sections */
+section.block{padding:46px 0;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.4vw,34px);margin:0 0 10px;letter-spacing:-.3px}
+.lead{color:var(--text-dim);font-size:16.5px;max-width:660px;margin:0 0 26px}
+
+/* class cards */
+.classes{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.class{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 20px;overflow:hidden;transition:border-color .15s ease,transform .15s ease}
+.class:hover{border-color:rgba(239,159,39,.45);transform:translateY(-2px)}
+.class .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--accent)}
+.class h3{font-family:var(--display);font-weight:700;font-size:20px;margin:8px 0 8px}
+.class p{color:var(--text-dim);font-size:14.5px;margin:0 0 16px}
+.class .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{font-family:var(--mono);font-size:11.5px;color:var(--text-dim);border:1px solid var(--line);border-radius:6px;padding:4px 9px;background:var(--panel-2)}
+.chip.zoom{color:var(--blue);border-color:rgba(133,183,235,.35);background:rgba(133,183,235,.07)}
+.class .price{font-family:var(--mono);font-size:14px;color:var(--text)}
+.class .price b{color:var(--accent);font-size:18px}
+.class .soon{position:absolute;top:0;right:0;font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:#1a1a1a;background:var(--accent);padding:5px 11px;border-radius:0 12px 0 10px}
+.class .wait{margin-top:4px;width:100%;text-align:center;font-family:var(--display);font-weight:600;font-size:14px;border-radius:8px;padding:11px 14px;border:1px dashed rgba(239,159,39,.5);background:rgba(239,159,39,.07);color:var(--accent);cursor:pointer}
+.class .wait:hover{background:rgba(239,159,39,.13)}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:20px}
+.step .num{font-family:var(--mono);font-size:13px;color:var(--accent);border:1px solid rgba(239,159,39,.4);width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;margin-bottom:12px}
+.step h4{margin:0 0 6px;font-size:17px;font-weight:600}
+.step p{margin:0;color:var(--text-dim);font-size:14px}
+
+/* notify form */
+.notify{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:14px;padding:34px 28px;text-align:center}
+.notify h2{margin-bottom:8px}
+.notify p{color:var(--text-dim);max-width:500px;margin:0 auto 22px}
+.form-row{display:flex;gap:10px;max-width:480px;margin:0 auto;flex-wrap:wrap}
+.form-row input{flex:1;min-width:200px;font-family:var(--display);font-size:15.5px;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:13px 15px;outline:none}
+.form-row input:focus{border-color:var(--accent)}
+.form-note{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:14px}
+.thanks{display:none;color:var(--green);font-weight:600;margin-top:16px}
+.thanks.show{display:block}
+
+/* faq */
+.faq{max-width:760px}
+.qa{border-bottom:1px solid var(--line);padding:16px 0}
+.qa summary{cursor:pointer;font-weight:600;font-size:16.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";color:var(--accent);font-family:var(--mono)}
+.qa[open] summary::after{content:"–"}
+.qa p{color:var(--text-dim);font-size:15px;margin:12px 0 2px}
+
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}
+footer a:hover{color:var(--text)}
+.social{display:flex;gap:16px;margin-top:4px}
+.muted{color:var(--text-dim)}
+
+@media(max-width:640px){
+  .stats{gap:18px}
+  section.block{padding:36px 0}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a>
+    <a href="/nec-journeyman.html">Exam Helper</a>
+    <a href="#" class="active">Classes</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="soonflag"><span class="dot"></span> Coming Soon</div>
+  <div class="kicker">Live · Instructor-Led · On Zoom</div>
+  <h1>Learn it live.<br><span class="alt">Classes are coming.</span></h1>
+  <p class="sub">Real-time Zoom classes with Bryan — industrial electrical and NEC exam prep, taught the WireNerd way: made clear, no fluff, screen-share and Q&amp;A. Seats will be limited. Get on the list and you'll be first to know when registration opens.</p>
+  <div class="cta-row">
+    <a href="#notify" class="btn primary">Get early access →</a>
+    <a href="#lineup" class="btn">See the classes</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">Live</div><div class="l">Taught on Zoom, in real time</div></div>
+    <div class="stat"><div class="n">Q&amp;A</div><div class="l">Ask questions as you go</div></div>
+    <div class="stat"><div class="n">Small</div><div class="l">Limited seats per session</div></div>
+    <div class="stat"><div class="n">Recorded</div><div class="l">Replay if you miss it</div></div>
+  </div>
+</div></header>
+
+<section class="block" id="lineup"><div class="wrap">
+  <div class="eyebrow">The Lineup</div>
+  <h2>Classes on the schedule</h2>
+  <p class="lead">Here's what's in the works. Dates and pricing are being finalized — join the list and you'll get the schedule the moment it drops, plus an early-bird seat before they fill.</p>
+  <div class="classes">
+
+    <div class="class">
+      <div class="soon">Coming Soon</div>
+      <div class="tag">Exam Prep</div>
+      <h3>NEC Journeyman Crash Course</h3>
+      <p>A live walkthrough of navigating the 2023 NEC for Utah's combined journeyman exam — code lookups, calculations, and timed practice you can follow along with.</p>
+      <div class="meta">
+        <span class="chip zoom">● Zoom</span>
+        <span class="chip">4 sessions</span>
+        <span class="chip">2 hrs each</span>
+      </div>
+      <div class="price"><b>TBA</b> &nbsp;<span class="muted">/ seat</span></div>
+      <button class="wait" data-class="NEC Journeyman Crash Course">Notify me about this class</button>
+    </div>
+
+    <div class="class">
+      <div class="soon">Coming Soon</div>
+      <div class="tag">Fundamentals</div>
+      <h3>Reading Industrial Prints</h3>
+      <p>Ladder diagrams, schematics, and wiring drawings — how to read them fast and trace a circuit on paper before you ever touch a panel.</p>
+      <div class="meta">
+        <span class="chip zoom">● Zoom</span>
+        <span class="chip">2 sessions</span>
+        <span class="chip">90 min each</span>
+      </div>
+      <div class="price"><b>TBA</b> &nbsp;<span class="muted">/ seat</span></div>
+      <button class="wait" data-class="Reading Industrial Prints">Notify me about this class</button>
+    </div>
+
+    <div class="class">
+      <div class="soon">Coming Soon</div>
+      <div class="tag">Controls</div>
+      <h3>Motor Control Basics</h3>
+      <p>Starters, contactors, overloads, and forward/reverse — build and troubleshoot real motor control circuits, live, with the logic explained step by step.</p>
+      <div class="meta">
+        <span class="chip zoom">● Zoom</span>
+        <span class="chip">3 sessions</span>
+        <span class="chip">2 hrs each</span>
+      </div>
+      <div class="price"><b>TBA</b> &nbsp;<span class="muted">/ seat</span></div>
+      <button class="wait" data-class="Motor Control Basics">Notify me about this class</button>
+    </div>
+
+    <div class="class">
+      <div class="soon">Coming Soon</div>
+      <div class="tag">PLC</div>
+      <h3>Intro to PLCs &amp; Ladder Logic</h3>
+      <p>What a PLC actually does, how scan cycles work, and writing your first rungs of ladder logic — a hands-on starting point for anyone moving into automation.</p>
+      <div class="meta">
+        <span class="chip zoom">● Zoom</span>
+        <span class="chip">4 sessions</span>
+        <span class="chip">2 hrs each</span>
+      </div>
+      <div class="price"><b>TBA</b> &nbsp;<span class="muted">/ seat</span></div>
+      <button class="wait" data-class="Intro to PLCs and Ladder Logic">Notify me about this class</button>
+    </div>
+
+    <div class="class">
+      <div class="soon">Coming Soon</div>
+      <div class="tag">1-on-1</div>
+      <h3>Private Tutoring Session</h3>
+      <p>Stuck on something specific? Book time one-on-one and we'll work through your exact problem — exam topics, a circuit you're wiring, or career questions.</p>
+      <div class="meta">
+        <span class="chip zoom">● Zoom</span>
+        <span class="chip">1 session</span>
+        <span class="chip">60 min</span>
+      </div>
+      <div class="price"><b>TBA</b> &nbsp;<span class="muted">/ session</span></div>
+      <button class="wait" data-class="Private Tutoring Session">Notify me about this class</button>
+    </div>
+
+    <div class="class">
+      <div class="soon">Coming Soon</div>
+      <div class="tag">Safety</div>
+      <h3>Troubleshooting &amp; Safety</h3>
+      <p>A systematic approach to finding faults without guessing — plus the lockout/tagout and meter habits that keep you alive on the job.</p>
+      <div class="meta">
+        <span class="chip zoom">● Zoom</span>
+        <span class="chip">2 sessions</span>
+        <span class="chip">90 min each</span>
+      </div>
+      <div class="price"><b>TBA</b> &nbsp;<span class="muted">/ seat</span></div>
+      <button class="wait" data-class="Troubleshooting and Safety">Notify me about this class</button>
+    </div>
+
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="eyebrow">How It Works</div>
+  <h2>Simple and live</h2>
+  <p class="lead">No platform to learn, no app to install beyond Zoom. Show up, learn, ask questions, get the replay.</p>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h4>Reserve your seat</h4><p>Once registration opens, grab a spot. Seats are capped so everyone gets time to ask questions.</p></div>
+    <div class="step"><div class="num">2</div><h4>Get the Zoom link</h4><p>You'll get the link and any handouts by email before the session starts.</p></div>
+    <div class="step"><div class="num">3</div><h4>Join live</h4><p>Live screen-share, real examples, and open Q&amp;A. Bring your questions.</p></div>
+    <div class="step"><div class="num">4</div><h4>Keep the replay</h4><p>Can't make it live or want to review? Every session is recorded and yours to rewatch.</p></div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="notify" id="notify">
+    <div class="eyebrow">Early Access</div>
+    <h2>Be first in the room</h2>
+    <p>Drop your email and you'll get the class schedule before anyone else, plus an early-bird price when seats open. No spam — just the launch and the dates.</p>
+    <div class="form-row">
+      <input type="text" id="nameField" placeholder="First name" autocomplete="given-name">
+      <input type="email" id="emailField" placeholder="you@email.com" autocomplete="email">
+      <button class="btn primary" id="notifyBtn">Notify me</button>
+    </div>
+    <div class="thanks" id="thanksMsg">You're on the list — talk soon. Watch your inbox for the schedule.</div>
+    <div class="form-note">We'll only email you about class dates and registration.</div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="eyebrow">Questions</div>
+  <h2>Good to know</h2>
+  <div class="faq">
+    <details class="qa"><summary>When do classes start?</summary><p>Dates are being finalized now. The fastest way to find out is to join the early-access list above — you'll get the schedule the moment it's set.</p></details>
+    <details class="qa"><summary>How much will they cost?</summary><p>Pricing is per seat and will be posted with the schedule. List members get an early-bird rate before general registration.</p></details>
+    <details class="qa"><summary>What if I can't attend live?</summary><p>Every session is recorded. If you're registered and miss it, you'll get the replay to watch on your own time.</p></details>
+    <details class="qa"><summary>Do I need anything special?</summary><p>Just Zoom (free) and something to take notes with. Any handouts or worksheets are emailed to you ahead of the session.</p></details>
+    <details class="qa"><summary>Are these only for Utah?</summary><p>The NEC exam-prep class is built around Utah's journeyman exam, but the controls, prints, PLC, and troubleshooting classes apply to electricians anywhere.</p></details>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
+  <div>Built by Bryan Barrios</div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</div></footer>
+
+<script>
+(function(){
+  var KEY="wirenerd_class_waitlist_v1";
+  function save(entry){
+    var list=[];
+    try{ list=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ list=[]; }
+    list.push(entry);
+    try{ localStorage.setItem(KEY, JSON.stringify(list)); }catch(e){}
+  }
+  var emailField=document.getElementById("emailField");
+  var nameField=document.getElementById("nameField");
+  var thanks=document.getElementById("thanksMsg");
+
+  document.getElementById("notifyBtn").addEventListener("click",function(){
+    var email=(emailField.value||"").trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      emailField.focus();
+      emailField.style.borderColor="var(--red)";
+      return;
+    }
+    emailField.style.borderColor="var(--line)";
+    save({name:(nameField.value||"").trim(), email:email, when:new Date().toISOString(), interest:"general"});
+    thanks.classList.add("show");
+    emailField.value=""; nameField.value="";
+  });
+
+  // per-class "notify me" buttons scroll to the form and pre-fill interest
+  Array.prototype.forEach.call(document.querySelectorAll(".wait"),function(btn){
+    btn.addEventListener("click",function(){
+      var cls=btn.getAttribute("data-class")||"general";
+      save({name:"", email:"", when:new Date().toISOString(), interest:cls, clickedOnly:true});
+      document.getElementById("notify").scrollIntoView({behavior:"smooth"});
+      setTimeout(function(){ emailField.focus(); }, 500);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
