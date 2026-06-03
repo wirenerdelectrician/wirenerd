@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ground Zero: Intro to Electrical · WireNerd</title>
+<meta name="description" content="Ground Zero — a self-paced intro to electrical from WireNerd. What electricity is, conductors/insulators, AC/DC, Ohm's Law, magnetism, series vs parallel, and series/parallel calculations — with animated diagrams and hands-on practice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --purple:#C9A0FF;
+  --panel-2:#2b2b2b; --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);font-weight:400;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:var(--text);text-decoration:none}
+
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:18px;padding:14px 20px}
+.brand{font-weight:700;font-size:22px;letter-spacing:.5px}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text)}
+.navlinks a.active{color:var(--accent)}
+
+.hero{position:relative;padding:48px 0 32px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(620px 280px at 78% -10%, rgba(239,159,39,.13), transparent 70%),
+  radial-gradient(520px 300px at 8% 120%, rgba(133,183,235,.08), transparent 70%);pointer-events:none}
+.hero .wrap{position:relative}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-weight:800;font-size:clamp(32px,5.5vw,52px);line-height:1.04;letter-spacing:-.5px;margin:8px 0 14px}
+h1 .alt{color:var(--accent)}
+.sub{color:var(--text-dim);font-size:18px;max-width:660px;margin:0 0 22px}
+.metarow{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--text-dim);margin-bottom:22px}
+.metarow b{color:var(--accent)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--display);font-weight:600;font-size:15.5px;border-radius:9px;padding:13px 22px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--text);display:inline-block;transition:transform .12s ease,border-color .12s ease}
+.btn:hover{transform:translateY(-1px);border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+.btn.primary:hover{background:#f4ab3e}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.sm{padding:9px 15px;font-size:14px}
+.btn.tog{border-radius:8px}
+.btn.tog.on{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+
+.namebox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.namebox label{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
+input[type=text],input[type=number]{font-family:var(--display);font-size:15px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:11px 14px}
+input[type=text]{min-width:240px}
+input[type=number]{width:110px}
+input:focus{outline:none;border-color:var(--accent)}
+
+section.block{padding:38px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+h2{font-weight:700;font-size:clamp(23px,3.2vw,32px);margin:0 0 6px;letter-spacing:-.3px}
+.lead{color:var(--text-dim);font-size:16px;max-width:680px;margin:0 0 22px}
+
+.pbar{height:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:6px 0 24px;max-width:680px}
+.pbar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .4s ease}
+
+.mods{display:grid;gap:13px}
+.mod{position:relative;display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px 20px;transition:border-color .15s ease,transform .15s ease}
+.mod.unlocked{cursor:pointer}
+.mod.unlocked:hover{border-color:rgba(239,159,39,.45);transform:translateY(-2px)}
+.mod.locked{opacity:.5}
+.mod .idx{font-family:var(--mono);font-size:15px;color:var(--accent);border:1px solid rgba(239,159,39,.4);width:42px;height:42px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.mod .info{flex:1;min-width:0}
+.mod .info .k{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
+.mod .info h3{margin:3px 0 4px;font-size:18px;font-weight:700}
+.mod .info p{margin:0;color:var(--text-dim);font-size:13.5px}
+.mod .tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.mtag{font-family:var(--mono);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-dim);border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+.mtag.sb{color:var(--blue);border-color:rgba(133,183,235,.35)}
+.mtag.cl{color:var(--purple);border-color:rgba(201,160,255,.35)}
+.mod .badge{font-family:var(--mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:5px 10px;border-radius:6px;border:1px solid var(--line);color:var(--text-dim);white-space:nowrap}
+.mod .badge.done{color:var(--green);border-color:rgba(29,158,117,.4);background:rgba(29,158,117,.08)}
+.mod .badge.go{color:var(--accent);border-color:rgba(239,159,39,.4);background:rgba(239,159,39,.08)}
+
+.player{display:none}.player.on{display:block}
+.steps{display:flex;gap:8px;margin:0 0 22px;flex-wrap:wrap}
+.stepchip{font-family:var(--mono);font-size:12px;letter-spacing:.5px;text-transform:uppercase;padding:8px 14px;border-radius:8px;border:1px solid var(--line);color:var(--text-dim);background:var(--panel)}
+.stepchip.clickable{cursor:pointer}
+.stepchip.active{color:#1a1a1a;background:var(--accent);border-color:var(--accent)}
+.stepchip.done{color:var(--green);border-color:rgba(29,158,117,.4)}
+.stepchip.locked{opacity:.45}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+
+.slide{padding:32px 34px 26px;display:grid;gap:22px}
+.slide.has-art{grid-template-columns:1fr 330px;align-items:start}
+@media(max-width:760px){.slide.has-art{grid-template-columns:1fr}}
+.slide .stitle{font-weight:800;font-size:clamp(21px,3.2vw,28px);letter-spacing:-.3px;margin:0 0 16px}
+.slide ul{margin:0;padding:0;list-style:none;display:grid;gap:13px}
+.slide li{display:flex;gap:11px;font-size:16.5px}
+.slide li::before{content:"▸";color:var(--accent);font-weight:700}
+.slide li b{color:var(--accent);font-weight:600}
+.slide .snote{margin-top:16px;font-size:14px;color:var(--text-dim);border-left:2px solid var(--blue);padding:4px 0 4px 14px}
+.art{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:14px;display:flex;align-items:center;justify-content:center}
+.art svg{width:100%;height:auto;max-width:310px}
+.artcap{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-align:center;margin-top:8px}
+
+.slidebar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding:14px 20px;background:var(--panel-2);flex-wrap:wrap}
+.slidebar .count{font-family:var(--mono);font-size:13px;color:var(--text-dim)}
+.spacer{margin-left:auto}
+.readbtn{display:inline-flex;align-items:center;gap:8px}
+.readbtn .ic{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.readbtn.playing .ic{background:var(--accent);animation:pulse 1.4s infinite}
+
+.quiz{padding:28px 30px 24px}
+.q{margin:0 0 20px}
+.q .qt{font-size:16.5px;font-weight:600;margin:0 0 11px}
+.q .qt b{font-family:var(--mono);color:var(--accent);margin-right:8px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);background:var(--panel-2);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;font-size:15px;transition:border-color .12s ease}
+.opt:hover{border-color:var(--muted)}
+.opt.sel{border-color:var(--accent);background:rgba(239,159,39,.08)}
+.opt.correct{border-color:var(--green);background:rgba(29,158,117,.1)}
+.opt.wrong{border-color:var(--red);background:rgba(226,75,74,.1)}
+.opt .mk{font-family:var(--mono);font-size:13px;color:var(--text-dim);flex:none;width:20px}
+.barbtm{border-top:1px solid var(--line);padding:14px 20px;background:var(--panel-2);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.result{font-family:var(--mono);font-size:14px}
+.result.pass{color:var(--green)}.result.fail{color:var(--red)}
+
+.calc{padding:28px 30px 22px;display:grid;gap:22px}
+.calcgrid{display:grid;grid-template-columns:1.2fr 320px;gap:24px;align-items:start}
+@media(max-width:760px){.calcgrid{grid-template-columns:1fr}}
+.calcpanel{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:20px}
+.calcpanel h4{margin:0 0 4px;font-size:17px}
+.calcpanel .hintx{font-size:13px;color:var(--text-dim);margin:0 0 16px}
+.cfields{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.cfield{display:flex;flex-direction:column;gap:5px}
+.cfield label{font-family:var(--mono);font-size:12px;color:var(--text-dim)}
+.cout{font-family:var(--mono);font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px;margin-top:6px}
+.cout b{color:var(--accent)}
+.prob{border:1px solid var(--line);background:var(--panel-2);border-radius:9px;padding:14px 16px;margin-bottom:10px}
+.prob p{margin:0 0 10px;font-size:15.5px}
+.prob .pin{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.prob .pin .unit{font-family:var(--mono);color:var(--text-dim);font-size:13px}
+.prob.right{border-color:rgba(29,158,117,.5)}
+.prob.wrong{border-color:rgba(226,75,74,.5)}
+.prob .ans{font-family:var(--mono);font-size:13px;margin-top:8px}
+.prob .ans.ok{color:var(--green)}.prob .ans.no{color:var(--red)}
+
+/* circuit lab */
+.lab{padding:26px 30px 22px;display:grid;gap:22px}
+.labtop{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
+@media(max-width:760px){.labtop{grid-template-columns:1fr}}
+.labctrl{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:18px}
+.labctrl h4{margin:0 0 12px;font-size:16px}
+.modetog{display:flex;gap:8px;margin-bottom:16px}
+.labfield{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.labfield label{font-family:var(--mono);font-size:13px;color:var(--text-dim)}
+.readout{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:6px}
+.readout table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13.5px}
+.readout td{padding:9px 12px;border-bottom:1px solid var(--line)}
+.readout tr:last-child td{border-bottom:none}
+.readout td.k{color:var(--text-dim)}
+.readout td.v{text-align:right;color:var(--text)}
+.readout td.v b{color:var(--accent)}
+.labart{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:14px}
+.labart svg{width:100%;height:auto;max-width:480px;display:block;margin:0 auto}
+
+.wireintro{padding:22px 28px 4px;color:var(--text-dim);font-size:15.5px}
+.wireintro b{color:var(--text)}
+.svgwrap{padding:14px 20px 6px}
+svg.board{width:100%;height:auto;display:block;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;touch-action:manipulation}
+.term{cursor:pointer}.term circle{transition:fill .1s ease}
+.term:hover circle{fill:var(--accent)}
+.term.armed circle{fill:var(--accent);stroke:var(--accent)}
+.compbox{fill:none;stroke:var(--line);stroke-width:1.5}
+.complabel{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.term text{font-family:var(--mono);font-size:11px;fill:var(--text-dim);pointer-events:none}
+.wireline{stroke:var(--accent);stroke-width:3;stroke-linecap:round;cursor:pointer}
+.wireline:hover{stroke:var(--red)}
+.lamp-glow{opacity:0;transition:opacity .4s ease}.lamp-glow.on{opacity:1}
+.hint{font-size:13.5px;color:var(--text-dim)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:4px 20px 10px}
+input[type=range]{accent-color:var(--accent);vertical-align:middle}
+
+.donecard{text-align:center;padding:38px 30px}
+.donecard .big{font-weight:800;font-size:28px;color:var(--green);margin:0 0 8px}
+
+.certwrap{display:none}.certwrap.on{display:block}
+.cert{background:#faf8f2;color:#1c1c1c;border:14px solid var(--accent);border-radius:6px;padding:44px 42px;max-width:820px;margin:0 auto;position:relative}
+.cert::after{content:"";position:absolute;inset:10px;border:1.5px solid rgba(28,28,28,.25);border-radius:3px;pointer-events:none}
+.cert .cbrand{font-weight:700;font-size:24px;letter-spacing:.5px;text-align:center}
+.cert .cbrand b{color:var(--accent)}
+.cert .ctitle{font-family:var(--mono);font-size:13px;letter-spacing:3px;text-transform:uppercase;text-align:center;color:#7a6a3c;margin:16px 0 10px}
+.cert .ch{font-weight:800;font-size:36px;text-align:center;margin:0 0 20px;letter-spacing:-.5px}
+.cert .cawarded{text-align:center;font-size:15px;color:#444}
+.cert .cnamewrap{text-align:center}
+.cert .cname{font-weight:800;font-size:33px;margin:8px auto 6px;border-bottom:2px solid var(--accent);display:inline-block;padding:0 24px 6px}
+.cert .ccourse{text-align:center;font-size:18px;font-weight:600;margin:18px 0 4px}
+.cert .cmeta{text-align:center;font-family:var(--mono);font-size:13px;color:#555;margin-bottom:24px}
+.cert .crow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:28px;gap:20px}
+.cert .csig{flex:1;text-align:center}
+.cert .csig .line{border-top:1.5px solid #1c1c1c;margin-bottom:6px}
+.cert .csig small{font-family:var(--mono);font-size:11px;color:#666}
+.cert .csig .sig{font-weight:700;font-size:20px}
+.cert .vid{text-align:center;font-family:var(--mono);font-size:11px;color:#888;margin-top:22px;letter-spacing:1px}
+.certnote{max-width:820px;margin:16px auto 0;font-size:12.5px;color:var(--text-dim);text-align:center}
+
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px;margin-top:30px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}footer a:hover{color:var(--text)}
+footer .social{display:flex;gap:16px;margin-top:2px}
+
+/* ===== animations ===== */
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,159,39,.55)}70%{box-shadow:0 0 0 7px rgba(239,159,39,0)}100%{box-shadow:0 0 0 0 rgba(239,159,39,0)}}
+@keyframes ants{to{stroke-dashoffset:-24}}
+@keyframes glowp{0%,100%{opacity:.2}50%{opacity:.85}}
+@keyframes spinr{to{transform:rotate(360deg)}}
+.flow{stroke-dasharray:7 7;animation:ants .7s linear infinite}
+.flow.fast{animation-duration:.4s}.flow.slow{animation-duration:1.2s}
+.glowp{animation:glowp 1.7s ease-in-out infinite}
+.rotor{transform-box:fill-box;transform-origin:center;animation:spinr 3s linear infinite}
+
+@media print{
+  body{background:#fff}
+  .topnav,.hero,footer,.steps,#certActions,.certnote,#playerWrap,#homeWrap{display:none !important}
+  .certwrap.on{display:block}.cert{border-color:#EF9F27;margin:0}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a>
+    <a href="/nec-journeyman.html">Exam Helper</a>
+    <a href="/classes.html">Classes</a>
+    <a href="#" class="active">Courses</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">Course 1 · Self-Paced</div>
+  <h1>Ground Zero: <span class="alt">Intro to Electrical</span></h1>
+  <p class="sub">Start from nothing and build a real, working understanding of electricity — what it is, how it behaves, and how to read, calculate, and wire it. No experience needed.</p>
+  <div class="metarow"><span><b>9</b> lessons</span><span><b>Final</b> exam</span><span><b>~4</b> hours</span><span><b>Hands-on</b> labs</span><span><b>Certificate</b> at completion</span></div>
+  <div class="cta-row">
+    <button class="btn primary" id="startBtn">Start the course</button>
+    <span class="result" id="progLabel" style="color:var(--text-dim)"></span>
+  </div>
+</div></header>
+
+<div id="homeWrap">
+<section class="block"><div class="wrap">
+  <div class="eyebrow">Your Progress</div>
+  <h2>What you'll learn</h2>
+  <p class="lead">Seven modules with animated lessons. Read at your pace, have it read aloud, pass each test, calculate real circuits, and finish hands-on in the labs.</p>
+  <div class="pbar"><i id="pbarFill"></i></div>
+  <div class="mods" id="modList"></div>
+</div></section>
+</div>
+
+<div id="playerWrap" class="player">
+<section class="block"><div class="wrap">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+    <button class="btn ghost sm" id="backBtn">‹ All modules</button>
+    <div class="eyebrow" id="modKicker" style="margin:0"></div>
+  </div>
+  <h2 id="modTitle"></h2>
+  <div class="steps" id="stepChips"></div>
+  <div id="stage"></div>
+</div></section>
+</div>
+
+<div id="certWrap" class="certwrap">
+<section class="block"><div class="wrap">
+  <div class="eyebrow" style="text-align:center">Course Complete</div>
+  <h2 style="text-align:center">Your certificate is ready 🎉</h2>
+  <div class="cert" id="certCard">
+    <div class="cbrand">wire<b>nerd</b></div>
+    <div class="ctitle">Certificate of Completion</div>
+    <div class="ch">Certificate of Completion</div>
+    <div class="cawarded">This certifies that</div>
+    <div class="cnamewrap"><span class="cname" id="certName">Student Name</span></div>
+    <div class="cawarded">has successfully completed</div>
+    <div class="ccourse" id="certCourse">Ground Zero: Intro to Electrical</div>
+    <div class="cmeta" id="certMeta">4 Contact Hours · Completed —</div>
+    <div class="crow">
+      <div class="csig"><div class="sig">Bryan Barrios</div><div class="line"></div><small>Instructor · WireNerd</small></div>
+      <div class="csig"><div class="sig" id="certDate2">—</div><div class="line"></div><small>Date</small></div>
+    </div>
+    <div class="vid" id="certVid">Verification ID: —</div>
+  </div>
+  <p class="certnote">Certificate of completion only. This is <b>not</b> an official state-approved continuing education (CE) credit and does not count toward Utah DOPL license renewal.</p>
+  <div class="cta-row" id="certActions" style="justify-content:center;margin-top:22px">
+    <button class="btn primary" id="dlBtn">Download certificate (PDF)</button>
+    <button class="btn ghost" id="printBtn">Print</button>
+    <button class="btn ghost" id="reviewBtn">Back to course</button>
+  </div>
+</div></section>
+</div>
+
+<footer><div class="wrap">
+  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
+  <div>Built by Bryan Barrios</div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ===== Animated SVG diagrams ===== */
+const ART = {
+  atom:`<svg viewBox="0 0 200 200"><g fill="none" stroke="#EF9F27" stroke-width="1.5">
+    <ellipse cx="100" cy="100" rx="80" ry="30"/><ellipse cx="100" cy="100" rx="80" ry="30" transform="rotate(60 100 100)"/><ellipse cx="100" cy="100" rx="80" ry="30" transform="rotate(120 100 100)"/></g>
+    <circle cx="100" cy="100" r="16" fill="#E24B4A"/><text x="100" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#1a1a1a">+</text>
+    <g><circle cx="180" cy="100" r="6" fill="#85B7EB"/><animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="3.5s" repeatCount="indefinite"/></g>
+    <g><circle cx="180" cy="100" r="6" fill="#85B7EB" transform="rotate(60 100 100)"/><animateTransform attributeName="transform" type="rotate" from="60 100 100" to="420 100 100" dur="5s" repeatCount="indefinite"/></g>
+    <g><circle cx="180" cy="100" r="6" fill="#85B7EB" transform="rotate(120 100 100)"/><animateTransform attributeName="transform" type="rotate" from="120 100 100" to="480 100 100" dur="4.2s" repeatCount="indefinite"/></g></svg>`,
+  flow:`<svg viewBox="0 0 240 110"><rect x="10" y="38" width="220" height="34" rx="17" fill="none" stroke="#B4B2A9" stroke-width="2"/>
+    <line x1="14" y1="55" x2="226" y2="55" class="flow" stroke="#EF9F27" stroke-width="3"/>
+    <circle r="5" fill="#85B7EB"><animateMotion dur="2.4s" repeatCount="indefinite" path="M30,55 L210,55"/></circle>
+    <circle r="5" fill="#85B7EB"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" path="M30,55 L210,55"/></circle>
+    <circle r="5" fill="#85B7EB"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M30,55 L210,55"/></circle>
+    <path d="M214 55 l14 0 M221 49 l7 6 -7 6" stroke="#EF9F27" stroke-width="2" fill="none"/>
+    <text x="120" y="98" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">electrons drift = current</text></svg>`,
+  gen:`<svg viewBox="0 0 220 150"><rect x="20" y="42" width="58" height="66" rx="6" fill="none" stroke="#85B7EB" stroke-width="2"/>
+    <text x="49" y="80" text-anchor="middle" font-family="JetBrains Mono" font-size="20" fill="#E24B4A">N</text><text x="49" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="20" fill="#85B7EB">S</text>
+    <g class="rotor"><line x1="49" y1="60" x2="49" y2="90" stroke="#EF9F27" stroke-width="3"/><circle cx="49" cy="75" r="4" fill="#EF9F27"/></g>
+    <path d="M120 55 q22 0 22 13 t-22 13 t22 13" fill="none" stroke="#EF9F27" stroke-width="2.5"/>
+    <line x1="95" y1="75" x2="118" y2="75" class="flow" stroke="#B4B2A9" stroke-width="2.5"/>
+    <text x="150" y="130" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">spin a magnet by a coil = power</text></svg>`,
+  condins:`<svg viewBox="0 0 280 150">
+    <rect x="14" y="24" width="116" height="92" rx="8" fill="none" stroke="#1D9E75" stroke-width="2"/>
+    <text x="72" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1D9E75">CONDUCTOR</text>
+    <circle r="5" fill="#EF9F27"><animateMotion dur="2s" repeatCount="indefinite" path="M30,55 L110,55"/></circle>
+    <circle r="5" fill="#EF9F27"><animateMotion dur="2.3s" repeatCount="indefinite" path="M30,85 L110,85"/></circle>
+    <circle r="5" fill="#EF9F27"><animateMotion dur="1.8s" begin="0.7s" repeatCount="indefinite" path="M30,70 L110,70"/></circle>
+    <text x="72" y="135" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">electrons move freely</text>
+    <rect x="150" y="24" width="116" height="92" rx="8" fill="none" stroke="#E24B4A" stroke-width="2"/>
+    <text x="208" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#E24B4A">INSULATOR</text>
+    <g fill="#B4B2A9"><circle cx="176" cy="55" r="5"/><circle cx="214" cy="50" r="5"/><circle cx="240" cy="72" r="5"/><circle cx="190" cy="92" r="5"/><circle cx="232" cy="96" r="5"/></g>
+    <text x="208" y="135" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">electrons locked in place</text></svg>`,
+  acdc:`<svg viewBox="0 0 280 160">
+    <line x1="20" y1="50" x2="258" y2="50" stroke="#383838"/><path d="M20 50 L258 50" stroke="#1D9E75" stroke-width="2.5"/>
+    <circle r="5" fill="#1D9E75"><animateMotion dur="2.6s" repeatCount="indefinite" path="M20,50 L258,50"/></circle>
+    <text x="263" y="46" font-family="JetBrains Mono" font-size="11" fill="#1D9E75">DC</text>
+    <text x="140" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">steady, one direction</text>
+    <path id="acw" d="M20 130 q15 -34 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <circle r="5" fill="#EF9F27"><animateMotion dur="2.4s" repeatCount="indefinite" path="M20 130 q15 -34 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0"/></circle>
+    <text x="263" y="126" font-family="JetBrains Mono" font-size="11" fill="#EF9F27">AC</text>
+    <text x="140" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">reverses 60×/sec (60 Hz)</text></svg>`,
+  ohm:`<svg viewBox="0 0 240 240">
+    <circle cx="120" cy="120" r="100" fill="none" stroke="#383838" stroke-width="1.5"/>
+    <circle cx="120" cy="120" r="44" fill="#2b2b2b" stroke="#EF9F27" stroke-width="2"/>
+    <line x1="120" y1="20" x2="120" y2="220" stroke="#383838" stroke-width="1.5"/>
+    <line x1="20" y1="120" x2="220" y2="120" stroke="#383838" stroke-width="1.5"/>
+    <text x="120" y="108" text-anchor="middle" font-weight="800" font-size="22" fill="#EF9F27">V</text>
+    <text x="120" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">volts</text>
+    <text x="172" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#ece9e2">I × R</text>
+    <text x="178" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#ece9e2">P ÷ I</text>
+    <text x="60" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#ece9e2">P ÷ V</text>
+    <text x="60" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#ece9e2">V ÷ R</text>
+    <text x="40" y="115" text-anchor="middle" font-weight="700" font-size="14" fill="#85B7EB">P</text>
+    <text x="200" y="115" text-anchor="middle" font-weight="700" font-size="14" fill="#1D9E75">I</text>
+    <text x="120" y="208" text-anchor="middle" font-weight="700" font-size="14" fill="#C9A0FF">R</text>
+    <text x="120" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">OHM'S LAW WHEEL</text></svg>`,
+  triangle:`<svg viewBox="0 0 200 170"><polygon points="100,18 178,150 22,150" fill="none" stroke="#EF9F27" stroke-width="2"/>
+    <line x1="40" y1="92" x2="160" y2="92" stroke="#EF9F27" stroke-width="2"/>
+    <text x="100" y="72" text-anchor="middle" font-weight="800" font-size="30" fill="#EF9F27">V</text>
+    <text x="70" y="135" text-anchor="middle" font-weight="800" font-size="26" fill="#1D9E75">I</text>
+    <text x="132" y="135" text-anchor="middle" font-weight="800" font-size="26" fill="#C9A0FF">R</text>
+    <text x="100" y="167" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">cover one to find it</text></svg>`,
+  magnet:`<svg viewBox="0 0 240 160">
+    <rect x="95" y="60" width="26" height="40" fill="#E24B4A"/><rect x="121" y="60" width="26" height="40" fill="#85B7EB"/>
+    <text x="108" y="86" text-anchor="middle" font-weight="800" font-size="16" fill="#fff">N</text>
+    <text x="134" y="86" text-anchor="middle" font-weight="800" font-size="16" fill="#fff">S</text>
+    <g fill="none" stroke="#EF9F27" stroke-width="1.5" opacity=".8">
+      <path d="M120 60 q40 -55 90 20"/><path d="M120 60 q-40 -55 -90 20"/>
+      <path d="M120 100 q40 55 90 -20"/><path d="M120 100 q-40 55 -90 -20"/></g>
+    <circle r="4" fill="#EF9F27"><animateMotion dur="2.6s" repeatCount="indefinite" path="M120 60 q40 -55 90 20"/></circle>
+    <circle r="4" fill="#EF9F27"><animateMotion dur="2.6s" repeatCount="indefinite" path="M120 60 q-40 -55 -90 20"/></circle>
+    <text x="120" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">field runs N → S</text></svg>`,
+  coil:`<svg viewBox="0 0 240 150">
+    <path id="coilp" d="M40 80 q15 -18 30 0 t30 0 t30 0 t30 0 t30 0" fill="none" stroke="#EF9F27" stroke-width="2.5"/>
+    <path d="M40 80 q15 -18 30 0 t30 0 t30 0 t30 0 t30 0" fill="none" stroke="#EF9F27" stroke-width="2.5" class="flow"/>
+    <line x1="40" y1="80" x2="22" y2="80" stroke="#B4B2A9" stroke-width="2"/><line x1="190" y1="80" x2="208" y2="80" stroke="#B4B2A9" stroke-width="2"/>
+    <ellipse cx="115" cy="80" rx="60" ry="26" fill="none" stroke="#85B7EB" stroke-width="1.5" class="glowp"/>
+    <text x="115" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">current in a coil = electromagnet</text></svg>`,
+  series:`<svg viewBox="0 0 260 130">
+    <path d="M30 90 L30 60 L70 60" class="flow" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <circle cx="95" cy="60" r="16" fill="none" stroke="#85B7EB" stroke-width="2" class="glowp"/>
+    <path d="M111 60 L150 60" class="flow" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <circle cx="175" cy="60" r="16" fill="none" stroke="#85B7EB" stroke-width="2" class="glowp"/>
+    <path d="M191 60 L230 60 L230 90 L30 90" class="flow" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <line x1="20" y1="80" x2="20" y2="98" stroke="#fff" stroke-width="3"/><line x1="26" y1="84" x2="26" y2="94" stroke="#fff" stroke-width="2"/>
+    <text x="130" y="122" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">SERIES — one path</text></svg>`,
+  parallel:`<svg viewBox="0 0 260 150">
+    <path d="M30 110 L30 40 L230 40 L230 110 L30 110" class="flow" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <path d="M110 40 L110 110" class="flow" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <path d="M180 40 L180 110" class="flow" stroke="#EF9F27" stroke-width="2.5" fill="none"/>
+    <circle cx="110" cy="75" r="15" fill="#1a1a1a" stroke="#85B7EB" stroke-width="2" class="glowp"/>
+    <circle cx="180" cy="75" r="15" fill="#1a1a1a" stroke="#85B7EB" stroke-width="2" class="glowp"/>
+    <line x1="20" y1="68" x2="20" y2="82" stroke="#fff" stroke-width="3"/><line x1="26" y1="72" x2="26" y2="78" stroke="#fff" stroke-width="2"/>
+    <text x="130" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">PARALLEL — separate branches</text></svg>`,
+  vdiv:`<svg viewBox="0 0 260 150">
+    <path d="M25 120 L25 35 L235 35 L235 120 L25 120" stroke="#EF9F27" stroke-width="2.5" fill="none" class="flow slow"/>
+    <rect x="95" y="20" width="30" height="30" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <rect x="135" y="20" width="30" height="30" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <text x="110" y="14" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R1</text>
+    <text x="150" y="14" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R2</text>
+    <text x="110" y="40" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">V1</text>
+    <text x="150" y="40" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">V2</text>
+    <text x="130" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1D9E75">same I</text>
+    <text x="130" y="142" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">SERIES: voltage divides, current is shared</text></svg>`,
+  idiv:`<svg viewBox="0 0 260 160">
+    <path d="M30 120 L30 40 L230 40 L230 120 L30 120" stroke="#EF9F27" stroke-width="2.5" fill="none" class="flow"/>
+    <path d="M110 40 L110 120" stroke="#1D9E75" stroke-width="2.5" fill="none" class="flow fast"/>
+    <path d="M180 40 L180 120" stroke="#1D9E75" stroke-width="2.5" fill="none" class="flow"/>
+    <rect x="98" y="68" width="24" height="34" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <rect x="168" y="68" width="24" height="34" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <text x="110" y="62" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">I1</text>
+    <text x="180" y="62" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">I2</text>
+    <text x="130" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">PARALLEL: current divides, voltage is shared</text></svg>`
+};
+
+/* ===== COURSE CONTENT ===== */
+const COURSE = {
+  title:"Ground Zero: Intro to Electrical", hours:4, passPct:0.7,
+  modules:[
+    { id:"m1", kicker:"Module 1", title:"What Is Electricity?", blurb:"What electricity is, how it's made, and why it runs everything.",
+      steps:[ { type:"slides", slides:[
+        { title:"Everything is made of atoms", art:"atom", cap:"Electrons (blue) orbit a nucleus (+)",
+          body:["All matter is built from tiny building blocks called <b>atoms</b> — too small to see, but everything around you is made of them.",
+            "Each atom has a dense center, the <b>nucleus</b>, packed with positively charged <b>protons</b> and neutral <b>neutrons</b>.",
+            "Around the nucleus, light <b>electrons</b> carry a negative charge and zip around the outside.",
+            "Opposite charges attract and like charges repel — that simple rule drives all of electricity."] },
+        { title:"Balanced and unbalanced atoms", art:null,
+          body:["A normal atom has equal protons and electrons, so the charges cancel and it is electrically neutral.",
+            "Knock an electron loose and the atom is left slightly positive; the free electron is now able to travel.",
+            "Add an extra electron somewhere and that spot becomes slightly negative.",
+            "Electricity is all about these tiny imbalances of charge and the electrons that move to fix them."],
+          note:"Materials with lots of loose electrons are the ones that carry electricity well." },
+        { title:"What charge really is", art:null,
+          body:["<b>Charge</b> is a basic property of matter, like weight or color — it comes in positive and negative.",
+            "We measure a quantity of charge in <b>coulombs</b>. One coulomb is a huge number of electrons (about 6.24 billion billion).",
+            "You will rarely count coulombs directly, but it helps to know current is just charge on the move."] },
+        { title:"Current is moving charge", art:"flow", cap:"Electrons drifting together = current",
+          body:["When many free electrons drift in the same direction, that flow of charge is <b>electric current</b>.",
+            "Current is measured in <b>amps (A)</b> — one amp is one coulomb of charge passing a point each second.",
+            "More electrons flowing per second means more amps.",
+            "There are two kinds of electricity: <b>static</b> (charge that builds up and sits still) and <b>current</b> (charge that flows). This course is about current."] },
+        { title:"Voltage is the push", art:null,
+          body:["Electrons will not move on their own — something has to push them. That push is <b>voltage</b>, sometimes called EMF or potential difference.",
+            "Voltage is a difference in charge between two points: lots of crowded electrons on one side, fewer on the other.",
+            "The bigger that difference, the harder the push, and the more current can flow.",
+            "Voltage is measured in <b>volts (V)</b> — a flashlight battery is 1.5 V, a wall outlet 120 V, a big motor feeder 480 V."],
+          note:"No voltage means no push. No complete path means nowhere to flow. You need both for current." },
+        { title:"Which way does it flow?", art:null,
+          body:["Electrons actually drift from the negative side toward the positive side.",
+            "But long before electrons were discovered, scientists guessed current flowed from positive to negative, and that habit stuck.",
+            "So most diagrams show <b>conventional current</b> going from + to −, even though the electrons go the other way.",
+            "Both describe the same circuit and the math comes out identical — just know the convention so schematics make sense."] },
+        { title:"How electricity is made", art:"gen", cap:"Spin a magnet near a coil and you make power",
+          body:["The main trick: move a <b>magnet</b> near a <b>coil</b> of wire and the moving magnetic field pushes electrons through the wire.",
+            "A <b>generator</b> does this on a huge scale, spinning magnets past coils to make the power you use.",
+            "Power plants spin those generators with steam (from coal, natural gas, or nuclear heat), falling water at a dam, or wind.",
+            "You will see this principle again in the magnetism module — it is the heart of the whole trade."] },
+        { title:"Other ways to make it", art:null,
+          body:["<b>Solar panels</b> turn sunlight straight into electricity, with no moving parts.",
+            "<b>Batteries</b> make electricity from a chemical reaction, storing energy you can carry.",
+            "<b>Fuel cells</b> and other sources exist too, but generators and batteries cover most of what you will meet.",
+            "Whatever the source, the job is the same: create a voltage that can push current through a circuit."] },
+        { title:"From the plant to the plug", art:null,
+          body:["Electricity leaves the plant at very high voltage so it can travel long distances efficiently.",
+            "Along the way, transformers step the voltage down in stages until it is safe for buildings.",
+            "It enters through a service, lands in a panel, and splits into the circuits that feed outlets, lights, and machines.",
+            "As an electrician you work at the end of that chain, controlling where the power goes and keeping it safe."] },
+        { title:"Why this matters to you", art:null,
+          body:["Electricity runs lights, heat, motors, and every electronic device — it is the backbone of modern life.",
+            "It is also invisible and unforgiving: you cannot see it, and it does not give second chances.",
+            "Understanding what it is and how it behaves is what keeps you safe and makes you good at the job.",
+            "Everything ahead — Ohm's Law, wiring, troubleshooting, safety — builds on the basics in this lesson."],
+          note:"You can't see electricity, only what it does. That is exactly why we learn the rules behind it." }
+      ]},
+      { type:"demo", demo:"circuit" },
+      { type:"test", quiz:[
+        { q:"Electricity (current) is best described as:", choices:["The movement of electric charge (electrons)","A kind of metal","Stored heat","Magnetic rust"], answer:0 },
+        { q:"The center of an atom, holding protons and neutrons, is the:", choices:["Electron","Nucleus","Conductor","Circuit"], answer:1 },
+        { q:"Electrons carry which charge?", choices:["Positive","Negative","No charge","Both"], answer:1 },
+        { q:"What gives electrons the 'push' to flow?", choices:["Gravity","Voltage","Wire color","Cold temperature"], answer:1 },
+        { q:"Current is measured in:", choices:["Volts","Amps","Ohms","Watts"], answer:1 },
+        { q:"For current to flow you need:", choices:["Heat and copper","A voltage and a path","A magnet and a battery","Static and air"], answer:1 },
+        { q:"Static electricity is charge that:", choices:["Flows steadily","Builds up and stays put","Only exists in wires","Is the same as current"], answer:1 },
+        { q:"Most grid electricity is generated by:", choices:["Burning wire","Spinning a magnet near a coil","Solar panels only","Static from clouds"], answer:1 },
+        { q:"A battery produces electricity from:", choices:["Sunlight","A chemical reaction","Wind","Spinning magnets"], answer:1 },
+        { q:"Voltage is best described as:", choices:["The speed of light","A difference in charge between two points","The weight of the wire","A type of metal"], answer:1 }
+      ]} ]},
+
+    { id:"m2", kicker:"Module 2", title:"Conductors & Insulators", blurb:"What lets electricity flow, what stops it, and what keeps you safe.",
+      steps:[ { type:"slides", slides:[
+        { title:"Conductors carry current", art:"condins", cap:"Free electrons flow; locked electrons do not",
+          body:["A <b>conductor</b> is any material whose electrons are loosely held, so they move easily and current flows through it.",
+            "Metals are the best conductors because their outer electrons drift freely through the whole material.",
+            "Touch a voltage across a conductor and current flows almost instantly.",
+            "Copper and aluminum carry nearly all the current in the electrical trade."] },
+        { title:"Why copper rules", art:null,
+          body:["<b>Copper</b> conducts extremely well, resists corrosion, and bends without snapping — close to the perfect wire.",
+            "<b>Aluminum</b> conducts a little less but is lighter and cheaper, so it is used for large feeders and service entrances.",
+            "Silver and gold conduct even better than copper but cost far too much for everyday wiring.",
+            "When you reach for wire on the job, it is almost always copper."] },
+        { title:"Solid vs stranded", art:null,
+          body:["<b>Solid</b> wire is a single piece of metal — stiff, holds its shape, good for fixed connections.",
+            "<b>Stranded</b> wire is many thin strands bundled together — flexible, handles vibration and movement.",
+            "Cords and anything that flexes use stranded; rigid runs often use solid.",
+            "Same copper inside; the build just changes how it behaves."] },
+        { title:"Wire size matters (AWG)", art:null,
+          body:["Wire is sized by gauge, the <b>AWG</b> number. Here is the catch: the <b>bigger</b> the number, the <b>thinner</b> the wire.",
+            "A thicker conductor has <b>less resistance</b> and can safely carry more current.",
+            "Pick a wire too small for the load and it overheats — a serious fire hazard.",
+            "Example: 14 AWG is thin (small lighting circuits); 4/0 AWG is a thick service conductor for a whole building."],
+          note:"Sizing conductors to the load is a core part of the job and a big part of the code." },
+        { title:"Insulators hold current back", art:null,
+          body:["An <b>insulator</b> grips its electrons so tightly that current cannot pass through easily.",
+            "Common insulators: rubber, plastic, glass, porcelain, and dry air.",
+            "The colored jacket on every wire is insulation — it keeps the current locked inside the metal where it belongs.",
+            "Insulation is what lets two wires run side by side without shorting together."] },
+        { title:"Semiconductors — the in-between", art:null,
+          body:["<b>Semiconductors</b> like silicon sit between conductors and insulators.",
+            "They can be made to conduct or block on command, which is how transistors and computer chips work.",
+            "Every device with a brain — phones, variable-frequency drives, controllers — relies on semiconductors.",
+            "You do not wire with them, but they run the electronics you will install and troubleshoot."] },
+        { title:"Resistance is everywhere", art:null,
+          body:["No material is a perfect conductor or a perfect insulator — every material has some <b>resistance</b>.",
+            "Low resistance means a good conductor; very high resistance means a good insulator.",
+            "Even copper has a little resistance, which is why long wire runs lose some voltage along the way.",
+            "Heat raises resistance in most metals — hot wire fights the current a bit more than cold wire."],
+          note:"You will put numbers to resistance with Ohm's Law in Module 4." },
+        { title:"Why it matters on the job", art:null,
+          body:["Conductors carry the current; insulation contains it; both protect you.",
+            "Damaged, cracked, or wet insulation lets current escape where it should not go — that is how shocks, faults, and fires start.",
+            "Water and the human body conduct too, which is exactly why electricity is dangerous around either one.",
+            "Inspecting insulation and choosing the right conductor are everyday parts of doing the work safely."],
+          note:"Rule of thumb: copper to carry it, insulation to contain it, your gloves to protect you." }
+      ]}, { type:"demo", demo:"materials" } ]},
+
+    { id:"m3", kicker:"Module 3", title:"AC vs DC", blurb:"The two ways current flows — and why the grid and your devices differ.",
+      steps:[ { type:"slides", slides:[
+        { title:"Two ways current can flow", art:"acdc", cap:"DC is steady; AC reverses 60 times a second",
+          body:["Current comes in two forms: <b>direct current (DC)</b> and <b>alternating current (AC)</b>.",
+            "The difference is simply the direction the electrons move over time.",
+            "Both deliver power and do real work; they just behave differently.",
+            "Knowing which is which tells you how to measure it, wire it, and stay safe around it."] },
+        { title:"DC — direct current", art:null,
+          body:["<b>Direct current</b> flows steadily in one direction, like water down a one-way pipe.",
+            "Its voltage holds basically constant — a 12 V battery pushes a steady 12 V.",
+            "Batteries, solar panels, and the insides of electronics all run on DC.",
+            "It is simple, stable, and great for storing energy and powering small devices."] },
+        { title:"AC — alternating current", art:null,
+          body:["<b>Alternating current</b> rapidly reverses direction, swinging one way then the other.",
+            "Plotted over time it traces a smooth <b>sine wave</b>, rising positive, falling negative, over and over.",
+            "Each complete back-and-forth is one <b>cycle</b>.",
+            "This is what comes out of every wall outlet and what the power grid delivers."] },
+        { title:"Frequency and hertz", art:null,
+          body:["<b>Frequency</b> is how many cycles happen each second, measured in <b>hertz (Hz)</b>.",
+            "The U.S. grid runs at <b>60 Hz</b> — sixty full reversals every second.",
+            "Much of the rest of the world runs at 50 Hz.",
+            "The time for one cycle is the <b>period</b>; at 60 Hz that is one-sixtieth of a second."] },
+        { title:"Peak vs the rated voltage", art:null,
+          body:["Because AC is always changing, its voltage is never one fixed number — it rises to a <b>peak</b> and back.",
+            "The 120 V on your outlet is the <b>effective (RMS)</b> value — the steady DC voltage that would do the same work.",
+            "So 120 V AC actually peaks higher than 120 V, but it heats and powers like a steady 120 V.",
+            "When a meter reads AC volts, it is showing you that effective value."] },
+        { title:"Why the grid uses AC", art:null,
+          body:["AC voltage is easy to raise and lower with <b>transformers</b> — and that is the killer feature.",
+            "High voltage travels long distances with much less loss, then gets stepped down for safe use.",
+            "Pushing the same power as DC over long lines would waste far more energy as heat.",
+            "That single advantage is why the whole grid is built on AC."] },
+        { title:"120 V and 240 V at home", art:null,
+          body:["Homes get <b>split-phase</b> service: two 120 V legs that are mirror images of each other.",
+            "Use one leg for normal 120 V circuits — outlets, lights, small appliances.",
+            "Use both legs together and you get 240 V for the big loads: ranges, dryers, water heaters, AC units.",
+            "Same service, two voltages, depending on how you connect."] },
+        { title:"Single-phase vs three-phase", art:null,
+          body:["Homes and small shops usually get <b>single-phase</b> power — one alternating supply.",
+            "Industrial and commercial sites use <b>three-phase</b>: three AC supplies, each offset in timing.",
+            "Three-phase delivers smooth, constant power that runs large motors efficiently.",
+            "Stepping into industrial work means living in the three-phase world."] },
+        { title:"Turning AC into DC", art:null,
+          body:["Most electronics need DC, so they convert the wall's AC inside themselves.",
+            "A <b>rectifier</b>, plus some filtering, does that job — it is what is happening inside a phone charger or power supply.",
+            "So a charger takes 120 V AC from the wall and hands your phone clean low-voltage DC.",
+            "Big DC users like drives and EV chargers do the same thing on a much larger scale."],
+          note:"Grid and motors run on AC. Batteries and electronics run on DC. Chargers and power supplies translate between them." }
+      ]},
+      { type:"demo", demo:"acdc" },
+      { type:"test", quiz:[
+        { q:"Direct current (DC):", choices:["Reverses direction constantly","Flows steadily in one direction","Only exists in power lines","Cannot power devices"], answer:1 },
+        { q:"What comes out of a standard wall outlet?", choices:["DC","AC","Neither","Both at once"], answer:1 },
+        { q:"In the U.S., AC reverses direction about:", choices:["Once per hour","6 times per second","60 times per second","Never"], answer:2 },
+        { q:"Frequency is measured in:", choices:["Volts","Hertz (Hz)","Ohms","Amps"], answer:1 },
+        { q:"A big reason the grid uses AC:", choices:["It's the only kind that exists","Voltage is easy to step up/down with transformers","DC is illegal","It needs no wires"], answer:1 },
+        { q:"The '120 V' rating of an outlet is the:", choices:["Peak voltage","Effective (RMS) value","Highest possible spike","Frequency"], answer:1 },
+        { q:"Batteries and the insides of electronics run on:", choices:["AC","DC","Neither","Three-phase"], answer:1 },
+        { q:"A device that converts AC into DC is a:", choices:["Transformer","Rectifier","Generator","Resistor"], answer:1 },
+        { q:"Industrial sites commonly run big motors on:", choices:["Static electricity","Three-phase AC","DC only","No power"], answer:1 },
+        { q:"A 240 V home load is fed by:", choices:["One 120 V leg","Both 120 V legs together","A battery","Solar only"], answer:1 }
+      ]} ]},
+
+    { id:"m4", kicker:"Module 4", title:"Current Flow & Ohm's Law", blurb:"Voltage, current, resistance, power — and the formula that ties them together.",
+      steps:[ { type:"slides", slides:[
+        { title:"The three quantities", art:"triangle", cap:"V on top, I and R below",
+          body:["Almost everything electrical comes down to three measurements working together.",
+            "<b>Voltage (V)</b>, in volts — the pressure or push behind the flow.",
+            "<b>Current (I)</b>, in amps — how much charge is actually flowing.",
+            "<b>Resistance (R)</b>, in ohms (Ω) — how much the material fights that flow."] },
+        { title:"The water analogy", art:null,
+          body:["Picture a water system to make it click.",
+            "<b>Pressure</b> from the pump is voltage; <b>flow rate</b> through the pipe is current; a <b>narrow pipe</b> is resistance.",
+            "Turn up the pressure (voltage) and more water flows (current).",
+            "Pinch the pipe (more resistance) and less water flows for the same pressure. Electricity behaves the same way."] },
+        { title:"Ohm's Law", art:"ohm", cap:"The wheel ties V, I, R, and power together",
+          body:["The single most useful formula in the trade: <b>V = I × R</b>. Voltage equals current times resistance.",
+            "It rearranges three ways: V = I × R, &nbsp; I = V ÷ R, &nbsp; R = V ÷ I.",
+            "The triangle is a memory trick — cover the value you want and the other two show how to find it.",
+            "Two known values always give you the third."] },
+        { title:"Walking through the triangle", art:null,
+          body:["Cover <b>V</b> and you see I × R — multiply current by resistance to get voltage.",
+            "Cover <b>I</b> and you see V over R — divide voltage by resistance to get current.",
+            "Cover <b>R</b> and you see V over I — divide voltage by current to get resistance.",
+            "Same one law, just rearranged for whatever you are missing."] },
+        { title:"Adding power", art:null,
+          body:["<b>Power (P)</b>, in watts (W), is how fast energy is being used: <b>P = V × I</b>.",
+            "Mix it with Ohm's Law and you get more forms: P = I² × R and P = V² ÷ R.",
+            "A device's wattage rating tells you how much power it draws when running.",
+            "Power is what you are really paying for and what heats up wires and equipment."] },
+        { title:"Units and prefixes", art:null,
+          body:["Values get big and small fast, so we use prefixes.",
+            "<b>k</b> means thousand: 1 kΩ = 1,000 Ω, and 2 kW = 2,000 W.",
+            "<b>m</b> means thousandth: 1 mA = 0.001 A, so 250 mA = 0.25 A.",
+            "Always line up your units before plugging numbers into a formula — mixing them is the number-one mistake."] },
+        { title:"Worked example 1", art:null,
+          body:["A heater runs on 120 V and has 20 Ω of resistance. How much current does it draw?",
+            "Use I = V ÷ R = 120 ÷ 20 = <b>6 A</b>.",
+            "How much power? P = V × I = 120 × 6 = <b>720 W</b>.",
+            "Two facts in, two facts out — that is Ohm's Law doing the work."] },
+        { title:"Worked example 2", art:null,
+          body:["A motor on 240 V draws 10 A. What is its resistance?",
+            "Use R = V ÷ I = 240 ÷ 10 = <b>24 Ω</b>.",
+            "Its power? P = V × I = 240 × 10 = <b>2,400 W</b>, or 2.4 kW.",
+            "Notice you can always find power once you know any two of V, I, and R."] },
+        { title:"Energy and your bill", art:null,
+          body:["Power (watts) is the <b>rate</b> of using energy; run it over time and you get <b>energy</b>.",
+            "The utility bills you in <b>kilowatt-hours (kWh)</b> — kilowatts used multiplied by hours running.",
+            "A 1,000 W heater running for 1 hour uses 1 kWh.",
+            "That is exactly how the meter on the building adds up the bill."] },
+        { title:"Reading a load", art:null,
+          body:["A <b>load</b> is anything that uses power — a lamp, heater, motor, or tool.",
+            "From a nameplate or a meter you will usually know two of the three values.",
+            "Plug them into Ohm's Law and the rest falls out.",
+            "Next, use the calculator to explore, then solve four problems on your own."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"Ohm's Law is:", choices:["V = I ÷ R","V = I × R","V = I + R","V = R ÷ I"], answer:1 },
+        { q:"Voltage is measured in:", choices:["Amps","Ohms","Volts","Watts"], answer:2 },
+        { q:"Current is measured in:", choices:["Volts","Ohms","Amps","Watts"], answer:2 },
+        { q:"Resistance is measured in:", choices:["Volts","Ohms","Amps","Watts"], answer:1 },
+        { q:"To find current from voltage and resistance:", choices:["I = V × R","I = V ÷ R","I = R ÷ V","I = V + R"], answer:1 },
+        { q:"To find resistance from voltage and current:", choices:["R = V × I","R = V ÷ I","R = I ÷ V","R = V + I"], answer:1 },
+        { q:"Electrical power is:", choices:["P = V ÷ I","P = V × I","P = R ÷ I","P = V − I"], answer:1 },
+        { q:"2 kΩ equals:", choices:["2 ohms","20 ohms","200 ohms","2,000 ohms"], answer:3 },
+        { q:"A 120 V heater with 20 Ω of resistance draws:", choices:["2 A","6 A","60 A","240 A"], answer:1 },
+        { q:"Your electric bill measures energy in:", choices:["Volts","Amps","Kilowatt-hours","Ohms"], answer:2 }
+      ]},
+      { type:"calc" } ]},
+
+    { id:"m5", kicker:"Module 5", title:"Magnetism & Electromagnetism", blurb:"The invisible force behind every motor, generator, and transformer.",
+      steps:[ { type:"slides", slides:[
+        { title:"What a magnetic field is", art:"magnet", cap:"Invisible field lines run N to S",
+          body:["A magnet has an invisible region around it, the <b>magnetic field</b>, where it can push or pull other magnets and certain metals.",
+            "We picture that field as lines flowing out of the <b>North</b> pole and into the <b>South</b> pole.",
+            "Opposite poles attract; like poles repel — the same idea as electric charge, in magnetic form.",
+            "Iron, steel, nickel, and cobalt respond strongly to magnetic fields; most other materials do not."] },
+        { title:"Permanent vs temporary magnets", art:null,
+          body:["A <b>permanent</b> magnet keeps its field all the time — think of a fridge magnet.",
+            "A <b>temporary</b> magnet only acts as a magnet under the right conditions, like an electromagnet that needs current.",
+            "Being able to switch a magnet on and off is what makes electromagnets so useful in the trade.",
+            "Most electrical equipment uses temporary, controllable magnetism."] },
+        { title:"Electricity makes magnetism", art:"coil", cap:"Current through a coil = electromagnet",
+          body:["Here is the key link between the two: <b>current flowing through a wire creates a magnetic field</b> around it.",
+            "Wind that wire into a tight coil and the fields stack into one strong field — that is an <b>electromagnet</b>.",
+            "More turns of wire and more current both make the magnet stronger.",
+            "Cut the current and the magnetism disappears — that on/off control is the whole point."] },
+        { title:"Magnetism makes electricity", art:null,
+          body:["It works in reverse too: move a magnet near a coil and you <b>induce</b> a voltage in the wire.",
+            "This is <b>electromagnetic induction</b>, and it is the principle behind every generator.",
+            "The faster the magnet moves, the more voltage you induce.",
+            "Motion plus magnetism plus a coil equals electricity — you will feel this yourself in the demo."],
+          note:"Generators turn motion into electricity; motors turn electricity into motion. Same physics, run two directions." },
+        { title:"The iron core", art:null,
+          body:["The amount of magnetic field is called <b>flux</b> — more flux means a stronger effect.",
+            "Slip an iron core inside a coil and it concentrates the field, making the electromagnet far stronger.",
+            "That is why motors, transformers, and relays are built around iron cores.",
+            "The core guides and focuses the magnetism where the equipment needs it."] },
+        { title:"The hand rules", art:null,
+          body:["Point your thumb along the current and your fingers curl the way the magnetic field wraps the wire.",
+            "These simple hand rules help you predict field direction and the force on a conductor.",
+            "You do not need the heavy math right now — just trust that current and magnetism always travel together.",
+            "Techs use these rules to reason about motors, solenoids, and faults."] },
+        { title:"Why it matters in electrical", art:null,
+          body:["<b>Motors</b> spin because magnetic force pushes on current-carrying coils.",
+            "<b>Generators</b> do the reverse, moving magnets past coils to create electricity.",
+            "<b>Transformers</b> use magnetism to step AC voltage up or down with no moving parts.",
+            "<b>Solenoids, relays, and contactors</b> use electromagnets to move and switch things automatically."],
+          note:"Electricity and magnetism are two sides of one coin — the core of the whole trade." }
+      ]},
+      { type:"demo", demo:"induction" },
+      { type:"test", quiz:[
+        { q:"Magnetic field lines run from:", choices:["South to North","North to South","East to West","No direction"], answer:1 },
+        { q:"Opposite magnetic poles:", choices:["Repel","Attract","Do nothing","Explode"], answer:1 },
+        { q:"Like magnetic poles:", choices:["Attract","Repel","Merge","Disappear"], answer:1 },
+        { q:"Running current through a coil creates:", choices:["A battery","An electromagnet","An insulator","Static only"], answer:1 },
+        { q:"An electromagnet gets stronger with:", choices:["Less current","More turns and more current","A longer wire only","Cold temperatures"], answer:1 },
+        { q:"Making electricity by moving a magnet near a coil is called:", choices:["Conduction","Electromagnetic induction","Resistance","Rectification"], answer:1 },
+        { q:"An electric motor works because:", choices:["Heat expands the metal","Magnetic force pushes on current-carrying coils","Insulation melts","Gravity pulls the shaft"], answer:1 },
+        { q:"A generator converts:", choices:["Electricity into heat","Motion into electricity","Light into sound","Water into copper"], answer:1 },
+        { q:"A transformer changes AC voltage using:", choices:["Spinning blades","Magnetism, with no moving parts","A chemical reaction","Sunlight"], answer:1 },
+        { q:"A relay or contactor uses an electromagnet to:", choices:["Store charge","Switch contacts open or closed","Make heat","Generate AC"], answer:1 }
+      ]} ]},
+
+    { id:"m6", kicker:"Module 6", title:"Series vs Parallel", blurb:"The two ways to connect a circuit — then wire both yourself.",
+      steps:[ { type:"slides", slides:[
+        { title:"Two ways to build a circuit", art:null,
+          body:["Once you have a source and loads, there are two basic ways to connect them: <b>series</b> and <b>parallel</b>.",
+            "The choice changes how current, voltage, and failures behave.",
+            "Almost every real circuit is one, the other, or a mix of both.",
+            "Get these two patterns down and wiring starts to make sense."] },
+        { title:"Series circuits", art:"series", cap:"One path through everything",
+          body:["A <b>series</b> circuit has only one path — current flows through each component in turn.",
+            "The <b>same current</b> goes through everything in the loop.",
+            "The voltage <b>splits</b> across the parts and adds up to the source voltage.",
+            "Think of it as a single hallway everyone has to walk through one after another."] },
+        { title:"Series behavior", art:null,
+          body:["Break the path anywhere and the <b>whole circuit stops</b> — there is nowhere else for current to go.",
+            "Old string lights are the classic example: one bulb dies and the whole strand goes dark.",
+            "Add more loads in series and total resistance goes up, so total current goes down.",
+            "Each added load also means each one gets a smaller share of the voltage."] },
+        { title:"Parallel circuits", art:"parallel", cap:"Each load gets its own branch",
+          body:["A <b>parallel</b> circuit gives each load its own branch straight across the source.",
+            "Every branch sees the <b>full source voltage</b>.",
+            "The current <b>divides</b> among the branches — each one draws exactly what it needs.",
+            "Think of it as several doorways side by side, each opening to the same room."] },
+        { title:"Parallel behavior", art:null,
+          body:["One branch can fail and the others <b>keep right on working</b>.",
+            "Your home's outlets and lights are wired in parallel so one burned-out bulb does not kill the rest.",
+            "Add more loads in parallel and total current goes up — every branch adds more draw on the source.",
+            "That is why overloading a circuit with too many devices trips the breaker."] },
+        { title:"Resistance behaves differently", art:null,
+          body:["In <b>series</b>, resistances add up — the total is larger than any single part.",
+            "In <b>parallel</b>, the total resistance drops <b>below the smallest</b> branch, because you are giving current more paths.",
+            "More paths makes it easier for current to flow, which means more total current.",
+            "This is the math behind why too many parallel loads pulls heavy current."] },
+        { title:"Troubleshooting: open vs short", art:null,
+          body:["An <b>open</b> is a broken path — a cut wire or a loose connection — and no current flows past the break.",
+            "A <b>short</b> is an unintended low-resistance path where current skips the load; way too much current flows and the breaker trips.",
+            "Open circuits go dead; shorts blow protection.",
+            "Knowing what series and parallel should do tells you instantly when something is wrong."] },
+        { title:"Where you see them", art:null,
+          body:["<b>Series:</b> a switch in line with a load, control strings, and certain safety interlocks.",
+            "<b>Parallel:</b> receptacles, light fixtures, and most building wiring.",
+            "Many real systems combine both — a series switch feeding a set of parallel lights.",
+            "Now prove it: wire a series circuit, then a parallel one, in the sandbox."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"In a series circuit, the current is:", choices:["Different in every part","The same through every part","Always zero","Doubled at each load"], answer:1 },
+        { q:"In a series circuit, the voltage:", choices:["Is the same everywhere","Splits across the parts","Is always zero","Doubles at each part"], answer:1 },
+        { q:"A series circuit has:", choices:["Many paths","One path","No path","Two sources"], answer:1 },
+        { q:"If one lamp burns out in a simple series string, the others:", choices:["Get brighter","Also go out","Are unaffected","Switch to AC"], answer:1 },
+        { q:"In a parallel circuit, each branch gets:", choices:["A share of the voltage","The full source voltage","No voltage","Only current"], answer:1 },
+        { q:"In a parallel circuit, the current:", choices:["Is the same in every branch always","Divides among the branches","Is always zero","Cannot flow"], answer:1 },
+        { q:"Home receptacles are wired in parallel so that:", choices:["They share one bulb","One failure doesn't kill the rest","They use less copper","They run on DC"], answer:1 },
+        { q:"Adding more resistors in series makes total resistance:", choices:["Go down","Go up","Stay the same","Become zero"], answer:1 },
+        { q:"In parallel, total resistance is:", choices:["Bigger than any branch","Smaller than the smallest branch","Always 1 Ω","Equal to one branch"], answer:1 },
+        { q:"A short circuit is:", choices:["A broken path with no current","An unintended low-resistance path with too much current","A normal series circuit","A dead battery"], answer:1 }
+      ]},
+      { type:"wiring", task:{
+        intro:"Wire a <b>SERIES</b> circuit — one single path through both lamps: <b>Battery (+) → Lamp 1 → Lamp 2 → Battery (−)</b>. Click terminal to terminal to run a wire; click a wire to remove it.",
+        hint:"3 wires, one path: + → L1 → L2 → −.", successMsg:"That's series — one path, same current through both lamps.",
+        viewBox:"0 0 600 320",
+        comps:[{x:50,y:60,w:80,h:190,label:"BATTERY"},{x:230,y:60,w:80,h:90,label:"LAMP 1"},{x:430,y:60,w:80,h:90,label:"LAMP 2"}],
+        lamp:{cx:270,cy:105,r:22},lamp2:{cx:470,cy:105,r:22},
+        nodes:[{id:"bp",label:"+",x:90,y:95,lx:0,ly:-14},{id:"bn",label:"−",x:90,y:215,lx:0,ly:22},
+          {id:"l1a",label:"1a",x:230,y:105,lx:-18,ly:0},{id:"l1b",label:"1b",x:310,y:105,lx:18,ly:0},
+          {id:"l2a",label:"2a",x:430,y:105,lx:-18,ly:0},{id:"l2b",label:"2b",x:510,y:105,lx:18,ly:0}],
+        correct:[["bp","l1a"],["l1b","l2a"],["l2b","bn"]] }},
+      { type:"wiring", task:{
+        intro:"Now wire a <b>PARALLEL</b> circuit — each lamp on its own branch: both lamp tops to <b>(+)</b>, both lamp bottoms to <b>(−)</b>.",
+        hint:"4 wires: + to each lamp top, − to each lamp bottom.", successMsg:"That's parallel — each lamp has its own branch and full voltage.",
+        viewBox:"0 0 600 320",
+        comps:[{x:50,y:50,w:80,h:210,label:"BATTERY"},{x:280,y:50,w:80,h:210,label:"LAMP 1"},{x:450,y:50,w:80,h:210,label:"LAMP 2"}],
+        lamp:{cx:320,cy:155,r:22},lamp2:{cx:490,cy:155,r:22},
+        nodes:[{id:"bp",label:"+",x:90,y:90,lx:0,ly:-14},{id:"bn",label:"−",x:90,y:225,lx:0,ly:22},
+          {id:"l1t",label:"1+",x:320,y:95,lx:0,ly:-14},{id:"l1b",label:"1−",x:320,y:225,lx:0,ly:22},
+          {id:"l2t",label:"2+",x:490,y:95,lx:0,ly:-14},{id:"l2b",label:"2−",x:490,y:225,lx:0,ly:22}],
+        correct:[["bp","l1t"],["bp","l2t"],["bn","l1b"],["bn","l2b"]] }} ]},
+
+    { id:"m7", kicker:"Module 7", title:"Series & Parallel Calculations", blurb:"Calculate current, resistance, voltage, and power — then prove it in the Circuit Lab.",
+      steps:[ { type:"slides", slides:[
+        { title:"Why the math matters", art:null,
+          body:["Knowing series from parallel is step one; now you will <b>put numbers to it</b>.",
+            "These calculations tell you the current a circuit will draw, the voltage at each part, and the power used.",
+            "That is how you size wire, pick breakers, and find faults.",
+            "It is all built on Ohm's Law applied to the whole circuit."] },
+        { title:"The series rules", art:"series", cap:"Same current, voltage divides",
+          body:["<b>Resistance adds up:</b> R_total = R1 + R2 + R3 and so on.",
+            "<b>Current is the same</b> everywhere: I_total = I1 = I2.",
+            "<b>Voltage divides:</b> V_total = V1 + V2; more resistance takes a bigger share.",
+            "Lock those three in and series circuits are easy."] },
+        { title:"Series, step by step", art:"vdiv", cap:"Voltage splits across each resistor",
+          body:["1. Add the resistances to get R_total.",
+            "2. Find total current: I = V_source ÷ R_total.",
+            "3. Find each voltage drop: V1 = I × R1, V2 = I × R2.",
+            "Example: 120 V with R1 = 10 Ω and R2 = 20 Ω gives R_total = 30 Ω, I = 4 A, V1 = 40 V, V2 = 80 V."] },
+        { title:"The parallel rules", art:"parallel", cap:"Same voltage, current divides",
+          body:["<b>Voltage is the same</b> on every branch: V1 = V2 = V_source.",
+            "<b>Current divides:</b> I_total = I1 + I2, each branch found with Ohm's Law.",
+            "<b>Total resistance</b> is smaller than any single branch.",
+            "More branches make it easier for current, so total current climbs."] },
+        { title:"Parallel, step by step", art:"idiv", cap:"Each branch draws its own current",
+          body:["1. Find each branch current: I1 = V ÷ R1, I2 = V ÷ R2.",
+            "2. Add them for total current: I_total = I1 + I2.",
+            "3. Find total resistance: R_total = V ÷ I_total. For two resistors, R_total = R1 × R2 ÷ (R1 + R2).",
+            "Example: 120 V across two 60 Ω resistors gives I1 = I2 = 2 A, I_total = 4 A, R_total = 30 Ω."] },
+        { title:"Power in both", art:null,
+          body:["Power always <b>adds up</b>, series or parallel: P_total = P1 + P2.",
+            "For each part use P = V × I (or I² × R, or V² ÷ R).",
+            "Total power also equals source voltage times total current: P_total = V_source × I_total.",
+            "If your part powers do not add up to the total, recheck your numbers."],
+          note:"Remember the splits: SERIES splits voltage, PARALLEL splits current. Power always adds." },
+        { title:"Combination circuits", art:null,
+          body:["Real circuits often mix both — some parts in series, some in parallel.",
+            "Solve the <b>parallel</b> chunks first and replace each with its single equivalent resistance.",
+            "Then treat what is left as a simple <b>series</b> circuit.",
+            "Break a big circuit into pieces you already know how to solve, one at a time."] },
+        { title:"Your turn", art:null,
+          body:["Next up is the <b>Circuit Lab</b>: set a source voltage and two resistors, flip between series and parallel, and watch every value update live.",
+            "Then solve four problems — total resistance, total current, a voltage drop, and parallel total current.",
+            "Nail those and you finish the calculations module."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"In a series circuit, total resistance is:", choices:["The largest resistor","R1 + R2 + …","Always 1 Ω","V ÷ P"], answer:1 },
+        { q:"In a parallel circuit, the voltage across each branch is:", choices:["Different for each","The full source voltage","Always zero","Half the source"], answer:1 },
+        { q:"Two 60 Ω resistors in parallel give a total resistance of:", choices:["120 Ω","60 Ω","30 Ω","6 Ω"], answer:2 },
+        { q:"In series, to find total current you use:", choices:["I = V_source ÷ R_total","I = R_total ÷ V","I = P × V","I = V + R"], answer:0 },
+        { q:"Total power in a circuit equals:", choices:["P1 − P2","P1 + P2 + …","Always 100 W","V ÷ I"], answer:1 },
+        { q:"Series: 120 V, R1 = 10 Ω, R2 = 20 Ω. Total resistance is:", choices:["10 Ω","20 Ω","30 Ω","200 Ω"], answer:2 },
+        { q:"That same series circuit — total current is:", choices:["2 A","4 A","12 A","30 A"], answer:1 },
+        { q:"That same series circuit — voltage across R2 is:", choices:["20 V","40 V","80 V","120 V"], answer:2 },
+        { q:"Parallel: 120 V across two 60 Ω resistors. Each branch current is:", choices:["1 A","2 A","4 A","60 A"], answer:1 },
+        { q:"Two equal resistors in parallel give a total resistance of:", choices:["Double one resistor","Half of one resistor","The same as one resistor","Zero"], answer:1 }
+      ]},
+      { type:"lab" } ]}
+  ,
+    { id:"m8", kicker:"Module 8", title:"Using a Multimeter — Reading Voltage", blurb:"The meter you'll use every day — and how to read voltage safely.",
+      steps:[ { type:"slides", slides:[
+        { title:"Meet the multimeter", art:null,
+          body:["A <b>multimeter</b> is the tool you will reach for most — it measures <b>voltage, current, and resistance</b>.",
+            "A dial or set of buttons picks what you are measuring, and the display shows the reading.",
+            "It has two leads: a <b>black</b> probe and a <b>red</b> probe.",
+            "A good meter is your eyes into a circuit you cannot see."] },
+        { title:"Voltage is measured across", art:null,
+          body:["To read voltage, touch the two probes to <b>two different points</b> — the meter shows the <b>difference</b> between them.",
+            "You measure voltage <b>across</b> a component (in parallel with it), with the circuit <b>energized</b>.",
+            "Touch both probes to the same point and you read 0 V — there is no difference.",
+            "This is why a single wire by itself has no voltage 'on' it until you compare it to something else."],
+          note:"Voltage is always between two points. Pick your two points and the meter does the rest." },
+        { title:"Red, black, and the dial", art:"acdc", cap:"Set DC (straight) or AC (wavy)",
+          body:["The <b>black</b> lead goes in the <b>COM</b> jack; the <b>red</b> lead goes in the <b>V/Ω</b> jack.",
+            "Set the dial to volts — <b>DC</b> (shown as a straight line) for batteries, <b>AC</b> (a wavy line) for outlets.",
+            "Many meters <b>auto-range</b>, picking the right scale for you automatically.",
+            "Pick the wrong mode and the reading will look wrong — match the meter to the source."] },
+        { title:"Test before you touch", art:null,
+          body:["Before working on anything, verify it is truly <b>dead</b> — never assume.",
+            "Best practice: test a <b>known live</b> source first, then your circuit, then the known source again.",
+            "That 'test your tester' habit proves the meter actually works before you trust a 0 V reading.",
+            "A meter reading 0 because it is broken can get you killed — prove it works first."] },
+        { title:"Current and resistance", art:null,
+          body:["<b>Current</b> is measured <b>in series</b> — the meter goes into the path so all the current flows through it.",
+            "Measuring current on the wrong setting, across a live circuit, can blow the meter's fuse — be careful.",
+            "<b>Resistance</b> is measured with the power <b>OFF</b>, never on a live circuit.",
+            "Voltage is the everyday measurement; current and resistance are for specific checks."] },
+        { title:"Continuity — the quick check", art:null,
+          body:["Most meters have a <b>continuity</b> setting that beeps when there is a complete path.",
+            "It is perfect for finding a broken wire, a blown fuse, or a switch that is not making contact.",
+            "Always check continuity with the power <b>off</b> — it sends a tiny test current of its own.",
+            "A beep means connected; silence means an open."] },
+        { title:"Your turn", art:null,
+          body:["Next you will use a meter: tap the test points to place the probes and read the voltage.",
+            "Remember, the meter shows the difference between wherever the two probes land.",
+            "Measure the source first, then a voltage drop across part of the circuit.",
+            "This is a skill you will use on nearly every service call."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"A multimeter can measure:", choices:["Only voltage","Voltage, current, and resistance","Only current","Temperature"], answer:1 },
+        { q:"To measure voltage, you place the probes:", choices:["On one point only","Across two points (in parallel)","In series with the load","On the ground rod only"], answer:1 },
+        { q:"The black probe goes in the jack labeled:", choices:["VΩ","COM","10A","AC"], answer:1 },
+        { q:"To check a battery you set the meter to:", choices:["AC volts","DC volts","Ohms","Amps"], answer:1 },
+        { q:"To check a wall outlet you set the meter to:", choices:["DC volts","AC volts","Ohms","Continuity"], answer:1 },
+        { q:"A voltage reading is the difference between:", choices:["Two resistors","The two points the probes touch","The wire and the floor","AC and DC"], answer:1 },
+        { q:"'Test your tester' means:", choices:["Buy a new meter","Check the meter on a known live source first","Shake the meter","Read the manual"], answer:1 },
+        { q:"Resistance should be measured with the power:", choices:["On","Off","Doubled","On a wall outlet"], answer:1 },
+        { q:"Current is measured with the meter connected:", choices:["Across the load","In series, in the path","On the ground","To one point"], answer:1 },
+        { q:"Before working on a circuit you should:", choices:["Assume it's dead","Verify it's de-energized with a meter","Touch it quickly to check","Turn the lights off"], answer:1 }
+      ]},
+      { type:"demo", demo:"meter" } ]},
+
+    { id:"m9", kicker:"Module 9", title:"Electrical Safety & PPE", blurb:"Stay alive: hazards, lockout/tagout, and the gear that protects you.",
+      steps:[ { type:"slides", slides:[
+        { title:"Why electricity is dangerous", art:null,
+          body:["You cannot see, hear, or smell electricity — only what it does after it is too late.",
+            "It takes surprisingly <b>little</b> current through the body to injure you or stop your heart.",
+            "Your body is a conductor, and a much better one when you are sweaty or wet.",
+            "Respect is not optional here; the people who get hurt are usually the ones who got comfortable."] },
+        { title:"Shock", art:null,
+          body:["<b>Shock</b> is current passing through your body when you become part of the circuit.",
+            "Even a small current can lock up your muscles so you cannot let go.",
+            "A larger current across the chest can stop the heart.",
+            "Dry skin and dry conditions raise your resistance and your odds; wet conditions lower both."] },
+        { title:"Arc flash", art:null,
+          body:["<b>Arc flash</b> is an explosive release of heat and light from a fault between conductors.",
+            "Temperatures can be hotter than the surface of the sun for an instant.",
+            "It can burn, blind, and throw debris — and it can hurt you from several feet away.",
+            "This is why working on energized gear takes special PPE and procedures."] },
+        { title:"Lockout / Tagout (LOTO)", art:null,
+          body:["Before working on equipment: <b>de-energize</b> it, then <b>lock</b> the disconnect open with your own lock.",
+            "Add a <b>tag</b> with your name so no one re-energizes it while you work.",
+            "One worker, one lock, one key — only you can remove your lock.",
+            "If several people work on it, each person adds their own lock."],
+          note:"No lock, no work. LOTO exists because someone died without it." },
+        { title:"Lock the handle — test the wires", art:null,
+          body:["<b>OSHA 1910.147</b> sets the order: only <b>after</b> the lockout devices are applied does the worker verify isolation — testing to confirm a true zero-energy state. Verification is the final step, never an early one.",
+            "<b>NFPA 70E 120.5</b> says the same: once the lockout devices are in place, the qualified person tests to confirm the equipment is actually de-energized before any work begins.",
+            "So how do you test through a lock? You do not have to — the lock and the test are in two different places. The lock clamps the <b>disconnect handle</b>, holding it OFF so no one can turn it back on; it never goes on the wires.",
+            "You verify dead by putting your meter on the <b>downstream conductors</b> — the load-side terminals of the gear you are about to work on. They stay open and reachable, so the lock is never in your way."],
+          note:"Lock the handle so the circuit cannot be re-energized, then meter the conductors to prove 0 V. Test before locking and someone could flip the handle on in the gap — making your 'dead' reading a lie." },
+        { title:"Test before touch", art:null,
+          body:["Locking out is not the finish line — you still <b>verify it is dead</b> with a meter, using what you learned last module.",
+            "Treat every conductor as <b>live</b> until you have proven otherwise with your own test.",
+            "Test a known live source, test your circuit, test the known source again.",
+            "Assumptions are what get people hurt; verification is what keeps you safe."] },
+        { title:"PPE — your gear", art:null,
+          body:["<b>Insulated gloves</b> rated for the voltage you are working on, inspected before every use.",
+            "<b>Flame-resistant (FR) clothing</b> to protect against arc-flash burns.",
+            "<b>Safety glasses or a face shield</b> for your eyes and face.",
+            "<b>Insulated tools</b> made and rated for electrical work — not just any screwdriver."] },
+        { title:"Arc-rated (FR) clothing & ratings", art:null,
+          body:["<b>FR</b> means flame-resistant — the fabric self-extinguishes instead of burning. <b>Arc-rated (AR)</b> goes further: it has been tested against a real electric arc and given a number. All AR clothing is FR, but not all FR clothing is arc-rated.",
+            "That number is the <b>arc rating</b>, measured in <b>cal/cm²</b> (calories per square centimeter) — how much arc-flash energy the fabric can block. The label shows the lower of two test values, the ATPV or the EBT, per ASTM F1506.",
+            "NFPA 70E sorts protection into <b>PPE categories</b>, each with a minimum arc rating: Category 1 = 4 cal/cm², Category 2 = 8, Category 3 = 25, Category 4 = 40.",
+            "Your clothing's arc rating must be <b>equal to or greater than</b> the incident energy calculated for the task. Above 40 cal/cm², you do not just add heavier gear — you de-energize."],
+          note:"Everyday cotton or polyester that melts is not protection — melted fabric makes burns worse. Match the arc rating to the hazard." },
+        { title:"Insulated gloves & glove classes", art:null,
+          body:["Rubber insulating gloves are rated by <b>class</b> under ASTM D120, referenced by OSHA 1910.137. Each class has a maximum working voltage.",
+            "<b>Class 00</b> up to 500 V AC · <b>Class 0</b> up to 1,000 V · <b>Class 1</b> up to 7,500 V · <b>Class 2</b> up to 17,000 V · <b>Class 3</b> up to 26,500 V · <b>Class 4</b> up to 36,000 V.",
+            "Most everyday work on 120–480 V systems uses <b>Class 0</b>. Always rate for the <b>highest</b> voltage you could touch, not the typical one.",
+            "Wear <b>leather protectors</b> over the rubber to guard against cuts and punctures — leather alone gives zero electrical protection. Inspect and air-test the rubber before every use, and have them dielectrically retested on schedule."],
+          note:"A pinhole or a nick can let voltage through. If a glove fails inspection, it is out of service — no exceptions." },
+        { title:"Safe habits", art:null,
+          body:["Keep <b>one hand in your pocket</b> near live gear — it avoids a current path across your chest and heart.",
+            "Stay out of <b>wet conditions</b> and use <b>GFCI</b> protection on portable tools and outdoor circuits.",
+            "Do not work alone on dangerous equipment; have someone who can cut power and get help.",
+            "Never rush a shortcut — the job is never worth your life."],
+          note:"When in doubt, lock it out and verify. Going home safe is the only acceptable outcome." }
+      ]},
+      { type:"test", quiz:[
+        { q:"The most important rule before touching a conductor:", choices:["Work fast","Treat it as live until you've verified it's dead","Wear sunglasses","Assume the breaker is off"], answer:1 },
+        { q:"Arc flash is:", choices:["A type of light bulb","An explosive release of heat and light from a fault","A slow leak of current","A kind of meter"], answer:1 },
+        { q:"LOTO stands for:", choices:["Low Tolerance","Lockout/Tagout","Load Test","Line Output"], answer:1 },
+        { q:"In lockout/tagout, the disconnect is:", choices:["Left on","Locked open with your own lock and tagged","Taped shut","Painted red"], answer:1 },
+        { q:"When several people work on the same equipment:", choices:["They share one lock","Each worker applies their own lock","Only the boss locks it","No locks needed"], answer:1 },
+        { q:"FR clothing protects mainly against:", choices:["Rain","Arc-flash burns","Noise","Dust"], answer:1 },
+        { q:"Keeping one hand in your pocket near live gear:", choices:["Looks professional","Avoids a current path across your heart","Keeps your hand warm","Is required by the meter"], answer:1 },
+        { q:"Your body conducts electricity better when it is:", choices:["Dry","Wet or sweaty","Cold","Still"], answer:1 },
+        { q:"After locking out, before you work you must:", choices:["Wait 5 minutes","Verify the circuit is dead with a meter","Call the utility","Remove the tag"], answer:1 },
+        { q:"Insulated gloves should be:", choices:["Any leather gloves","Rated for the voltage you're working on","Cotton","Optional indoors"], answer:1 }
+      ]},
+      { type:"demo", demo:"loto" } ]},
+
+    { id:"final", kicker:"Final", title:"Final Exam", blurb:"A cumulative 20-question exam pulled from every module. Pass it to earn your certificate.",
+      steps:[ { type:"final" } ] }
+  ]
+};
+
+/* ===== ENGINE ===== */
+const REVIEW_MODE=false;  /* set to false before launch — gates lessons normally */
+const LS="wirenerd_groundzero_progress_v2";
+const $=s=>document.querySelector(s);
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const NS="http://www.w3.org/2000/svg";
+
+let state=loadState();
+let view={idx:0,step:0};
+let slideN=0, quizSel=[], armed=null, userWires=[];
+let lab={mode:"series",V:120,R1:20,R2:30};
+let demoRAF=null, demoCleanup=null;
+function cancelDemo(){if(demoRAF){cancelAnimationFrame(demoRAF);demoRAF=null;}if(demoCleanup){demoCleanup();demoCleanup=null;}}
+
+function loadState(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.mods)return s;}catch(e){}return{name:"",mods:{},completedAt:null};}
+function save(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+function steps(i){return COURSE.modules[i].steps;}
+function md(id,len){if(!state.mods[id])state.mods[id]={done:Array(len).fill(false)};while(state.mods[id].done.length<len)state.mods[id].done.push(false);return state.mods[id];}
+function modComplete(i){const mo=COURSE.modules[i];return md(mo.id,mo.steps.length).done.every(Boolean);}
+function moduleUnlocked(i){return REVIEW_MODE||i===0||modComplete(i-1);}
+function courseComplete(){return COURSE.modules.every((m,i)=>modComplete(i));}
+function firstIncompleteStep(i){const mo=COURSE.modules[i];const d=md(mo.id,mo.steps.length).done;const ix=d.findIndex(x=>!x);return ix<0?mo.steps.length-1:ix;}
+function pairKey(a,b){return [a,b].sort().join("|");}
+function stepLabel(t){return t==="slides"?"Lesson":t==="test"?"Test":t==="calc"?"Calculator":t==="lab"?"Circuit Lab":t==="demo"?"Interactive":t==="final"?"Exam":"Wiring";}
+
+function renderHome(){
+  cancelDemo();stopSpeech();
+  const total=COURSE.modules.length, done=COURSE.modules.filter((m,i)=>modComplete(i)).length;
+  $("#pbarFill").style.width=Math.round(done/total*100)+"%";
+  $("#progLabel").textContent=done===0?"":(courseComplete()?"Course complete ✓":done+" of "+total+" modules done");
+  $("#startBtn").textContent=done===0?"Start the course":(courseComplete()?"Review course":"Resume course");
+  const list=$("#modList");list.innerHTML="";
+  COURSE.modules.forEach((mo,i)=>{
+    const unlocked=moduleUnlocked(i),complete=modComplete(i);
+    const tags=mo.steps.map(s=>s.type==="wiring"?'<span class="mtag sb">Sandbox</span>':s.type==="lab"?'<span class="mtag sb">Circuit Lab</span>':s.type==="demo"?'<span class="mtag sb">Interactive</span>':s.type==="final"?'<span class="mtag cl">Exam</span>':s.type==="calc"?'<span class="mtag cl">Calculator</span>':s.type==="test"?'<span class="mtag">Test</span>':'<span class="mtag">Lesson</span>');
+    const uniq=[...new Set(tags)].join("");
+    const row=el("div","mod "+(unlocked?"unlocked":"locked"));
+    row.innerHTML='<div class="idx">'+(complete?"✓":(i+1))+'</div><div class="info"><div class="k">'+mo.kicker+'</div><h3>'+mo.title+'</h3><p>'+mo.blurb+'</p><div class="tags">'+uniq+'</div></div><div class="badge '+(complete?"done":(unlocked?"go":""))+'">'+(complete?"Completed":(unlocked?"Start ›":"Locked"))+'</div>';
+    if(unlocked)row.addEventListener("click",()=>openModule(i));
+    list.appendChild(row);
+  });
+  let hc=$("#homeCert");
+  if(courseComplete()||REVIEW_MODE){if(!hc){hc=el("div");hc.id="homeCert";hc.style.marginTop="22px";hc.innerHTML='<button class="btn primary" id="goCert">View / download certificate ›</button>';$("#modList").after(hc);$("#goCert").addEventListener("click",showCertificate);}}
+  else if(hc){hc.remove();}
+  showOnly("home");
+}
+function showOnly(w){$("#homeWrap").style.display=w==="home"?"block":"none";$("#playerWrap").classList.toggle("on",w==="player");$("#certWrap").classList.toggle("on",w==="cert");window.scrollTo({top:0,behavior:"smooth"});}
+
+function openModule(i){view.idx=i;view.step=firstIncompleteStep(i);slideN=0;renderPlayer();showOnly("player");}
+function renderPlayer(){const mo=COURSE.modules[view.idx];$("#modKicker").textContent=mo.kicker;$("#modTitle").textContent=mo.title;renderChips();renderStage();}
+function renderChips(){
+  const mo=COURSE.modules[view.idx];const d=md(mo.id,mo.steps.length).done;const reach=firstIncompleteStep(view.idx);
+  $("#stepChips").innerHTML=mo.steps.map((s,i)=>{const isDone=d[i],active=view.step===i,clickable=(REVIEW_MODE||i<=reach);return '<div class="stepchip '+(active?"active":(isDone?"done":""))+(clickable?" clickable":" locked")+'" data-step="'+i+'">'+(isDone?"✓ ":"")+stepLabel(s.type)+'</div>';}).join("");
+  $("#stepChips").querySelectorAll(".stepchip.clickable").forEach(ch=>ch.addEventListener("click",()=>{stopSpeech();view.step=+ch.dataset.step;if(steps(view.idx)[view.step].type==="slides")slideN=0;renderStage();renderChips();}));
+}
+function renderStage(){stopSpeech();cancelDemo();const t=steps(view.idx)[view.step].type;if(t==="slides")renderSlides();else if(t==="test")renderTest();else if(t==="calc")renderCalc();else if(t==="lab")renderLab();else if(t==="demo")renderDemo();else if(t==="final")renderFinal();else renderWiring();}
+function completeStep(){const mo=COURSE.modules[view.idx];md(mo.id,mo.steps.length).done[view.step]=true;save();}
+function advance(){const mo=COURSE.modules[view.idx];if(view.step<mo.steps.length-1){view.step++;if(steps(view.idx)[view.step].type==="slides")slideN=0;renderPlayer();}else moduleFinished();}
+
+function renderSlides(){
+  const mo=COURSE.modules[view.idx];const sl=steps(view.idx)[view.step].slides;const s=sl[slideN];
+  const art=s.art?('<div><div class="art">'+ART[s.art]+'</div>'+(s.cap?'<div class="artcap">'+s.cap+'</div>':'')+'</div>'):'';
+  $("#stage").innerHTML='<div class="card"><div class="slide '+(s.art?"has-art":"")+'"><div><div class="stitle">'+s.title+'</div><ul>'+s.body.map(b=>'<li><span>'+b+'</span></li>').join("")+'</ul>'+(s.note?'<div class="snote">'+s.note+'</div>':'')+'</div>'+art+
+    '</div><div class="slidebar"><button class="btn ghost sm readbtn" id="readBtn"><span class="ic"></span> Read aloud</button><span class="count">Slide '+(slideN+1)+' / '+sl.length+'</span><span class="spacer"></span><button class="btn ghost sm" id="prevS" '+(slideN===0?"disabled":"")+'>‹ Back</button>'+(slideN<sl.length-1?'<button class="btn primary sm" id="nextS">Next ›</button>':'<button class="btn primary sm" id="doneS">'+(view.step<mo.steps.length-1?"Continue ›":"Finish module ›")+'</button>')+'</div></div>';
+  $("#readBtn").addEventListener("click",()=>toggleSpeech(s));
+  const p=$("#prevS");if(p)p.addEventListener("click",()=>{slideN--;renderSlides();});
+  const n=$("#nextS");if(n)n.addEventListener("click",()=>{slideN++;renderSlides();});
+  const dn=$("#doneS");if(dn)dn.addEventListener("click",()=>{completeStep();stopSpeech();advance();});
+}
+
+let speaking=false;
+function plain(h){return h.replace(/<[^>]+>/g,"").replace(/&nbsp;/g," ");}
+function speechText(s){return plain(s.title)+". "+s.body.map(plain).join(". ")+(s.note?". Note: "+plain(s.note):"");}
+function toggleSpeech(s){if(!("speechSynthesis" in window)){alert("Your browser doesn't support read-aloud.");return;}if(speaking){stopSpeech();return;}const u=new SpeechSynthesisUtterance(speechText(s));u.rate=.98;u.onend=()=>{speaking=false;const b=$("#readBtn");if(b){b.classList.remove("playing");b.innerHTML='<span class="ic"></span> Read aloud';}};speechSynthesis.cancel();speechSynthesis.speak(u);speaking=true;const b=$("#readBtn");if(b){b.classList.add("playing");b.innerHTML='<span class="ic"></span> Stop';}}
+function stopSpeech(){if("speechSynthesis" in window)speechSynthesis.cancel();speaking=false;const b=$("#readBtn");if(b){b.classList.remove("playing");b.innerHTML='<span class="ic"></span> Read aloud';}}
+
+function renderTest(){quizSel=steps(view.idx)[view.step].quiz.map(()=>null);drawTest(false);}
+function drawTest(showResult){
+  const mo=COURSE.modules[view.idx];const q=steps(view.idx)[view.step].quiz;const need=Math.ceil(q.length*COURSE.passPct);
+  let score=0;q.forEach((qq,i)=>{if(quizSel[i]===qq.answer)score++;});const passed=score>=need;
+  $("#stage").innerHTML='<div class="card"><div class="quiz">'+q.map((qq,i)=>'<div class="q"><div class="qt"><b>'+(i+1)+'</b>'+qq.q+'</div>'+qq.choices.map((c,j)=>{let cls="opt";if(showResult){if(quizSel[i]===j&&j!==qq.answer)cls+=" wrong";}else if(quizSel[i]===j)cls+=" sel";return '<div class="'+cls+'" data-q="'+i+'" data-c="'+j+'"><span class="mk">'+"ABCD"[j]+'</span><span>'+c+'</span></div>';}).join("")+'</div>').join("")+'</div><div class="barbtm">'+(showResult?'<span class="result '+(passed?"pass":"fail")+'">Scored '+score+'/'+q.length+' — need '+need+' to pass. '+(passed?"Passed ✓":"Not yet — review and try again.")+'</span><span class="spacer"></span>'+(passed?'<button class="btn primary sm" id="contQ">'+(view.step<mo.steps.length-1?"Continue ›":"Finish module ›")+'</button>':'<button class="btn sm" id="revLesson">Read the lesson again</button> <button class="btn primary sm" id="retryQ">Try again</button>'):'<span class="result" style="color:var(--text-dim)">Pick an answer for each.</span><span class="spacer"></span><button class="btn primary sm" id="subQ">Submit test</button>')+'</div></div>';
+  if(!showResult){
+    $("#stage").querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{quizSel[+o.dataset.q]=+o.dataset.c;drawTest(false);}));
+    const sb=$("#subQ");if(sb)sb.addEventListener("click",()=>{if(quizSel.some(x=>x===null)){alert("Answer every question first.");return;}let sc=0;q.forEach((qq,i)=>{if(quizSel[i]===qq.answer)sc++;});drawTest(true);if(sc>=need){completeStep();renderChips();}});
+  }else{
+    const r=$("#retryQ");if(r)r.addEventListener("click",()=>renderTest());
+    const c=$("#contQ");if(c)c.addEventListener("click",()=>advance());
+    const rl=$("#revLesson");if(rl)rl.addEventListener("click",()=>{const si=steps(view.idx).findIndex(s=>s.type==="slides");if(si>=0){stopSpeech();view.step=si;slideN=0;renderPlayer();}});
+  }
+}
+
+/* calculator (module 4) */
+const PROBLEMS=[
+  {q:"A 120 V circuit feeds a heater with 60 Ω of resistance. Current?",unit:"A",ans:2,sol:"I = V ÷ R = 120 ÷ 60 = 2 A"},
+  {q:"A motor draws 5 A on a 240 V supply. Resistance?",unit:"Ω",ans:48,sol:"R = V ÷ I = 240 ÷ 5 = 48 Ω"},
+  {q:"A load on 120 V draws 4 A. Power?",unit:"W",ans:480,sol:"P = V × I = 120 × 4 = 480 W"},
+  {q:"What voltage pushes 3 A through 8 Ω?",unit:"V",ans:24,sol:"V = I × R = 3 × 8 = 24 V"}
+];
+function renderCalc(){
+  $("#stage").innerHTML='<div class="card"><div class="calc"><div class="calcgrid"><div class="calcpanel"><h4>Ohm\u2019s Law calculator</h4><p class="hintx">Enter any <b>two</b> values, then Solve. Leave the others blank.</p><div class="cfields"><div class="cfield"><label>Voltage (V)</label><input type="number" id="cV" step="any"></div><div class="cfield"><label>Current (I, A)</label><input type="number" id="cI" step="any"></div><div class="cfield"><label>Resistance (R, \u03A9)</label><input type="number" id="cR" step="any"></div></div><button class="btn primary sm" id="solveBtn">Solve</button> <button class="btn ghost sm" id="clrBtn">Clear</button><div class="cout" id="cOut" style="display:none"></div></div><div class="art" style="align-self:start">'+ART.ohm+'</div></div><div><h4 style="margin:6px 0 4px;font-size:17px">Now you try — solve these loads</h4><p class="hintx" style="font-size:14px;margin:0 0 14px">Get at least 3 of 4 right to finish. Round to whole numbers.</p><div id="probWrap">'+PROBLEMS.map((p,i)=>'<div class="prob" id="prob'+i+'"><p><b style="color:var(--accent);font-family:var(--mono)">'+(i+1)+'.</b> '+p.q+'</p><div class="pin"><input type="number" step="any" id="pa'+i+'"> <span class="unit">'+p.unit+'</span></div><div class="ans" id="ar'+i+'" style="display:none"></div></div>').join("")+'</div><div class="barbtm" style="border-radius:10px;border:1px solid var(--line);margin-top:6px"><button class="btn primary sm" id="checkP">Check answers</button><span class="spacer"></span><span class="result" id="pMsg"></span></div></div></div></div>';
+  $("#solveBtn").addEventListener("click",solveOhm);
+  $("#clrBtn").addEventListener("click",()=>{["cV","cI","cR"].forEach(id=>$("#"+id).value="");$("#cOut").style.display="none";});
+  $("#checkP").addEventListener("click",()=>checkProblems(PROBLEMS,3));
+}
+function solveOhm(){
+  let V=parseFloat($("#cV").value),I=parseFloat($("#cI").value),R=parseFloat($("#cR").value);
+  const has=[!isNaN(V),!isNaN(I),!isNaN(R)].filter(Boolean).length;const out=$("#cOut");
+  if(has<2){out.style.display="block";out.innerHTML='<span style="color:var(--red)">Enter at least two values.</span>';return;}
+  if(!isNaN(V)&&!isNaN(I))R=V/I;else if(!isNaN(V)&&!isNaN(R))I=V/R;else if(!isNaN(I)&&!isNaN(R))V=I*R;
+  const P=V*I,f=x=>Math.round(x*1000)/1000;out.style.display="block";
+  out.innerHTML='<div>Voltage: <b>'+f(V)+' V</b></div><div>Current: <b>'+f(I)+' A</b></div><div>Resistance: <b>'+f(R)+' \u03A9</b></div><div>Power: <b>'+f(P)+' W</b></div>';
+}
+function checkProblems(probs,need){
+  let right=0;
+  probs.forEach((p,i)=>{const v=parseFloat($("#pa"+i).value);const box=$("#prob"+i);const ar=$("#ar"+i);const ok=!isNaN(v)&&Math.abs(v-p.ans)<=Math.max(0.5,p.ans*0.01);box.className="prob "+(ok?"right":"wrong");ar.style.display="block";ar.className="ans "+(ok?"ok":"no");ar.textContent=(ok?"Correct — ":"Not quite — ")+p.sol;if(ok)right++;});
+  const msg=$("#pMsg");const mo=COURSE.modules[view.idx];
+  if(right>=need){msg.className="result pass";msg.textContent=right+"/"+probs.length+" correct — step complete ✓";completeStep();renderChips();if(!$("#contP")){const b=el("button","btn primary sm");b.id="contP";b.textContent=(view.step<mo.steps.length-1?"Continue ›":"Finish module ›");b.addEventListener("click",()=>advance());$("#checkP").after(b);}}
+  else{msg.className="result fail";msg.textContent=right+"/"+probs.length+" — need "+need+". Fix the red ones and check again.";}
+}
+
+/* Circuit Lab (module 7) */
+const LAB_PROBLEMS=[
+  {q:"SERIES, 120 V source, R1 = 10 Ω, R2 = 20 Ω. Total resistance?",unit:"Ω",ans:30,sol:"R_total = 10 + 20 = 30 Ω"},
+  {q:"Same series circuit — total current?",unit:"A",ans:4,sol:"I = 120 ÷ 30 = 4 A"},
+  {q:"Same series circuit — voltage drop across R2?",unit:"V",ans:80,sol:"V2 = I × R2 = 4 × 20 = 80 V"},
+  {q:"PARALLEL, 120 V source, two 60 Ω resistors. Total current?",unit:"A",ans:4,sol:"I1 = I2 = 120 ÷ 60 = 2 A → total = 4 A"}
+];
+function labCalc(){
+  const V=lab.V,R1=lab.R1,R2=lab.R2;let Rt,It,I1,I2,V1,V2;
+  if(lab.mode==="series"){Rt=R1+R2;It=Rt>0?V/Rt:0;I1=I2=It;V1=It*R1;V2=It*R2;}
+  else{I1=R1>0?V/R1:0;I2=R2>0?V/R2:0;It=I1+I2;Rt=It>0?V/It:0;V1=V2=V;}
+  return {V,R1,R2,Rt,It,I1,I2,V1,V2,P:V*It};
+}
+function labSVG(){
+  const c=labCalc();const f=x=>(Math.round(x*100)/100);
+  if(lab.mode==="series"){
+    return `<svg viewBox="0 0 460 220">
+      <path d="M40 170 L40 60 L120 60" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+      <rect x="120" y="45" width="60" height="30" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+      <path d="M180 60 L250 60" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+      <rect x="250" y="45" width="60" height="30" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+      <path d="M310 60 L410 60 L410 170 L40 170" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+      <line x1="30" y1="150" x2="30" y2="190" stroke="#fff" stroke-width="3"/><line x1="36" y1="158" x2="36" y2="182" stroke="#fff" stroke-width="2"/>
+      <text x="25" y="205" font-family="JetBrains Mono" font-size="11" fill="#85B7EB">${f(c.V)} V</text>
+      <text x="150" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R1 ${f(c.R1)}\u03A9</text>
+      <text x="280" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R2 ${f(c.R2)}\u03A9</text>
+      <text x="150" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">${f(c.V1)} V</text>
+      <text x="280" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">${f(c.V2)} V</text>
+      <text x="225" y="165" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1D9E75">I = ${f(c.It)} A (same everywhere)</text></svg>`;
+  }
+  return `<svg viewBox="0 0 460 240">
+    <path d="M40 190 L40 50 L420 50 L420 190 L40 190" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+    <path d="M170 50 L170 190" class="flow fast" stroke="#1D9E75" stroke-width="3" fill="none"/>
+    <path d="M290 50 L290 190" class="flow" stroke="#1D9E75" stroke-width="3" fill="none"/>
+    <rect x="150" y="100" width="40" height="40" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <rect x="270" y="100" width="40" height="40" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <line x1="30" y1="100" x2="30" y2="140" stroke="#fff" stroke-width="3"/><line x1="36" y1="108" x2="36" y2="132" stroke="#fff" stroke-width="2"/>
+    <text x="25" y="225" font-family="JetBrains Mono" font-size="11" fill="#85B7EB">${f(c.V)} V</text>
+    <text x="170" y="95" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R1 ${f(c.R1)}\u03A9</text>
+    <text x="290" y="95" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R2 ${f(c.R2)}\u03A9</text>
+    <text x="170" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">I1 ${f(c.I1)}A</text>
+    <text x="290" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">I2 ${f(c.I2)}A</text>
+    <text x="230" y="215" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#EF9F27">V = ${f(c.V)} V on every branch</text></svg>`;
+}
+function renderLab(){
+  const mo=COURSE.modules[view.idx];
+  $("#stage").innerHTML='<div class="card"><div class="lab">'+
+    '<div><h4 style="margin:0 0 4px;font-size:18px">Circuit Lab</h4><p class="hintx" style="color:var(--text-dim);font-size:14px;margin:0">Flip between series and parallel, set the source voltage and two resistors, and watch every value update live.</p></div>'+
+    '<div class="labtop"><div class="labctrl"><div class="modetog"><button class="btn tog sm" id="mSer">Series</button><button class="btn tog sm" id="mPar">Parallel</button></div>'+
+      '<div class="labfield"><label>Source (V)</label><input type="number" id="lV" step="any"></div>'+
+      '<div class="labfield"><label>R1 (\u03A9)</label><input type="number" id="lR1" step="any"></div>'+
+      '<div class="labfield"><label>R2 (\u03A9)</label><input type="number" id="lR2" step="any"></div>'+
+      '<div class="readout"><table id="labOut"></table></div></div>'+
+      '<div class="labart" id="labArt"></div></div>'+
+    '<div><h4 style="margin:6px 0 4px;font-size:17px">Finish the course — solve these</h4><p class="hintx" style="font-size:14px;margin:0 0 14px">Use the rules and the lab above. Get at least 3 of 4 right. Round to whole numbers.</p><div id="probWrap">'+LAB_PROBLEMS.map((p,i)=>'<div class="prob" id="prob'+i+'"><p><b style="color:var(--accent);font-family:var(--mono)">'+(i+1)+'.</b> '+p.q+'</p><div class="pin"><input type="number" step="any" id="pa'+i+'"> <span class="unit">'+p.unit+'</span></div><div class="ans" id="ar'+i+'" style="display:none"></div></div>').join("")+'</div><div class="barbtm" style="border-radius:10px;border:1px solid var(--line);margin-top:6px"><button class="btn primary sm" id="checkP">Check answers</button><span class="spacer"></span><span class="result" id="pMsg"></span></div></div>'+
+  '</div></div>';
+  $("#lV").value=lab.V;$("#lR1").value=lab.R1;$("#lR2").value=lab.R2;
+  const upd=()=>{lab.V=parseFloat($("#lV").value)||0;lab.R1=parseFloat($("#lR1").value)||0;lab.R2=parseFloat($("#lR2").value)||0;drawLab();};
+  ["lV","lR1","lR2"].forEach(id=>$("#"+id).addEventListener("input",upd));
+  $("#mSer").addEventListener("click",()=>{lab.mode="series";drawLab();});
+  $("#mPar").addEventListener("click",()=>{lab.mode="parallel";drawLab();});
+  $("#checkP").addEventListener("click",()=>checkProblems(LAB_PROBLEMS,3));
+  drawLab();
+}
+function drawLab(){
+  $("#mSer").classList.toggle("on",lab.mode==="series");$("#mPar").classList.toggle("on",lab.mode==="parallel");
+  $("#labArt").innerHTML=labSVG();
+  const c=labCalc();const f=x=>(Math.round(x*100)/100);
+  $("#labOut").innerHTML=
+    '<tr><td class="k">Total resistance</td><td class="v"><b>'+f(c.Rt)+' \u03A9</b></td></tr>'+
+    '<tr><td class="k">Total current</td><td class="v"><b>'+f(c.It)+' A</b></td></tr>'+
+    '<tr><td class="k">Current through R1 / R2</td><td class="v">'+f(c.I1)+' / '+f(c.I2)+' A</td></tr>'+
+    '<tr><td class="k">Voltage across R1 / R2</td><td class="v">'+f(c.V1)+' / '+f(c.V2)+' V</td></tr>'+
+    '<tr><td class="k">Total power</td><td class="v"><b>'+f(c.P)+' W</b></td></tr>';
+}
+
+/* interactive demos */
+function demoContBtn(mo,msg,id){if(document.getElementById(id))return;const b=el("button","btn primary sm");b.id=id;b.textContent=(view.step<mo.steps.length-1?"Continue ›":"Finish module ›");b.addEventListener("click",()=>{cancelDemo();advance();});msg.parentElement.insertBefore(b,msg);}
+function renderDemo(){
+  const key=steps(view.idx)[view.step].demo;
+  if(key==="induction")demoInduction();
+  else if(key==="circuit")demoCircuit();
+  else if(key==="materials")demoMaterials();
+  else if(key==="acdc")demoAcDc();
+  else if(key==="meter")demoMeter();
+  else if(key==="loto")demoLoto();
+}
+function demoInduction(){
+  const mo=COURSE.modules[view.idx];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> use the slider to <b>sweep the magnet</b> back and forth past the coil. Moving it pushes the electrons in the coil \u2014 that\u2019s <b>electromagnetic induction</b>. Sweep <b>faster</b> and the bulb glows brighter; stop, and it goes dark, because induction needs <b>motion</b>.</div>'+
+    '<div class="svgwrap"><svg class="board" id="indBoard" viewBox="0 0 600 250">'+
+      '<circle id="indGlow" cx="480" cy="95" r="30" fill="#EF9F27" opacity="0"/>'+
+      '<circle cx="480" cy="95" r="22" fill="#2b2b2b" stroke="#85B7EB" stroke-width="2"/><text x="480" y="146" text-anchor="middle" class="complabel">BULB</text>'+
+      '<path d="M480 117 L480 185 L150 185 L150 150" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M480 73 L480 45 L150 45 L150 70" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M150 70 q-14 8 0 16 q14 8 0 16 q-14 8 0 16 q14 8 0 16 q-14 8 0 16" fill="none" stroke="#EF9F27" stroke-width="3"/><text x="150" y="205" text-anchor="middle" class="complabel">COIL</text>'+
+      '<g id="mag"><rect x="298" y="78" width="56" height="38" fill="#E24B4A"/><rect x="354" y="78" width="56" height="38" fill="#85B7EB"/><text x="326" y="103" text-anchor="middle" font-weight="800" font-size="17" fill="#fff">N</text><text x="382" y="103" text-anchor="middle" font-weight="800" font-size="17" fill="#fff">S</text></g>'+
+    '</svg></div>'+
+    '<div style="display:flex;gap:12px;align-items:center;padding:4px 22px 10px"><span class="hint">coil</span><input type="range" id="indSlide" min="0" max="100" value="58" style="flex:1"><span class="hint">away</span></div>'+
+    '<div class="barbtm"><span class="hint">Drag the slider quickly back and forth to sweep the magnet across the coil.</span><span class="spacer"></span><span class="result" id="indMsg"></span></div></div>';
+  const slide=$("#indSlide"), mag=$("#mag"), glow=$("#indGlow"), msg=$("#indMsg");
+  const coilX=150, magCenter=382;
+  let lastV=58, lastT=performance.now(), speed=0, magX=324, done=false;
+  function place(v){magX=150+(v/100)*320; mag.setAttribute("transform","translate("+(magX-magCenter).toFixed(1)+",0)");}
+  place(58);
+  slide.addEventListener("input",e=>{const v=+e.target.value, now=performance.now(), dt=Math.max(now-lastT,8); speed=Math.abs(v-lastV)/dt; place(v); lastV=v; lastT=now;});
+  demoCleanup=()=>{};
+  function loop(){
+    const near=Math.max(0,1-Math.abs(magX-coilX)/260);
+    const induced=Math.min(1,speed*2.4)*near;
+    glow.setAttribute("opacity",(induced*0.9).toFixed(3));
+    glow.setAttribute("r",(26+induced*16).toFixed(1));
+    speed*=0.7;
+    if(induced>0.4&&!done){done=true;msg.className="result pass";msg.textContent="You induced a current \u2014 the bulb lit up! \u26A1";completeStep();renderChips();demoContBtn(mo,msg,"indCont");}
+    demoRAF=requestAnimationFrame(loop);
+  }
+  cancelDemo(); loop();
+}
+/* M1 — close the circuit to light the bulb */
+function demoCircuit(){
+  const mo=COURSE.modules[view.idx];
+  const dotPath="M95 60 L470 60 L470 240 L95 240 L95 60";
+  let dots=""; for(let i=0;i<6;i++)dots+='<circle r="5" fill="#85B7EB"><animateMotion dur="3s" begin="'+(i*0.5)+'s" repeatCount="indefinite" path="'+dotPath+'"/></circle>';
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> the loop is broken at the switch, so no current flows and the bulb is dark. <b>Tap the switch</b> to close the circuit — watch the electrons start moving and the bulb light up. A working circuit needs a source, a complete path, and a load.</div>'+
+    '<div class="svgwrap"><svg class="board" id="cBoard" viewBox="0 0 560 300">'+
+      '<circle id="cGlow" cx="470" cy="150" r="42" fill="#EF9F27" opacity="0"/>'+
+      '<rect x="70" y="120" width="50" height="60" fill="none" stroke="#85B7EB" stroke-width="2"/><text x="95" y="200" text-anchor="middle" class="complabel">BATTERY</text><text x="95" y="115" text-anchor="middle" font-size="13" fill="#E24B4A">+</text>'+
+      '<path d="M95 120 L95 60 L240 60" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M320 60 L470 60 L470 124" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M470 176 L470 240 L95 240 L95 180" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<circle cx="470" cy="150" r="26" fill="#2b2b2b" stroke="#85B7EB" stroke-width="2"/><text x="470" y="205" text-anchor="middle" class="complabel">BULB</text>'+
+      '<g id="cDots" opacity="0">'+dots+'</g>'+
+      '<circle cx="240" cy="60" r="4" fill="#EF9F27"/><circle cx="320" cy="60" r="4" fill="#EF9F27"/>'+
+      '<line id="cLever" x1="240" y1="60" x2="312" y2="28" stroke="#EF9F27" stroke-width="4" stroke-linecap="round"/>'+
+      '<g id="cSwitch" style="cursor:pointer"><rect x="226" y="10" width="110" height="64" fill="transparent"/><text x="282" y="100" text-anchor="middle" class="complabel">tap switch</text></g>'+
+    '</svg></div>'+
+    '<div class="barbtm"><span class="hint">Tap the switch to complete the circuit.</span><span class="spacer"></span><span class="result" id="cMsg"></span></div></div>';
+  let closed=false, done=false;
+  const sw=$("#cSwitch"), lever=$("#cLever"), dotsG=$("#cDots"), glow=$("#cGlow"), msg=$("#cMsg");
+  sw.addEventListener("click",()=>{
+    closed=!closed;
+    lever.setAttribute("x2",closed?"320":"312"); lever.setAttribute("y2",closed?"60":"28");
+    dotsG.setAttribute("opacity",closed?"1":"0"); glow.setAttribute("opacity",closed?"0.85":"0");
+    if(closed){msg.className="result pass";msg.textContent="Circuit complete — current flows and the bulb lights! 💡";if(!done){done=true;completeStep();renderChips();demoContBtn(mo,msg,"cCont");}}
+    else{msg.className="result";msg.style.color="var(--text-dim)";msg.textContent="Open circuit — broken path, no current.";}
+  });
+}
+
+/* M2 — conductor or insulator? tap a material into the gap */
+function demoMaterials(){
+  const mo=COURSE.modules[view.idx];
+  const mats=[{n:"Copper",c:true,col:"#EF9F27"},{n:"Aluminum",c:true,col:"#B4B2A9"},{n:"Water",c:true,col:"#85B7EB"},{n:"Rubber",c:false,col:"#E24B4A"},{n:"Glass",c:false,col:"#C9A0FF"},{n:"Wood",c:false,col:"#9c6b3f"}];
+  let dots=""; for(let i=0;i<6;i++)dots+='<circle r="5" fill="#85B7EB"><animateMotion dur="3s" begin="'+(i*0.5)+'s" repeatCount="indefinite" path="M95 60 L470 60 L470 240 L95 240 L95 60"/></circle>';
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> the wire has a gap. <b>Tap a material</b> to drop it into the gap and see if current can pass. <b>Conductors</b> complete the circuit and light the bulb; <b>insulators</b> block it. Test at least 4 materials to finish.</div>'+
+    '<div class="svgwrap"><svg class="board" id="mBoard" viewBox="0 0 560 300">'+
+      '<circle id="mGlow" cx="470" cy="150" r="42" fill="#EF9F27" opacity="0"/>'+
+      '<rect x="70" y="120" width="50" height="60" fill="none" stroke="#85B7EB" stroke-width="2"/><text x="95" y="200" text-anchor="middle" class="complabel">BATTERY</text>'+
+      '<path d="M95 120 L95 60 L250 60" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M310 60 L470 60 L470 124" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M470 176 L470 240 L95 240 L95 180" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<rect id="mSlot" x="252" y="48" width="56" height="24" rx="4" fill="none" stroke="#383838" stroke-width="2" stroke-dasharray="4 4"/><text id="mSlotT" x="280" y="40" text-anchor="middle" class="complabel">gap</text>'+
+      '<circle cx="470" cy="150" r="26" fill="#2b2b2b" stroke="#85B7EB" stroke-width="2"/><text x="470" y="205" text-anchor="middle" class="complabel">BULB</text>'+
+      '<g id="mDots" opacity="0">'+dots+'</g>'+
+    '</svg></div>'+
+    '<div class="chips" id="mChips">'+mats.map((m,i)=>'<button class="btn sm" data-i="'+i+'">'+m.n+'</button>').join("")+'</div>'+
+    '<div class="barbtm"><span class="hint" id="mHint">Tested 0 / 4 materials.</span><span class="spacer"></span><span class="result" id="mMsg"></span></div></div>';
+  const tried=new Set(); let done=false;
+  const slot=$("#mSlot"), slotT=$("#mSlotT"), dotsG=$("#mDots"), glow=$("#mGlow"), msg=$("#mMsg"), hint=$("#mHint");
+  $("#mChips").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    const m=mats[+b.dataset.i]; tried.add(m.n);
+    slot.setAttribute("fill",m.col); slot.setAttribute("stroke",m.col); slot.removeAttribute("stroke-dasharray"); slotT.textContent=m.n;
+    dotsG.setAttribute("opacity",m.c?"1":"0"); glow.setAttribute("opacity",m.c?"0.85":"0");
+    msg.className="result "+(m.c?"pass":"fail"); msg.textContent=m.n+(m.c?" — CONDUCTOR ✓ current flows":" — INSULATOR ✗ blocks current");
+    hint.textContent="Tested "+Math.min(tried.size,4)+" / 4 materials.";
+    if(tried.size>=4&&!done){done=true;hint.textContent="Tested "+tried.size+" materials — nice work!";completeStep();renderChips();demoContBtn(mo,msg,"mCont");}
+  }));
+}
+
+/* M3 — AC vs DC: watch the electrons */
+function demoAcDc(){
+  const mo=COURSE.modules[view.idx];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> flip the source between <b>DC</b> and <b>AC</b> and watch the electrons. In <b>DC</b> they march steadily one way. In <b>AC</b> they swing back and forth — in the U.S., 60 times a second. Try both to finish.</div>'+
+    '<div class="svgwrap"><svg class="board" id="aBoard" viewBox="0 0 560 230">'+
+      '<rect x="60" y="70" width="50" height="60" fill="none" stroke="#85B7EB" stroke-width="2"/><text x="85" y="150" text-anchor="middle" class="complabel">SOURCE</text>'+
+      '<line x1="110" y1="100" x2="452" y2="100" stroke="#B4B2A9" stroke-width="2.5"/>'+
+      '<circle id="aGlow" cx="490" cy="100" r="34" fill="#EF9F27" opacity="0.3"/><circle cx="490" cy="100" r="22" fill="#2b2b2b" stroke="#85B7EB" stroke-width="2"/><text x="490" y="150" text-anchor="middle" class="complabel">BULB</text>'+
+      '<g id="aDots"></g>'+
+      '<path id="aWave" d="M120 185 L440 185" fill="none" stroke="#EF9F27" stroke-width="2"/>'+
+    '</svg></div>'+
+    '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 20px 8px"><button class="btn tog sm" id="aDC">DC</button><button class="btn tog sm" id="aAC">AC</button><span class="hint" style="margin-left:8px">Speed</span><input type="range" id="aFreq" min="1" max="6" value="3"></div>'+
+    '<div class="barbtm"><span class="hint" id="aHint">Try DC and AC.</span><span class="spacer"></span><span class="result" id="aMsg"></span></div></div>';
+  const dotsG=$("#aDots"); const N=8; const dots=[];
+  for(let i=0;i<N;i++){const c=document.createElementNS(NS,"circle");c.setAttribute("r","5");c.setAttribute("cy","100");c.setAttribute("fill","#85B7EB");dotsG.appendChild(c);dots.push(c);}
+  const x0=120,x1=440,span=x1-x0;
+  let mode="dc", freq=3, t=0, triedDC=true, triedAC=false, done=false;
+  const glow=$("#aGlow"), wave=$("#aWave"), msg=$("#aMsg");
+  function setMode(m){mode=m;$("#aDC").classList.toggle("on",m==="dc");$("#aAC").classList.toggle("on",m==="ac");if(m==="ac")triedAC=true;check();}
+  $("#aDC").addEventListener("click",()=>setMode("dc"));
+  $("#aAC").addEventListener("click",()=>setMode("ac"));
+  $("#aFreq").addEventListener("input",e=>{freq=+e.target.value;});
+  function check(){if(triedDC&&triedAC&&!done){done=true;msg.className="result pass";msg.textContent="You saw both — steady DC and back-and-forth AC! ⚡";completeStep();renderChips();demoContBtn(mo,msg,"aCont");}}
+  function loop(){
+    t+=0.016*freq;
+    if(mode==="dc"){
+      for(let i=0;i<N;i++){const p=((i/N)+t*0.12)%1;dots[i].setAttribute("cx",(x0+p*span).toFixed(1));}
+      glow.setAttribute("opacity","0.8"); wave.setAttribute("d","M120 185 L440 185");
+    }else{
+      const amp=span*0.32, mid=(x0+x1)/2;
+      for(let i=0;i<N;i++){const ph=i/N*Math.PI*2;dots[i].setAttribute("cx",(mid+amp*Math.sin(t*1.2+ph)).toFixed(1));}
+      glow.setAttribute("opacity",(0.5+0.4*Math.abs(Math.sin(t*1.2))).toFixed(2));
+      let d="M120 185"; for(let x=0;x<=320;x+=8){const yy=185-24*Math.sin(x/40+t*1.2);d+=" L"+(120+x)+" "+yy.toFixed(1);} wave.setAttribute("d",d);
+    }
+    demoRAF=requestAnimationFrame(loop);
+  }
+  setMode("dc"); demoCleanup=()=>{}; cancelDemo(); loop();
+}
+
+/* M8 — multimeter: tap two points to read the voltage between them */
+function demoMeter(){
+  const mo=COURSE.modules[view.idx];
+  const V={A:12,B:6,C:0}, pos={A:[400,60],B:[400,150],C:[400,240]};
+  const tasks=[{pair:["A","C"],label:"Measure the <b>source voltage</b>: tap point <b>A</b>, then point <b>C</b>."},
+               {pair:["B","C"],label:"Now the voltage <b>across the lower resistor</b>: tap point <b>B</b>, then point <b>C</b>."}];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> tap two test points to place the <span style="color:var(--red)">red</span> and <span style="color:#85B7EB">black</span> probes — the meter shows the <b>voltage between them</b> (the difference). <span id="meterTask"></span></div>'+
+    '<div class="svgwrap"><svg class="board" id="meterBoard" viewBox="0 0 520 290">'+
+      '<rect x="60" y="120" width="44" height="60" fill="none" stroke="#85B7EB" stroke-width="2"/><text x="82" y="200" text-anchor="middle" class="complabel">12V</text><text x="82" y="115" text-anchor="middle" font-size="13" fill="#E24B4A">+</text>'+
+      '<path d="M82 120 L82 60 L400 60" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<path d="M82 180 L82 240 L400 240" stroke="#B4B2A9" stroke-width="2.5" fill="none"/>'+
+      '<line x1="400" y1="60" x2="400" y2="240" stroke="#B4B2A9" stroke-width="2.5"/>'+
+      '<rect x="388" y="92" width="24" height="40" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/><text x="424" y="116" class="complabel">R1</text>'+
+      '<rect x="388" y="168" width="24" height="40" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/><text x="424" y="192" class="complabel">R2</text>'+
+      '<g id="tpA" style="cursor:pointer"><circle cx="400" cy="60" r="10" fill="#1a1a1a" stroke="#EF9F27" stroke-width="2"/><text x="400" y="46" text-anchor="middle" class="complabel">A</text></g>'+
+      '<g id="tpB" style="cursor:pointer"><circle cx="400" cy="150" r="10" fill="#1a1a1a" stroke="#EF9F27" stroke-width="2"/><text x="372" y="154" text-anchor="middle" class="complabel">B</text></g>'+
+      '<g id="tpC" style="cursor:pointer"><circle cx="400" cy="240" r="10" fill="#1a1a1a" stroke="#EF9F27" stroke-width="2"/><text x="400" y="264" text-anchor="middle" class="complabel">C</text></g>'+
+      '<circle id="pRed" r="7" fill="#E24B4A" opacity="0"/><circle id="pBlk" r="7" fill="#85B7EB" opacity="0"/>'+
+      '<rect x="150" y="118" width="130" height="64" rx="8" fill="#0d0d0d" stroke="#383838"/><text id="mRead" x="215" y="156" text-anchor="middle" font-family="JetBrains Mono" font-size="22" fill="#1D9E75">-- V</text><text x="215" y="200" text-anchor="middle" class="complabel">METER</text>'+
+    '</svg></div>'+
+    '<div class="barbtm"><span class="hint">Tap a point for the red probe, then another for black. Tap again to move the red probe.</span><span class="spacer"></span><span class="result" id="meterMsg"></span></div></div>';
+  let red=null, black=null, ti=0, done=false;
+  const taskEl=$("#meterTask"), msg=$("#meterMsg"), read=$("#mRead"), pRed=$("#pRed"), pBlk=$("#pBlk");
+  function showTask(){taskEl.innerHTML=ti<tasks.length?tasks[ti].label:"";}
+  function setProbe(elm,node){if(!node){elm.setAttribute("opacity","0");return;}elm.setAttribute("cx",pos[node][0]);elm.setAttribute("cy",pos[node][1]);elm.setAttribute("opacity","1");}
+  function update(){
+    setProbe(pRed,red); setProbe(pBlk,black);
+    if(red&&black){
+      const r=Math.abs(V[red]-V[black]); read.textContent=r.toFixed(1)+" V";
+      const t=tasks[ti];
+      if(t&&((red===t.pair[0]&&black===t.pair[1])||(red===t.pair[1]&&black===t.pair[0]))){
+        ti++;
+        if(ti>=tasks.length&&!done){done=true;msg.className="result pass";msg.textContent="Both readings correct — you can read voltage! ⚡";completeStep();renderChips();demoContBtn(mo,msg,"meterCont");}
+        else{msg.className="result pass";msg.textContent="Correct — "+r.toFixed(1)+" V. Next reading…";red=null;black=null;setTimeout(()=>{setProbe(pRed,null);setProbe(pBlk,null);read.textContent="-- V";showTask();},800);}
+      }
+    } else { read.textContent="-- V"; }
+  }
+  ["A","B","C"].forEach(n=>{$("#tp"+n).addEventListener("click",()=>{if(!red)red=n;else if(!black&&n!==red)black=n;else{red=n;black=null;}update();});});
+  showTask();
+}
+
+/* M9 — lockout/tagout in the correct order */
+function demoLoto(){
+  const mo=COURSE.modules[view.idx];
+  const list=[{b:"1 · Shut OFF the disconnect",ok:"Disconnect OFF."},{b:"2 · Apply your LOCK",ok:"Lock applied."},{b:"3 · Apply your TAG",ok:"Tag applied — your name is on it."},{b:"4 · Verify dead (test for voltage)",ok:"Tested: 0 V — verified de-energized."}];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> this panel is <b>energized and dangerous</b>. Make it safe to work on by doing lockout/tagout <b>in order</b>.</div>'+
+    '<div class="svgwrap"><svg class="board" id="lotoBoard" viewBox="0 0 520 210">'+
+      '<rect id="lotoBanner" x="20" y="16" width="480" height="34" rx="6" fill="rgba(226,75,74,.15)" stroke="#E24B4A"/><text id="lotoBannerT" x="260" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#E24B4A">⚠ ENERGIZED — DANGER</text>'+
+      '<rect x="175" y="68" width="170" height="120" rx="8" fill="#2b2b2b" stroke="#383838"/><text x="260" y="88" text-anchor="middle" class="complabel">DISCONNECT</text>'+
+      '<rect x="240" y="102" width="40" height="52" rx="5" fill="#85B7EB"/><line id="lotoHL" x1="260" y1="128" x2="260" y2="108" stroke="#1a1a1a" stroke-width="4"/>'+
+      '<text id="lotoState" x="260" y="176" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#EF9F27">ON</text>'+
+      '<text id="lotoLock" x="305" y="135" font-size="22" opacity="0">🔒</text>'+
+      '<text id="lotoTag" x="120" y="135" font-size="22" opacity="0">🏷</text>'+
+    '</svg></div>'+
+    '<div class="chips" id="lotoSteps">'+list.map((s,i)=>'<button class="btn sm" data-i="'+i+'">'+s.b+'</button>').join("")+'</div>'+
+    '<div class="barbtm"><span class="hint" id="lotoHint">Start with step 1.</span><span class="spacer"></span><span class="result" id="lotoMsg"></span></div></div>';
+  let cur=0, done=false; const msg=$("#lotoMsg"), hint=$("#lotoHint");
+  $("#lotoSteps").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    const i=+b.dataset.i;
+    if(i!==cur){msg.className="result fail";msg.textContent="Do it in order — next is step "+(cur+1)+".";return;}
+    b.disabled=true; b.style.opacity=".45";
+    if(i===0){$("#lotoHL").setAttribute("y2","148");$("#lotoState").textContent="OFF";$("#lotoState").setAttribute("fill","#1D9E75");}
+    if(i===1)$("#lotoLock").setAttribute("opacity","1");
+    if(i===2)$("#lotoTag").setAttribute("opacity","1");
+    msg.className="result pass"; msg.textContent=list[i].ok;
+    cur++; hint.textContent=cur<list.length?("Next: step "+(cur+1)+"."):"";
+    if(cur>=list.length&&!done){done=true;$("#lotoBanner").setAttribute("fill","rgba(29,158,117,.15)");$("#lotoBanner").setAttribute("stroke","#1D9E75");$("#lotoBannerT").setAttribute("fill","#1D9E75");$("#lotoBannerT").textContent="✓ LOCKED · TAGGED · VERIFIED — SAFE TO WORK";completeStep();renderChips();demoContBtn(mo,msg,"lotoCont");}
+  }));
+}
+
+/* Final exam — cumulative, shuffled, gates the certificate */
+let finalQ=[], finalSel=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function buildFinalExam(){
+  const pool=[]; COURSE.modules.forEach(mo=>mo.steps.forEach(s=>{if(s.type==="test")s.quiz.forEach(q=>pool.push(q));}));
+  const pick=shuffle(pool.slice()).slice(0,Math.min(20,pool.length));
+  finalQ=pick.map(q=>{const idx=shuffle(q.choices.map((c,i)=>i));return {q:q.q,choices:idx.map(i=>q.choices[i]),answer:idx.indexOf(q.answer)};});
+  finalSel=finalQ.map(()=>null);
+}
+function renderFinal(){ if(finalQ.length!==Math.min(20,countPool())||finalSel.length!==finalQ.length) buildFinalExam(); drawFinal(false); }
+function countPool(){let n=0;COURSE.modules.forEach(mo=>mo.steps.forEach(s=>{if(s.type==="test")n+=s.quiz.length;}));return n;}
+function drawFinal(showResult){
+  const need=Math.ceil(finalQ.length*0.7);
+  let score=0; finalQ.forEach((qq,i)=>{if(finalSel[i]===qq.answer)score++;}); const passed=score>=need;
+  $("#stage").innerHTML='<div class="card"><div class="quiz"><p class="lead" style="margin:0 0 16px">'+finalQ.length+' questions from across the whole course. You need '+need+' to pass and earn your certificate. Answers are not shown — review a module if you miss it.</p>'+
+    finalQ.map((qq,i)=>'<div class="q"><div class="qt"><b>'+(i+1)+'</b>'+qq.q+'</div>'+qq.choices.map((c,j)=>{let cls="opt";if(showResult){if(finalSel[i]===j&&j!==qq.answer)cls+=" wrong";}else if(finalSel[i]===j)cls+=" sel";return '<div class="'+cls+'" data-q="'+i+'" data-c="'+j+'"><span class="mk">'+"ABCD"[j]+'</span><span>'+c+'</span></div>';}).join("")+'</div>').join("")+
+    '</div><div class="barbtm">'+(showResult?'<span class="result '+(passed?"pass":"fail")+'">Scored '+score+'/'+finalQ.length+' — need '+need+'. '+(passed?"Passed ✓":"Not yet — review and retake.")+'</span><span class="spacer"></span>'+(passed?'<button class="btn primary sm" id="finDone">Finish & get certificate ›</button>':'<button class="btn ghost sm" id="finBack">Back to modules</button> <button class="btn primary sm" id="finRetry">Retake exam</button>'):'<span class="result" style="color:var(--text-dim)">Answer all '+finalQ.length+' questions.</span><span class="spacer"></span><button class="btn primary sm" id="finSub">Submit exam</button>')+'</div></div>';
+  if(!showResult){
+    $("#stage").querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{finalSel[+o.dataset.q]=+o.dataset.c;drawFinal(false);}));
+    const sb=$("#finSub");if(sb)sb.addEventListener("click",()=>{if(finalSel.some(x=>x===null)){alert("Answer every question first.");return;}let sc=0;finalQ.forEach((qq,i)=>{if(finalSel[i]===qq.answer)sc++;});drawFinal(true);if(sc>=need){completeStep();renderChips();}});
+  }else{
+    const rt=$("#finRetry");if(rt)rt.addEventListener("click",()=>{buildFinalExam();drawFinal(false);});
+    const bk=$("#finBack");if(bk)bk.addEventListener("click",renderHome);
+    const dn=$("#finDone");if(dn)dn.addEventListener("click",showCertificate);
+  }
+}
+
+/* wiring */
+
+function renderWiring(){
+  const w=steps(view.idx)[view.step].task;armed=null;userWires=[];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro">'+w.intro+'</div><div class="svgwrap"><svg class="board" viewBox="'+w.viewBox+'" id="board"></svg></div><div class="barbtm"><button class="btn primary sm" id="checkW">Check wiring</button><button class="btn ghost sm" id="resetW">Reset</button><span class="hint">'+w.hint+'</span><span class="spacer"></span><span class="result" id="wMsg"></span></div></div>';
+  drawBoard();
+  $("#checkW").addEventListener("click",checkWiring);
+  $("#resetW").addEventListener("click",()=>{userWires=[];armed=null;drawBoard();$("#wMsg").textContent="";});
+}
+function wtask(){return steps(view.idx)[view.step].task;}
+function wnode(id){return wtask().nodes.find(n=>n.id===id);}
+function drawBoard(){
+  const w=wtask();const svg=$("#board");svg.innerHTML="";
+  w.comps.forEach(c=>{const r=document.createElementNS(NS,"rect");r.setAttribute("x",c.x);r.setAttribute("y",c.y);r.setAttribute("width",c.w);r.setAttribute("height",c.h);r.setAttribute("rx","8");r.setAttribute("class","compbox");svg.appendChild(r);const t=document.createElementNS(NS,"text");t.setAttribute("x",c.x+c.w/2);t.setAttribute("y",c.y+c.h+18);t.setAttribute("text-anchor","middle");t.setAttribute("class","complabel");t.textContent=c.label;svg.appendChild(t);});
+  [w.lamp,w.lamp2].forEach((lp,i)=>{if(!lp)return;const g=document.createElementNS(NS,"circle");g.setAttribute("cx",lp.cx);g.setAttribute("cy",lp.cy);g.setAttribute("r",lp.r);g.setAttribute("fill","var(--accent)");g.setAttribute("class","lamp-glow");g.id="lampGlow"+i;svg.appendChild(g);const o=document.createElementNS(NS,"circle");o.setAttribute("cx",lp.cx);o.setAttribute("cy",lp.cy);o.setAttribute("r",lp.r);o.setAttribute("fill","none");o.setAttribute("stroke","var(--line)");o.setAttribute("stroke-width","1.5");svg.appendChild(o);});
+  userWires.forEach(key=>{const[a,b]=key.split("|");const na=wnode(a),nb=wnode(b);const l=document.createElementNS(NS,"line");l.setAttribute("x1",na.x);l.setAttribute("y1",na.y);l.setAttribute("x2",nb.x);l.setAttribute("y2",nb.y);l.setAttribute("class","wireline");l.addEventListener("click",e=>{e.stopPropagation();userWires=userWires.filter(k=>k!==key);drawBoard();});svg.appendChild(l);});
+  w.nodes.forEach(n=>{const g=document.createElementNS(NS,"g");g.setAttribute("class","term"+(armed===n.id?" armed":""));const c=document.createElementNS(NS,"circle");c.setAttribute("cx",n.x);c.setAttribute("cy",n.y);c.setAttribute("r","8");c.setAttribute("fill","var(--panel)");c.setAttribute("stroke","var(--muted)");c.setAttribute("stroke-width","2");g.appendChild(c);const t=document.createElementNS(NS,"text");t.setAttribute("x",n.x+(n.lx||0));t.setAttribute("y",n.y+(n.ly||0)+4);t.setAttribute("text-anchor","middle");t.textContent=n.label;g.appendChild(t);g.addEventListener("click",()=>termClick(n.id));svg.appendChild(g);});
+}
+function termClick(id){if(armed===null)armed=id;else if(armed===id)armed=null;else{const k=pairKey(armed,id);if(!userWires.includes(k))userWires.push(k);armed=null;}drawBoard();}
+function checkWiring(){
+  const w=wtask();const need=w.correct.map(p=>pairKey(p[0],p[1])).sort().join(",");const have=userWires.slice().sort().join(",");const msg=$("#wMsg");
+  if(need===have){msg.className="result pass";msg.textContent=w.successMsg;const g0=$("#lampGlow0"),g1=$("#lampGlow1");if(g0)g0.classList.add("on");if(g1)g1.classList.add("on");completeStep();setTimeout(()=>{const mo=COURSE.modules[view.idx];if(view.step<mo.steps.length-1){view.step++;renderPlayer();}else moduleFinished();},950);}
+  else{msg.className="result fail";const cc=userWires.filter(k=>w.correct.map(p=>pairKey(p[0],p[1])).includes(k)).length;msg.textContent="Not quite — "+cc+" of "+w.correct.length+" right. "+w.hint;}
+}
+
+function moduleFinished(){
+  const mo=COURSE.modules[view.idx];const last=view.idx===COURSE.modules.length-1;
+  $("#stage").innerHTML='<div class="card"><div class="donecard"><div class="big">Module complete ✓</div><p class="lead" style="margin:0 auto 22px">You finished <b>'+mo.title+'</b>.</p>'+((last&&courseComplete())?'<button class="btn primary" id="finCert">Finish & get certificate ›</button>':'<button class="btn primary" id="nextMod">Next module ›</button>')+' <button class="btn ghost" id="homeDone">All modules</button></div></div>';
+  renderChips();
+  const nm=$("#nextMod");if(nm)nm.addEventListener("click",()=>{const ni=view.idx+1;if(ni<COURSE.modules.length)openModule(ni);else renderHome();});
+  const fc=$("#finCert");if(fc)fc.addEventListener("click",showCertificate);
+  $("#homeDone").addEventListener("click",renderHome);
+}
+
+function makeVID(name){const base=(name+"|"+COURSE.title).toUpperCase();let h=0;for(let i=0;i<base.length;i++)h=((h<<5)-h+base.charCodeAt(i))|0;return "WN-"+new Date().getFullYear()+"-"+(Math.abs(h)%100000).toString().padStart(5,"0");}
+function currentUserName(){
+  /* STAGE 2 HOOK: when the login/account system is added, replace this with the logged-in account's name. */
+  if(state.name&&state.name.trim())return state.name.trim();
+  const n=(prompt("Enter your full name for the certificate:")||"").trim();
+  if(n){state.name=n;save();}
+  return n;
+}
+function showCertificate(){
+  const name=currentUserName();
+  if(!name){alert("A name is required for the certificate.");return;}
+  if(!state.completedAt)state.completedAt=Date.now();save();
+  const d=new Date(state.completedAt);const ds=d.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  $("#certName").textContent=name;$("#certCourse").textContent=COURSE.title;$("#certMeta").textContent=COURSE.hours+" Contact Hours · Completed "+ds;$("#certDate2").textContent=ds;$("#certVid").textContent="Verification ID: "+makeVID(name);
+  showOnly("cert");
+}
+function downloadPDF(){
+  const name=state.name||"Student";const d=new Date(state.completedAt||Date.now());const ds=d.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  try{
+    const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"pt",format:"letter"});
+    const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+    doc.setFillColor(250,248,242);doc.rect(0,0,W,H,"F");
+    doc.setDrawColor(239,159,39);doc.setLineWidth(10);doc.rect(18,18,W-36,H-36);
+    doc.setDrawColor(180,170,140);doc.setLineWidth(1);doc.rect(34,34,W-68,H-68);
+    doc.setTextColor(28,28,28);doc.setFont("helvetica","bold");doc.setFontSize(22);doc.text("wirenerd",W/2,90,{align:"center"});
+    doc.setTextColor(122,106,60);doc.setFont("courier","normal");doc.setFontSize(12);doc.text("CERTIFICATE OF COMPLETION",W/2,118,{align:"center"});
+    doc.setTextColor(28,28,28);doc.setFont("helvetica","bold");doc.setFontSize(34);doc.text("Certificate of Completion",W/2,165,{align:"center"});
+    doc.setFont("helvetica","normal");doc.setFontSize(13);doc.setTextColor(70,70,70);doc.text("This certifies that",W/2,205,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(30);doc.setTextColor(28,28,28);doc.text(name,W/2,245,{align:"center"});
+    doc.setDrawColor(239,159,39);doc.setLineWidth(2);const nw=Math.min(doc.getTextWidth(name)+60,W-160);doc.line(W/2-nw/2,255,W/2+nw/2,255);
+    doc.setFont("helvetica","normal");doc.setFontSize(13);doc.setTextColor(70,70,70);doc.text("has successfully completed",W/2,288,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(17);doc.setTextColor(28,28,28);doc.text(COURSE.title,W/2,314,{align:"center"});
+    doc.setFont("courier","normal");doc.setFontSize(12);doc.setTextColor(90,90,90);doc.text(COURSE.hours+" Contact Hours  -  Completed "+ds,W/2,338,{align:"center"});
+    doc.setDrawColor(28,28,28);doc.setLineWidth(1.2);doc.line(110,430,300,430);doc.line(W-300,430,W-110,430);
+    doc.setFont("helvetica","bold");doc.setFontSize(15);doc.setTextColor(28,28,28);doc.text("Bryan Barrios",205,424,{align:"center"});doc.text(ds,W-205,424,{align:"center"});
+    doc.setFont("courier","normal");doc.setFontSize(10);doc.setTextColor(100,100,100);doc.text("Instructor - WireNerd",205,446,{align:"center"});doc.text("Date",W-205,446,{align:"center"});
+    doc.setFontSize(10);doc.setTextColor(140,140,140);doc.text("Verification ID: "+makeVID(name),W/2,H-40,{align:"center"});
+    doc.save("WireNerd-Certificate-"+name.replace(/[^a-z0-9]+/gi,"-")+".pdf");
+  }catch(e){alert("PDF tool didn't load (check your connection). Use Print and choose 'Save as PDF'.");}
+}
+
+$("#startBtn").addEventListener("click",()=>{if(courseComplete()){renderHome();return;}const i=COURSE.modules.findIndex((m,ix)=>moduleUnlocked(ix)&&!modComplete(ix));openModule(i<0?0:i);});
+$("#backBtn").addEventListener("click",()=>{stopSpeech();renderHome();});
+$("#dlBtn").addEventListener("click",downloadPDF);
+$("#printBtn").addEventListener("click",()=>window.print());
+$("#reviewBtn").addEventListener("click",renderHome);
+window.addEventListener("beforeunload",stopSpeech);
+renderHome();
+</script>
+</body>
+</html>
