@@ -51,13 +51,25 @@
   footer .socials a{color:var(--muted);margin:0 8px;}
   footer .socials a:hover{color:var(--accent);}
   @media(max-width:600px){.hero h1{font-size:38px;}.hero p{font-size:17px;}}
+  .course-feat{padding:8px 0 26px;}
+  .cf-card{background:var(--panel);border:1px solid var(--accent);border-radius:18px;padding:34px;display:flex;gap:30px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+  .cf-tag{display:inline-block;color:var(--accent);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;border:1px solid var(--line);border-radius:20px;padding:5px 14px;margin-bottom:14px;}
+  .cf-left{flex:1;min-width:280px;}
+  .cf-card h2{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
+  .cf-card p{color:var(--muted);font-size:16px;margin-bottom:16px;max-width:580px;}
+  .cf-feat{list-style:none;margin:0 0 22px;padding:0;}
+  .cf-feat li{color:var(--muted);font-size:14.5px;margin-bottom:7px;}
+  .cf-price{text-align:center;min-width:150px;}
+  .cf-amt{font-size:46px;font-weight:800;color:var(--accent);line-height:1;}
+  .cf-note{color:var(--muted);font-size:13px;margin-top:6px;}
+  @media(max-width:600px){.cf-card{padding:22px;}.cf-price{order:-1;margin-bottom:6px;}}
 </style>
 </head>
 <body>
   <header><div class="wrap">
     <a class="brand" href="/">wire<span>nerd</span></a>
     <nav>
-      <a href="/lessons.html">Lessons</a><a href="/guides.html">Build Guides</a>
+      <a href="/course-ground-zero.html" style="color:var(--accent);font-weight:700">Course</a><a href="/lessons.html">Lessons</a><a href="/guides.html">Build Guides</a>
       <a href="/components.html">Components</a>
       <a href="/trainer.html">Sandbox</a>
       <a href="/nec-journeyman.html">Exam Helper</a>
@@ -73,6 +85,26 @@
       <div class="btns">
         <a class="btn btn-primary" href="/lessons.html">Start Learning →</a>
         <a class="btn btn-ghost" href="/trainer.html">Open the Sandbox</a>
+      </div>
+    </section>
+
+    <section class="course-feat">
+      <div class="cf-card">
+        <div class="cf-left">
+          <div class="cf-tag">Paid Course · Certificate</div>
+          <h2>Ground Zero: Intro to Electrical</h2>
+          <p>Brand new to electrical? Start here. Nine lessons with hands-on interactive demos, a final exam, and a certificate of completion — built for beginners, apprentices, and the trade-curious.</p>
+          <ul class="cf-feat">
+            <li>✓ Electricity basics, Ohm's Law, AC/DC, magnetism, safety &amp; more</li>
+            <li>✓ Hands-on demos — build a circuit, read a meter, lockout/tagout</li>
+            <li>✓ Final exam + certificate, saved to your account</li>
+          </ul>
+          <a class="btn btn-primary" href="/course-ground-zero.html">Enroll — $29 →</a>
+        </div>
+        <div class="cf-price">
+          <div class="cf-amt">$29</div>
+          <div class="cf-note">one-time<br>lifetime access</div>
+        </div>
       </div>
     </section>
 
