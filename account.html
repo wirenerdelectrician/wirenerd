@@ -96,7 +96,7 @@ $("go").onclick=async()=>{
       if(error)throw error;
       location.href="profile.html";
     }else{
-      const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+      const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:location.origin+"/profile.html"}});
       if(error)throw error;
       if(data&&data.session){ location.href="profile.html"; }
       else { msg("Account created! Check your email to confirm, then log in.","ok"); setTimeout(()=>setMode("login"),600); }
