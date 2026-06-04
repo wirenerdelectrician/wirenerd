@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Account · WireNerd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a1a1a;--panel:#232323;--panel-2:#2b2b2b;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--muted:#B4B2A9;--line:#383838;--text:#ece9e2;--red:#E24B4A;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--blue);text-decoration:none}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;font-size:20px}.brand a{color:var(--text)}.brand .n{color:var(--accent)}
+.logout{background:transparent;border:1px solid var(--line);color:var(--text);padding:8px 14px;border-radius:9px;cursor:pointer;font-family:"Saira",sans-serif;font-size:13px}
+.logout:hover{border-color:var(--accent)}
+main{flex:1;display:flex;justify-content:center;padding:34px 18px}
+.wrap{width:100%;max-width:600px}
+h1{font-size:28px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 28px}
+.sec{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+.sec h2{font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 0 16px;font-weight:700}
+.course{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.course .t{font-weight:700;font-size:17px}
+.course .d{color:var(--muted);font-size:13px;margin-top:3px}
+.btn{padding:11px 18px;border:none;border-radius:10px;background:var(--accent);color:#1a1a1a;font-weight:800;font-size:14px;cursor:pointer;font-family:"Saira",sans-serif;display:inline-block}
+.btn:hover{filter:brightness(1.05)}
+.empty{color:var(--muted);font-size:14px;line-height:1.5}
+.cert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.cert:first-child{border-top:none}
+footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><a href="/">wire<span class="n">nerd</span></a></div>
+  <button class="logout" id="logout">Log out</button>
+</header>
+<main>
+  <div class="wrap">
+    <h1>My account</h1>
+    <p class="sub" id="hello">Loading…</p>
+
+    <div class="sec">
+      <h2>My course</h2>
+      <div class="course">
+        <div>
+          <div class="t">Ground Zero: Intro to Electrical</div>
+          <div class="d">9 lessons · hands-on demos · final exam · certificate</div>
+        </div>
+        <a class="btn" href="course-ground-zero.html">Open course →</a>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>My certificates</h2>
+      <div id="certs"><p class="empty">Your certificates will show up here once you finish a course — saved to your account for easy access anytime.</p></div>
+    </div>
+  </div>
+</main>
+<footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
+const SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+const $=id=>document.getElementById(id);
+(async()=>{
+  const {data}=await sb.auth.getUser();
+  const u=data&&data.user;
+  if(!u){ location.href="account.html"; return; }
+  const name=(u.user_metadata&&u.user_metadata.full_name)||u.email;
+  $("hello").textContent="Signed in as "+name+" · "+u.email;
+})();
+$("logout").onclick=async()=>{ await sb.auth.signOut(); location.href="account.html"; };
+</script>
+</body>
+</html>

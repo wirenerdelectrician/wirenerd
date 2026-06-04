@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account · WireNerd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a1a1a;--panel:#232323;--panel-2:#2b2b2b;--accent:#EF9F27;--green:#1D9E75;--blue:#85B7EB;--muted:#B4B2A9;--line:#383838;--text:#ece9e2;--red:#E24B4A;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--blue);text-decoration:none}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;font-size:20px;letter-spacing:.3px}
+.brand a{color:var(--text)}
+.brand .n{color:var(--accent)}
+nav a{color:var(--muted);margin-left:18px;font-size:14px}
+nav a:hover{color:var(--text)}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:30px 18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px;width:100%;max-width:420px}
+h1{font-size:24px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 22px;line-height:1.5}
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tab{flex:1;padding:10px;text-align:center;border:1px solid var(--line);border-radius:10px;cursor:pointer;color:var(--muted);font-weight:600}
+.tab.on{background:var(--panel-2);color:var(--text);border-color:var(--accent)}
+label{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px}
+input{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px}
+input:focus{outline:none;border-color:var(--accent)}
+.btn{width:100%;margin-top:20px;padding:13px;border:none;border-radius:10px;background:var(--accent);color:#1a1a1a;font-weight:800;font-size:15px;cursor:pointer;font-family:"Saira",sans-serif}
+.btn:hover{filter:brightness(1.05)}
+.btn:disabled{opacity:.6;cursor:default}
+.msg{margin-top:16px;font-size:13.5px;min-height:18px;line-height:1.4}
+.msg.err{color:var(--red)}
+.msg.ok{color:var(--green)}
+footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:12.5px;text-align:center}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><a href="/">wire<span class="n">nerd</span></a></div>
+  <nav><a href="/course-ground-zero.html">Courses</a><a href="/">Home</a></nav>
+</header>
+<main>
+  <div class="card">
+    <h1 id="title">Log in</h1>
+    <p class="sub" id="sub">Welcome back — log in to continue your course.</p>
+    <div class="tabs">
+      <div class="tab on" id="tabLogin">Log in</div>
+      <div class="tab" id="tabSignup">Create account</div>
+    </div>
+    <div id="nameWrap" class="hide">
+      <label for="name">Full name</label>
+      <input id="name" type="text" placeholder="Your name (goes on your certificate)" autocomplete="name">
+    </div>
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
+    <label for="password">Password</label>
+    <input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password">
+    <button class="btn" id="go">Log in</button>
+    <div class="msg" id="msg"></div>
+  </div>
+</main>
+<footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
+const SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+const $=id=>document.getElementById(id);
+let mode="login";
+sb.auth.getSession().then(({data})=>{ if(data&&data.session) location.href="profile.html"; });
+function msg(t,cls){const m=$("msg");m.textContent=t||"";m.className="msg"+(cls?" "+cls:"");}
+function setMode(m){
+  mode=m;
+  $("tabLogin").classList.toggle("on",m==="login");
+  $("tabSignup").classList.toggle("on",m==="signup");
+  $("nameWrap").classList.toggle("hide",m!=="signup");
+  $("title").textContent=m==="login"?"Log in":"Create account";
+  $("sub").textContent=m==="login"?"Welcome back — log in to continue your course.":"Create a free account to enroll and save your certificates.";
+  $("go").textContent=m==="login"?"Log in":"Create account";
+  msg("");
+}
+$("tabLogin").onclick=()=>setMode("login");
+$("tabSignup").onclick=()=>setMode("signup");
+$("go").onclick=async()=>{
+  const email=$("email").value.trim(), password=$("password").value, name=$("name").value.trim();
+  if(!email||!password){msg("Enter your email and password.","err");return;}
+  if(mode==="signup"&&!name){msg("Please enter your name — it goes on your certificate.","err");return;}
+  $("go").disabled=true; msg("Working…");
+  try{
+    if(mode==="login"){
+      const {error}=await sb.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      location.href="profile.html";
+    }else{
+      const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+      if(error)throw error;
+      if(data&&data.session){ location.href="profile.html"; }
+      else { msg("Account created! Check your email to confirm, then log in.","ok"); setTimeout(()=>setMode("login"),600); }
+    }
+  }catch(e){ msg((e&&e.message)||"Something went wrong.","err"); }
+  $("go").disabled=false;
+};
+["email","password","name"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")$("go").click();}));
+</script>
+</body>
+</html>
