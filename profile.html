@@ -12,66 +12,246 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
 a{color:var(--blue);text-decoration:none}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(26,26,26,.92);backdrop-filter:blur(8px);z-index:10}
 .brand{font-weight:800;font-size:20px}.brand a{color:var(--text)}.brand .n{color:var(--accent)}
-.logout{background:transparent;border:1px solid var(--line);color:var(--text);padding:8px 14px;border-radius:9px;cursor:pointer;font-family:"Saira",sans-serif;font-size:13px}
+header nav a{color:var(--muted);margin-left:20px;font-size:14px}
+header nav a:hover{color:var(--text)}
+.logout{background:transparent;border:1px solid var(--line);color:var(--text);padding:8px 14px;border-radius:9px;cursor:pointer;font-family:"Saira",sans-serif;font-size:13px;margin-left:20px}
 .logout:hover{border-color:var(--accent)}
-main{flex:1;display:flex;justify-content:center;padding:34px 18px}
-.wrap{width:100%;max-width:600px}
-h1{font-size:28px;margin:0 0 4px}
-.sub{color:var(--muted);font-size:14px;margin:0 0 28px}
-.sec{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
-.sec h2{font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 0 16px;font-weight:700}
-.course{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.course .t{font-weight:700;font-size:17px}
-.course .d{color:var(--muted);font-size:13px;margin-top:3px}
-.btn{padding:11px 18px;border:none;border-radius:10px;background:var(--accent);color:#1a1a1a;font-weight:800;font-size:14px;cursor:pointer;font-family:"Saira",sans-serif;display:inline-block}
-.btn:hover{filter:brightness(1.05)}
-.empty{color:var(--muted);font-size:14px;line-height:1.5}
-.cert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
-.cert:first-child{border-top:none}
+main{flex:1;display:flex;justify-content:center;padding:36px 18px 60px}
+.wrap{width:100%;max-width:760px}
+.welcome{display:flex;align-items:center;gap:18px;margin-bottom:26px}
+.avatar{width:62px;height:62px;border-radius:50%;background:var(--accent);color:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;flex-shrink:0}
+.welcome h1{font-size:28px;margin:0;font-weight:800}
+.welcome .email{color:var(--muted);font-size:14px;margin:2px 0 0;font-family:"JetBrains Mono",monospace}
+.stats{display:flex;gap:14px;margin-bottom:34px}
+.stat{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.stat .num{font-size:30px;font-weight:800;color:var(--accent);line-height:1}
+.stat .lbl{color:var(--muted);font-size:13px;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+.sec-h{font-size:15px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 14px;font-weight:700}
+.sec-sub{color:var(--muted);font-size:14px;margin:-8px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:36px}
+.ccard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;transition:border-color .15s,transform .15s}
+.ccard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.ccard .ic{font-size:26px;margin-bottom:10px}
+.ccard h3{font-size:18px;margin:0 0 6px;font-weight:700}
+.ccard p{color:var(--muted);font-size:13.5px;margin:0 0 14px;line-height:1.5}
+.pill{display:inline-block;font-size:11px;letter-spacing:.8px;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px}
+.pill.on{background:rgba(29,158,117,.15);color:var(--green)}
+.pill.soon{background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}
+.cbtn{display:inline-block;background:var(--accent);color:#1a1a1a;font-weight:800;padding:10px 16px;border-radius:9px;font-size:13.5px;border:none;cursor:pointer;font-family:"Saira",sans-serif}
+.cbtn:hover{filter:brightness(1.05)}
+.pbar{height:8px;background:var(--panel-2);border-radius:6px;overflow:hidden;margin:2px 0 8px}
+.pbar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .6s ease}
+.pct{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.notify{background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:700;padding:8px 14px;border-radius:9px;font-size:13px;cursor:pointer;font-family:"Saira",sans-serif}
+.notify:hover{background:var(--accent);color:#1a1a1a}
+.notify.joined{border-color:var(--green);color:var(--green);cursor:default;background:transparent}
+.notify:disabled{opacity:.7}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:26px;color:var(--muted);font-size:14px;text-align:center;line-height:1.5;margin-bottom:36px}
+.certrow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px}
+.certrow .ct{font-weight:700;font-size:15px}.certrow .cd{color:var(--muted);font-size:12.5px;margin-top:2px}
+.dlbtn{background:transparent;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:9px;font-size:12.5px;cursor:pointer;font-family:"Saira",sans-serif;white-space:nowrap}
+.dlbtn:hover{border-color:var(--accent)}
+.setcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:36px}
+.setrow{margin-bottom:18px}
+.setrow:last-child{margin-bottom:0}
+.setrow label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.setrow .line{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.setrow input{flex:1;min-width:200px;max-width:340px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:9px;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13.5px}
+.setrow input:focus{outline:none;border-color:var(--accent)}
+.setbtn{background:var(--accent);color:#1a1a1a;border:none;border-radius:9px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer;font-family:"Saira",sans-serif}
+.setbtn:hover{filter:brightness(1.05)}
+.setmsg{font-size:13px;margin-top:8px;min-height:16px}
+.setmsg.ok{color:var(--green)}.setmsg.err{color:var(--red)}
 footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:12.5px;text-align:center}
+@media(max-width:560px){.welcome h1{font-size:23px}}
 </style>
 </head>
 <body>
 <header>
   <div class="brand"><a href="/">wire<span class="n">nerd</span></a></div>
-  <button class="logout" id="logout">Log out</button>
+  <div style="display:flex;align-items:center">
+    <nav><a href="/">Home</a><a href="/course-ground-zero.html">Courses</a></nav>
+    <button class="logout" id="logout">Log out</button>
+  </div>
 </header>
 <main>
   <div class="wrap">
-    <h1>My account</h1>
-    <p class="sub" id="hello">Loading…</p>
-
-    <div class="sec">
-      <h2>My course</h2>
-      <div class="course">
-        <div>
-          <div class="t">Ground Zero: Intro to Electrical</div>
-          <div class="d">9 lessons · hands-on demos · final exam · certificate</div>
-        </div>
-        <a class="btn" href="course-ground-zero.html">Open course →</a>
+    <div class="welcome">
+      <div class="avatar" id="avatar">·</div>
+      <div>
+        <h1 id="hi">Welcome back</h1>
+        <p class="email" id="email">loading…</p>
       </div>
     </div>
 
-    <div class="sec">
-      <h2>My certificates</h2>
-      <div id="certs"><p class="empty">Your certificates will show up here once you finish a course — saved to your account for easy access anytime.</p></div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="statCourses">—</div><div class="lbl">Courses enrolled</div></div>
+      <div class="stat"><div class="num" id="statCerts">—</div><div class="lbl">Certificates</div></div>
+    </div>
+
+    <h2 class="sec-h">My courses</h2>
+    <div id="myCourses" class="grid"></div>
+
+    <h2 class="sec-h">My certificates</h2>
+    <div id="certs"></div>
+
+    <h2 class="sec-h">Account settings</h2>
+    <div class="setcard">
+      <div class="setrow">
+        <label>Display name (used on your certificate)</label>
+        <div class="line"><input id="nameInput" type="text" placeholder="Your name"><button class="setbtn" id="saveName">Save name</button></div>
+      </div>
+      <div class="setrow">
+        <label>New password</label>
+        <div class="line"><input id="passInput" type="password" placeholder="At least 6 characters" autocomplete="new-password"><button class="setbtn" id="savePass">Update password</button></div>
+      </div>
+      <div class="setmsg" id="setMsg"></div>
+    </div>
+
+    <h2 class="sec-h">More courses — coming soon</h2>
+    <p class="sec-sub">New WireNerd courses are in the works. Tap <b>Notify me</b> and we'll email you the moment each one launches.</p>
+    <div class="grid" id="soon">
+      <div class="ccard" data-key="motor-control"><span class="pill soon">Coming soon</span><div class="ic">⚙️</div><h3>Motor Control Fundamentals</h3><p>Start/stop, seal-in, motor starters, and forward/reverse — the heart of industrial control.</p><button class="notify" data-key="motor-control">Notify me</button></div>
+      <div class="ccard" data-key="schematics"><span class="pill soon">Coming soon</span><div class="ic">📐</div><h3>Reading Electrical Schematics</h3><p>Read ladder logic and wiring diagrams with confidence, symbol by symbol.</p><button class="notify" data-key="schematics">Notify me</button></div>
+      <div class="ccard" data-key="plc-basics"><span class="pill soon">Coming soon</span><div class="ic">🤖</div><h3>PLC Basics</h3><p>What a PLC is, how its I/O works, and how to read and follow a simple program.</p><button class="notify" data-key="plc-basics">Notify me</button></div>
+      <div class="ccard" data-key="nec-prep"><span class="pill soon">Coming soon</span><div class="ic">🎓</div><h3>NEC Journeyman Exam Prep</h3><p>Navigate the code book and drill the questions you'll face on exam day.</p><button class="notify" data-key="nec-prep">Notify me</button></div>
     </div>
   </div>
 </main>
 <footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
 const SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
-function show(u){const name=(u.user_metadata&&u.user_metadata.full_name)||u.email;$("hello").textContent="Signed in as "+name+" · "+u.email;}
+let USER=null;
+
+function fmtShort(s){try{return new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});}catch(e){return "";}}
+function fmtLong(s){try{return new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});}catch(e){return "";}}
+function readProgress(){try{var st=JSON.parse(localStorage.getItem("wirenerd_groundzero_progress_v2"));if(st&&typeof st.pct==="number")return st;}catch(e){}return null;}
+
+function downloadCert(c){
+  var name=c.recipient_name||"Student", title=c.course_title||"Course", ds=fmtLong(c.issued_at||Date.now()), code=c.cert_code||"", hours=4;
+  try{
+    var jsPDF=window.jspdf.jsPDF, doc=new jsPDF({orientation:"landscape",unit:"pt",format:"letter"});
+    var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
+    doc.setFillColor(250,248,242);doc.rect(0,0,W,H,"F");
+    doc.setDrawColor(239,159,39);doc.setLineWidth(10);doc.rect(18,18,W-36,H-36);
+    doc.setDrawColor(180,170,140);doc.setLineWidth(1);doc.rect(34,34,W-68,H-68);
+    doc.setTextColor(28,28,28);doc.setFont("helvetica","bold");doc.setFontSize(22);doc.text("wirenerd",W/2,90,{align:"center"});
+    doc.setTextColor(122,106,60);doc.setFont("courier","normal");doc.setFontSize(12);doc.text("CERTIFICATE OF COMPLETION",W/2,118,{align:"center"});
+    doc.setTextColor(28,28,28);doc.setFont("helvetica","bold");doc.setFontSize(34);doc.text("Certificate of Completion",W/2,165,{align:"center"});
+    doc.setFont("helvetica","normal");doc.setFontSize(13);doc.setTextColor(70,70,70);doc.text("This certifies that",W/2,205,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(30);doc.setTextColor(28,28,28);doc.text(name,W/2,245,{align:"center"});
+    doc.setDrawColor(239,159,39);doc.setLineWidth(2);var nw=Math.min(doc.getTextWidth(name)+60,W-160);doc.line(W/2-nw/2,255,W/2+nw/2,255);
+    doc.setFont("helvetica","normal");doc.setFontSize(13);doc.setTextColor(70,70,70);doc.text("has successfully completed",W/2,288,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(17);doc.setTextColor(28,28,28);doc.text(title,W/2,314,{align:"center"});
+    doc.setFont("courier","normal");doc.setFontSize(12);doc.setTextColor(90,90,90);doc.text(hours+" Contact Hours  -  Completed "+ds,W/2,338,{align:"center"});
+    doc.setDrawColor(28,28,28);doc.setLineWidth(1.2);doc.line(110,430,300,430);doc.line(W-300,430,W-110,430);
+    doc.setFont("helvetica","bold");doc.setFontSize(15);doc.setTextColor(28,28,28);doc.text("Bryan Barrios",205,424,{align:"center"});doc.text(ds,W-205,424,{align:"center"});
+    doc.setFont("courier","normal");doc.setFontSize(10);doc.setTextColor(100,100,100);doc.text("Instructor - WireNerd",205,446,{align:"center"});doc.text("Date",W-205,446,{align:"center"});
+    doc.setFontSize(10);doc.setTextColor(140,140,140);doc.text("Verification ID: "+code,W/2,H-40,{align:"center"});
+    doc.save("WireNerd-Certificate-"+name.replace(/[^a-z0-9]+/gi,"-")+".pdf");
+  }catch(e){alert("Couldn't generate the PDF — check your connection and try again.");}
+}
+
+async function load(user){
+  USER=user;
+  const name=(user.user_metadata&&user.user_metadata.full_name)||user.email;
+  const first=(name||"").trim().split(/\s+/)[0]||"there";
+  $("hi").textContent="Welcome back, "+first;
+  $("email").textContent=user.email;
+  $("avatar").textContent=(name||user.email||"·").trim().charAt(0).toUpperCase();
+  $("nameInput").value=(user.user_metadata&&user.user_metadata.full_name)||"";
+
+  let owns=false, certs=[], joined=new Set();
+  try{
+    const [p,c,w]=await Promise.all([
+      sb.from("purchases").select("course_id"),
+      sb.from("certificates").select("*").order("issued_at",{ascending:false}),
+      sb.from("waitlist").select("course_key")
+    ]);
+    owns=(p.data||[]).some(x=>x.course_id==="ground-zero");
+    certs=c.data||[];
+    (w.data||[]).forEach(x=>joined.add(x.course_key));
+  }catch(e){}
+
+  $("statCourses").textContent=owns?"1":"0";
+  $("statCerts").textContent=certs.length;
+
+  // My courses (with progress)
+  const mc=$("myCourses");
+  if(owns){
+    const prog=readProgress();
+    const pct=prog?prog.pct:null;
+    const bar = pct!=null ? '<div class="pbar"><i id="pbarFill"></i></div><div class="pct">'+pct+'% complete'+(pct>=100?' · finished 🎉':'')+'</div>' : '';
+    const cta = pct>=100?'Review →':(pct>0?'Continue →':'Start →');
+    mc.innerHTML='<div class="ccard"><span class="pill on">Enrolled</span><div class="ic">⚡</div><h3>Ground Zero: Intro to Electrical</h3>'+bar+'<a class="cbtn" href="course-ground-zero.html">'+cta+'</a></div>';
+    if(pct!=null){const f=$("pbarFill");if(f)setTimeout(()=>{f.style.width=pct+"%";},60);}
+  }else{
+    mc.innerHTML='<div class="ccard"><div class="ic">⚡</div><h3>Ground Zero: Intro to Electrical</h3><p>Your foundation in electrical — 9 lessons, hands-on demos, final exam, and a certificate.</p><a class="cbtn" href="course-ground-zero.html">Enroll — $29 →</a></div>';
+  }
+
+  // Certificates
+  const cd=$("certs");
+  if(certs.length){
+    cd.innerHTML="";
+    certs.forEach(c=>{
+      const row=document.createElement("div");row.className="certrow";
+      row.innerHTML='<div><div class="ct">'+(c.course_title||"Certificate")+'</div><div class="cd">Completed '+fmtShort(c.issued_at)+(c.cert_code?(" · "+c.cert_code):"")+'</div></div><button class="dlbtn">Download PDF</button>';
+      row.querySelector(".dlbtn").addEventListener("click",()=>downloadCert(c));
+      cd.appendChild(row);
+    });
+  }else{
+    cd.innerHTML='<div class="empty">No certificates yet. Finish a course and your certificate will be saved right here for easy access.</div>';
+  }
+
+  // Waitlist buttons
+  document.querySelectorAll(".notify").forEach(btn=>{
+    const key=btn.dataset.key;
+    if(joined.has(key)){ btn.textContent="✓ On the list"; btn.classList.add("joined"); btn.disabled=true; }
+    else { btn.addEventListener("click",()=>joinWaitlist(key,btn)); }
+  });
+}
+
+async function joinWaitlist(key,btn){
+  if(!USER)return;
+  btn.disabled=true; const old=btn.textContent; btn.textContent="…";
+  try{
+    const {error}=await sb.from("waitlist").upsert({user_id:USER.id,course_key:key,email:USER.email},{onConflict:"user_id,course_key"});
+    if(error)throw error;
+    btn.textContent="✓ On the list"; btn.classList.add("joined");
+  }catch(e){ btn.disabled=false; btn.textContent=old; }
+}
+
+function setMsg(t,cls){const m=$("setMsg");m.textContent=t||"";m.className="setmsg"+(cls?" "+cls:"");}
+$("saveName").addEventListener("click",async()=>{
+  const n=$("nameInput").value.trim();
+  if(!n){setMsg("Please enter a name.","err");return;}
+  setMsg("Saving…");
+  const {error}=await sb.auth.updateUser({data:{full_name:n}});
+  if(error){setMsg(error.message||"Couldn't save.","err");return;}
+  setMsg("Name updated ✓","ok");
+  $("hi").textContent="Welcome back, "+n.split(/\s+/)[0];
+  $("avatar").textContent=n.charAt(0).toUpperCase();
+});
+$("savePass").addEventListener("click",async()=>{
+  const p=$("passInput").value;
+  if(p.length<6){setMsg("Password must be at least 6 characters.","err");return;}
+  setMsg("Updating…");
+  const {error}=await sb.auth.updateUser({password:p});
+  if(error){setMsg(error.message||"Couldn't update password.","err");return;}
+  $("passInput").value=""; setMsg("Password updated ✓","ok");
+});
+
 let handled=false;
 sb.auth.onAuthStateChange((event,session)=>{
   if(handled)return;
-  if(session&&session.user){handled=true;show(session.user);}
+  if(session&&session.user){handled=true;load(session.user);}
   else if(event==="INITIAL_SESSION"){handled=true;location.href="account.html";}
 });
 $("logout").onclick=async()=>{ await sb.auth.signOut(); location.href="account.html"; };

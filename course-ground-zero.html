@@ -1031,7 +1031,13 @@ let demoRAF=null, demoCleanup=null;
 function cancelDemo(){if(demoRAF){cancelAnimationFrame(demoRAF);demoRAF=null;}if(demoCleanup){demoCleanup();demoCleanup=null;}}
 
 function loadState(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.mods)return s;}catch(e){}return{name:"",mods:{},completedAt:null};}
-function save(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+function save(){try{
+  var total=COURSE.modules.length, done=0;
+  COURSE.modules.forEach(function(m){var a=(state.mods[m.id]&&state.mods[m.id].done)||[];if(a.length>=m.steps.length&&a.slice(0,m.steps.length).every(Boolean))done++;});
+  state.total=total;state.done=done;state.pct=Math.round(done/total*100);
+  if(state.pct===100&&!state.completedAt)state.completedAt=Date.now();
+  localStorage.setItem(LS,JSON.stringify(state));
+}catch(e){}}
 function steps(i){return COURSE.modules[i].steps;}
 function md(id,len){if(!state.mods[id])state.mods[id]={done:Array(len).fill(false)};while(state.mods[id].done.length<len)state.mods[id].done.push(false);return state.mods[id];}
 function modComplete(i){const mo=COURSE.modules[i];return md(mo.id,mo.steps.length).done.every(Boolean);}
@@ -1486,7 +1492,7 @@ function moduleFinished(){
 
 function makeVID(name){const base=(name+"|"+COURSE.title).toUpperCase();let h=0;for(let i=0;i<base.length;i++)h=((h<<5)-h+base.charCodeAt(i))|0;return "WN-"+new Date().getFullYear()+"-"+(Math.abs(h)%100000).toString().padStart(5,"0");}
 function currentUserName(){
-  /* STAGE 2 HOOK: when the login/account system is added, replace this with the logged-in account's name. */
+  if(window.WN_USER&&window.WN_USER.name)return window.WN_USER.name;
   if(state.name&&state.name.trim())return state.name.trim();
   const n=(prompt("Enter your full name for the certificate:")||"").trim();
   if(n){state.name=n;save();}
@@ -1498,6 +1504,7 @@ function showCertificate(){
   if(!state.completedAt)state.completedAt=Date.now();save();
   const d=new Date(state.completedAt);const ds=d.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
   $("#certName").textContent=name;$("#certCourse").textContent=COURSE.title;$("#certMeta").textContent=COURSE.hours+" Contact Hours · Completed "+ds;$("#certDate2").textContent=ds;$("#certVid").textContent="Verification ID: "+makeVID(name);
+  if(window.WN_saveCert)window.WN_saveCert({title:COURSE.title,name:name,code:makeVID(name)});
   showOnly("cert");
 }
 function downloadPDF(){
@@ -1543,6 +1550,16 @@ renderHome();
   if(!window.supabase){ body.innerHTML="<p>Couldn't load the login system. Please refresh the page.</p>"; return; }
   var sbc=window.supabase.createClient(SB_URL,SB_KEY);
   function grant(){ gate.style.display="none"; }
+  function setupUser(user){
+    window.WN_USER={id:user.id,email:user.email,name:(user.user_metadata&&user.user_metadata.full_name)||user.email};
+    window.WN_saveCert=async function(cert){
+      try{
+        var ex=await sbc.from("certificates").select("id").eq("course_id",COURSE_ID).limit(1);
+        if(ex.data&&ex.data.length)return;
+        await sbc.from("certificates").insert({user_id:user.id,course_id:COURSE_ID,course_title:cert.title,recipient_name:cert.name,cert_code:cert.code});
+      }catch(e){}
+    };
+  }
   function loginState(){
     body.innerHTML='<h2>Start the course</h2><p>Create a free account or log in to enroll in <b>Ground Zero: Intro to Electrical</b> and save your certificate to your profile.</p><a class="gbtn" href="account.html">Log in / Create account</a><a class="glink" href="/">← Back to wirenerd.com</a>';
   }
@@ -1558,7 +1575,7 @@ renderHome();
       var s=await sbc.auth.getSession(); var session=s.data.session;
       if(!session){ loginState(); return; }
       var r=await sbc.from("purchases").select("id").eq("course_id",COURSE_ID).limit(1);
-      if(r.data && r.data.length){ grant(); } else { buyState(session.user); }
+      if(r.data && r.data.length){ setupUser(session.user); grant(); } else { buyState(session.user); }
     }catch(err){ body.innerHTML='<p>Something went wrong checking access. Please refresh.</p>'; }
   }
   check();
