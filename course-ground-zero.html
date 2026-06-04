@@ -233,7 +233,9 @@ footer .social{display:flex;gap:16px;margin-top:2px}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 #wn-gate{position:fixed;inset:0;z-index:99999;background:#1a1a1a;display:flex;align-items:center;justify-content:center;padding:24px;font-family:"Saira",system-ui,sans-serif;color:#ece9e2}
-#wn-gate .gcard{background:#232323;border:1px solid #383838;border-radius:16px;max-width:460px;width:100%;padding:34px;text-align:center}
+#wn-gate .gcard{position:relative;background:#232323;border:1px solid #383838;border-radius:16px;max-width:460px;width:100%;padding:34px;text-align:center}
+#wn-gate .gx{position:absolute;top:12px;right:16px;background:none;border:none;color:#B4B2A9;font-size:26px;line-height:1;cursor:pointer}
+#wn-gate .gx:hover{color:#ece9e2}
 #wn-gate h2{font-size:24px;margin:0 0 10px;font-weight:800}
 #wn-gate p{color:#B4B2A9;font-size:14.5px;line-height:1.55;margin:0 0 22px}
 #wn-gate .gbtn{display:inline-block;background:#EF9F27;color:#1a1a1a;font-weight:800;padding:14px 24px;border-radius:11px;border:none;cursor:pointer;font-size:16px;font-family:"Saira",sans-serif;text-decoration:none}
@@ -246,7 +248,7 @@ footer .social{display:flex;gap:16px;margin-top:2px}
 </style>
 </head>
 <body>
-<div id="wn-gate"><div class="gcard"><div class="brandmark">wire<span class="n">nerd</span></div><div id="wn-gate-body"><p>Checking your access…</p></div></div></div>
+<div id="wn-gate" style="display:none"><div class="gcard"><div class="brandmark">wire<span class="n">nerd</span></div><div id="wn-gate-body"></div></div></div>
 
 <nav class="topnav"><div class="wrap">
   <a class="brand" href="/">wire<b>nerd</b></a>
@@ -1072,7 +1074,12 @@ function renderHome(){
 }
 function showOnly(w){$("#homeWrap").style.display=w==="home"?"block":"none";$("#playerWrap").classList.toggle("on",w==="player");$("#certWrap").classList.toggle("on",w==="cert");window.scrollTo({top:0,behavior:"smooth"});}
 
-function openModule(i){view.idx=i;view.step=firstIncompleteStep(i);slideN=0;renderPlayer();showOnly("player");}
+function enterModule(i){view.idx=i;view.step=firstIncompleteStep(i);slideN=0;renderPlayer();showOnly("player");}
+window.enterModule=enterModule;
+function openModule(i){
+  if(window.WN_GATE && window.WN_GATE.paid!==true && window.WN_GATE.tryEnter){ window.WN_GATE.tryEnter(i); return; }
+  enterModule(i);
+}
 function renderPlayer(){const mo=COURSE.modules[view.idx];$("#modKicker").textContent=mo.kicker;$("#modTitle").textContent=mo.title;renderChips();renderStage();}
 function renderChips(){
   const mo=COURSE.modules[view.idx];const d=md(mo.id,mo.steps.length).done;const reach=firstIncompleteStep(view.idx);
@@ -1549,9 +1556,14 @@ renderHome();
   var PAY="https://buy.stripe.com/test_00wdR9bpc5TE5Pfb4hew800";
   var COURSE_ID="ground-zero";
   var gate=document.getElementById("wn-gate"), body=document.getElementById("wn-gate-body");
-  if(!window.supabase){ body.innerHTML="<p>Couldn't load the login system. Please refresh the page.</p>"; return; }
+  gate.style.display="none";                 // never block the landing page
+  var state={paid:false,user:null,tryEnter:null};
+  window.WN_GATE=state;
+  if(!window.supabase){
+    state.tryEnter=function(){ gate.style.display="flex"; body.innerHTML='<p>Couldn\'t load the login system. Please refresh the page.</p>'; };
+    return;
+  }
   var sbc=window.supabase.createClient(SB_URL,SB_KEY);
-  function grant(){ gate.style.display="none"; }
   function setupUser(user){
     window.WN_USER={id:user.id,email:user.email,name:(user.user_metadata&&user.user_metadata.full_name)||user.email};
     window.WN_saveCert=async function(cert){
@@ -1562,25 +1574,39 @@ renderHome();
       }catch(e){}
     };
   }
-  function loginState(){
-    body.innerHTML='<h2>Start the course</h2><p>Create a free account or log in to enroll in <b>Ground Zero: Intro to Electrical</b> and save your certificate to your profile.</p><a class="gbtn" href="account.html">Log in / Create account</a><a class="glink" href="/">← Back to wirenerd.com</a>';
-  }
-  function buyState(user){
-    body.innerHTML='<h2>Ground Zero: Intro to Electrical</h2><div class="price">$29</div><p>One-time — lifetime access.</p><div class="feat">✓ 9 lessons + hands-on interactives<br>✓ Final exam<br>✓ Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now — $29</button><a class="glink" id="wn-refresh">Already purchased? Click here to refresh</a><a class="glink" id="wn-logout">Log out</a>';
-    document.getElementById("wn-buy").onclick=function(){ location.href=PAY+"?client_reference_id="+encodeURIComponent(user.id)+"&prefilled_email="+encodeURIComponent(user.email||""); };
-    document.getElementById("wn-refresh").onclick=function(e){e.preventDefault();check();};
-    document.getElementById("wn-logout").onclick=function(e){e.preventDefault();sbc.auth.signOut().then(loginState);};
-  }
-  async function check(){
-    body.innerHTML='<p>Checking your access…</p>';
+  async function runCheck(){
     try{
       var s=await sbc.auth.getSession(); var session=s.data.session;
-      if(!session){ loginState(); return; }
+      if(!session){ state.user=null; state.paid=false; return; }
+      state.user=session.user;
       var r=await sbc.from("purchases").select("id").eq("course_id",COURSE_ID).limit(1);
-      if(r.data && r.data.length){ setupUser(session.user); grant(); } else { buyState(session.user); }
-    }catch(err){ body.innerHTML='<p>Something went wrong checking access. Please refresh.</p>'; }
+      state.paid=!!(r.data && r.data.length);
+      if(state.paid) setupUser(session.user);
+    }catch(e){}
   }
-  check();
+  var checkPromise=runCheck();          // runs quietly in the background; no overlay
+  function show(html){ gate.style.display="flex"; body.innerHTML=html; }
+  function close(){ gate.style.display="none"; }
+  var wantIdx=0;
+  function wireClose(){ var x=document.getElementById("wn-x"),c=document.getElementById("wn-close2"); if(x)x.onclick=close; if(c)c.onclick=function(e){e.preventDefault();close();}; }
+  function loginState(){
+    show('<button class="gx" id="wn-x">&times;</button><h2>Ready to start?</h2><p>Create a free account or log in to enroll in <b>Ground Zero: Intro to Electrical</b> \u2014 your progress and certificate save to your profile.</p><a class="gbtn" href="account.html">Log in / Create account</a><a class="glink" id="wn-close2">Keep looking around</a>');
+    wireClose();
+  }
+  function buyState(user){
+    show('<button class="gx" id="wn-x">&times;</button><h2>Ground Zero: Intro to Electrical</h2><div class="price">$29</div><p>One-time \u2014 lifetime access.</p><div class="feat">\u2713 9 lessons + hands-on interactives<br>\u2713 Final exam<br>\u2713 Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now \u2014 $29</button><a class="glink" id="wn-refresh">Already purchased? Refresh</a><a class="glink" id="wn-close2">Maybe later</a>');
+    document.getElementById("wn-buy").onclick=function(){ location.href=PAY+"?client_reference_id="+encodeURIComponent(user.id)+"&prefilled_email="+encodeURIComponent(user.email||""); };
+    document.getElementById("wn-refresh").onclick=function(e){e.preventDefault(); checkPromise=runCheck(); tryEnter(wantIdx);};
+    wireClose();
+  }
+  async function tryEnter(i){
+    wantIdx=i;
+    show('<p>Checking your access\u2026</p>');
+    await checkPromise;
+    if(state.paid){ close(); if(window.enterModule) window.enterModule(i); return; }
+    if(state.user){ buyState(state.user); } else { loginState(); }
+  }
+  state.tryEnter=tryEnter;
 })();
 </script>
 </body>
