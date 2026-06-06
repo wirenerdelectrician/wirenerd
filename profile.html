@@ -21,7 +21,13 @@ header nav a:hover{color:var(--text)}
 main{flex:1;display:flex;justify-content:center;padding:36px 18px 60px}
 .wrap{width:100%;max-width:760px}
 .welcome{display:flex;align-items:center;gap:18px;margin-bottom:26px}
-.avatar{width:62px;height:62px;border-radius:50%;background:var(--accent);color:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;flex-shrink:0}
+.avatar{width:62px;height:62px;border-radius:50%;background:var(--accent);color:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;flex-shrink:0;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.setrow textarea{flex:1;min-width:220px;width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:9px;color:var(--text);font-family:"Saira",sans-serif;font-size:14px;resize:vertical;min-height:84px}
+.setrow textarea:focus{outline:none;border-color:var(--accent)}
+.setrow input[type=file]{flex:1;min-width:180px;color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:12.5px}
+.avprev{width:54px;height:54px;border-radius:50%;overflow:hidden;background:var(--panel-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0}
+.avprev img{width:100%;height:100%;object-fit:cover}
 .welcome h1{font-size:28px;margin:0;font-weight:800}
 .welcome .email{color:var(--muted);font-size:14px;margin:2px 0 0;font-family:"JetBrains Mono",monospace}
 .stats{display:flex;gap:14px;margin-bottom:34px}
@@ -64,18 +70,36 @@ main{flex:1;display:flex;justify-content:center;padding:36px 18px 60px}
 .setbtn:hover{filter:brightness(1.05)}
 .setmsg{font-size:13px;margin-top:8px;min-height:16px}
 .setmsg.ok{color:var(--green)}.setmsg.err{color:var(--red)}
+.wn-head{display:block;background:#1a1a1a;border-bottom:1px solid #383838;position:sticky;top:0;z-index:30;padding:0}
+.wn-wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 22px}
+.wn-brand{font-family:'Saira',system-ui,sans-serif;font-weight:800;font-size:20px;color:#ece9e2;text-decoration:none;flex:none}
+.wn-brand span{color:#EF9F27}
+.wn-nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.wn-nav a{font-family:'Saira',system-ui,sans-serif;color:#B4B2A9;margin-left:22px;font-size:14px;text-decoration:none;white-space:nowrap}
+.wn-nav a:hover{color:#ece9e2}
+.wn-nav a.wn-courses{color:#EF9F27;font-weight:700}
+.wn-nav .logout{margin-left:22px}
+@media(max-width:780px){.wn-wrap{flex-direction:column;align-items:flex-start;gap:10px}.wn-nav{justify-content:flex-start}.wn-nav a{margin-left:0;margin-right:18px}.wn-nav .logout{margin-left:0}}
 footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:12.5px;text-align:center}
 @media(max-width:560px){.welcome h1{font-size:23px}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><a href="/">wire<span class="n">nerd</span></a></div>
-  <div style="display:flex;align-items:center">
-    <nav><a href="/">Home</a><a href="/course-ground-zero.html">Courses</a></nav>
+<header class="wn-head"><div class="wn-wrap">
+  <a class="wn-brand" href="/">wire<span>nerd</span></a>
+  <nav class="wn-nav">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a>
+    <a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+    <a href="/course-ground-zero.html" class="wn-courses">Courses</a>
     <button class="logout" id="logout">Log out</button>
-  </div>
-</header>
+  </nav>
+</div></header>
 <main>
   <div class="wrap">
     <div class="welcome">
@@ -104,6 +128,14 @@ footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);fon
         <div class="line"><input id="nameInput" type="text" placeholder="Your name"><button class="setbtn" id="saveName">Save name</button></div>
       </div>
       <div class="setrow">
+        <label>Profile photo</label>
+        <div class="line"><span class="avprev" id="avPrev">·</span><input id="photoInput" type="file" accept="image/*"><button class="setbtn" id="savePhoto">Upload photo</button></div>
+      </div>
+      <div class="setrow">
+        <label>Description (shown on your public profile)</label>
+        <div class="line" style="align-items:flex-start"><textarea id="bioInput" maxlength="600" placeholder="Tell people about yourself — your trade, experience, what you're working on."></textarea><button class="setbtn" id="saveBio">Save</button></div>
+      </div>
+      <div class="setrow">
         <label>New password</label>
         <div class="line"><input id="passInput" type="password" placeholder="At least 6 characters" autocomplete="new-password"><button class="setbtn" id="savePass">Update password</button></div>
       </div>
@@ -129,6 +161,17 @@ const SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
 let USER=null;
+async function uploadImage(bucket,file){
+  if(!file)return null;
+  if(!file.type||!file.type.startsWith("image/"))throw new Error("Please choose an image file.");
+  if(file.size>5*1024*1024)throw new Error("Image must be under 5 MB.");
+  const ext=((file.name.split(".").pop())||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+  const path=USER.id+"/avatar-"+Date.now()+"."+ext;
+  const {error}=await sb.storage.from(bucket).upload(path,file,{upsert:true});
+  if(error)throw error;
+  return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+}
+function setAvatar(url,letter){const a=$("avatar");if(url){a.innerHTML='<img src="'+url+'" alt="">';}else if(letter){a.textContent=letter;}}
 
 function fmtShort(s){try{return new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});}catch(e){return "";}}
 function fmtLong(s){try{return new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});}catch(e){return "";}}
@@ -165,8 +208,13 @@ async function load(user){
   const first=(name||"").trim().split(/\s+/)[0]||"there";
   $("hi").textContent="Welcome back, "+first;
   $("email").textContent=user.email;
-  $("avatar").textContent=(name||user.email||"·").trim().charAt(0).toUpperCase();
-  $("nameInput").value=(user.user_metadata&&user.user_metadata.full_name)||"";
+  const letter=(name||user.email||"·").trim().charAt(0).toUpperCase();
+  let prof=null;
+  try{ const {data}=await sb.from("profiles").select("display_name,bio,avatar_url").eq("id",user.id).maybeSingle(); prof=data; }catch(e){}
+  setAvatar(prof&&prof.avatar_url, letter);
+  $("nameInput").value=(user.user_metadata&&user.user_metadata.full_name)||(prof&&prof.display_name)||"";
+  $("bioInput").value=(prof&&prof.bio)||"";
+  if(prof&&prof.avatar_url){$("avPrev").innerHTML='<img src="'+prof.avatar_url+'" alt="">';}else{$("avPrev").textContent=letter;}
 
   let owns=false, certs=[], joined=new Set();
   try{
@@ -235,9 +283,10 @@ $("saveName").addEventListener("click",async()=>{
   setMsg("Saving…");
   const {error}=await sb.auth.updateUser({data:{full_name:n}});
   if(error){setMsg(error.message||"Couldn't save.","err");return;}
+  try{ await sb.from("profiles").upsert({id:USER.id,display_name:n},{onConflict:"id"}); }catch(e){}
   setMsg("Name updated ✓","ok");
   $("hi").textContent="Welcome back, "+n.split(/\s+/)[0];
-  $("avatar").textContent=n.charAt(0).toUpperCase();
+  if(!$("avatar").querySelector("img")){ $("avatar").textContent=n.charAt(0).toUpperCase(); $("avPrev").textContent=n.charAt(0).toUpperCase(); }
 });
 $("savePass").addEventListener("click",async()=>{
   const p=$("passInput").value;
@@ -248,6 +297,26 @@ $("savePass").addEventListener("click",async()=>{
   $("passInput").value=""; setMsg("Password updated ✓","ok");
 });
 
+$("photoInput").addEventListener("change",()=>{const f=$("photoInput").files[0];if(f)$("avPrev").innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="">';});
+$("savePhoto").addEventListener("click",async()=>{
+  const f=$("photoInput").files[0]; if(!f){setMsg("Choose a photo first.","err");return;}
+  const b=$("savePhoto"); b.disabled=true; const o=b.textContent; b.textContent="Uploading…"; setMsg("");
+  try{
+    const url=await uploadImage("avatars",f);
+    const {error}=await sb.from("profiles").upsert({id:USER.id,avatar_url:url},{onConflict:"id"}); if(error)throw error;
+    setAvatar(url); $("avPrev").innerHTML='<img src="'+url+'" alt="">'; $("photoInput").value="";
+    setMsg("Photo updated ✓","ok");
+  }catch(e){setMsg(e.message||"Couldn't upload.","err");}
+  finally{b.disabled=false;b.textContent=o;}
+});
+$("saveBio").addEventListener("click",async()=>{
+  const b=$("saveBio"); b.disabled=true; const o=b.textContent; b.textContent="Saving…"; setMsg("");
+  try{
+    const {error}=await sb.from("profiles").upsert({id:USER.id,bio:$("bioInput").value.trim()},{onConflict:"id"}); if(error)throw error;
+    setMsg("Description saved ✓","ok");
+  }catch(e){setMsg(e.message||"Couldn't save.","err");}
+  finally{b.disabled=false;b.textContent=o;}
+});
 let handled=false;
 sb.auth.onAuthStateChange((event,session)=>{
   if(handled)return;

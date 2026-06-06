@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forum · WireNerd</title>
+<meta name="description" content="The WireNerd community forum — ask questions, get homework help, talk shop with other electricians and apprentices.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --surface:#f6f5f2; --card:#ffffff; --line:#e7e4dc; --line-2:#d9d6cc;
+  --text:#1b1a17; --dim:#6c6a62; --accent:#EF9F27; --accent-d:#a86a0a;
+  --green:#1D9E75; --blue:#2f6fb0; --red:#d63b3a;
+  --display:'Saira',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);font-weight:400;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:20}
+.bar{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.brand{font-weight:800;font-size:22px;letter-spacing:.4px;color:var(--text);text-decoration:none}
+.brand b{color:var(--accent)}
+.nav{display:flex;align-items:center;gap:18px}
+.nav a{font-family:var(--mono);font-size:13px;color:var(--dim);text-decoration:none}
+.nav a:hover{color:var(--text)}
+.authbox{display:flex;align-items:center;gap:10px}
+.btn{font-family:var(--display);font-weight:600;font-size:14px;border:0;border-radius:9px;padding:9px 15px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:#241a07}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:#fff;color:var(--text);border:1px solid var(--line-2)}
+.btn.ghost:hover{border-color:#bdb9ac}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn.link{background:none;border:0;color:var(--accent-d);padding:0;font-weight:600;cursor:pointer;font-size:13px}
+
+.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--surface);display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;flex:none;overflow:hidden}
+.avatar.sm{width:26px;height:26px;font-size:11px}
+.avatar.lg{width:64px;height:64px;font-size:24px}
+
+.hero{padding:34px 0 8px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent-d)}
+h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;margin:8px 0 8px}
+.sub{color:var(--dim);font-size:16px;max-width:620px}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:22px 0 14px}
+.cats{display:flex;gap:8px;flex-wrap:wrap}
+.cat{font-family:var(--mono);font-size:12.5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line-2);background:#fff;color:var(--dim);cursor:pointer}
+.cat.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+.post{display:flex;gap:14px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:12px;cursor:pointer;transition:border-color .15s,transform .12s}
+.post:hover{border-color:var(--line-2);transform:translateY(-1px)}
+.post .meta{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--dim);margin-bottom:5px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--surface);color:var(--accent-d);border:1px solid var(--line)}
+.post h3{margin:2px 0 5px;font-size:18px;font-weight:700}
+.post p{margin:0;color:var(--dim);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rcount{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim)}
+
+.empty{text-align:center;color:var(--dim);padding:50px 0;font-size:15px}
+.spin{text-align:center;color:var(--dim);padding:40px 0;font-family:var(--mono);font-size:13px}
+
+/* thread */
+.back{font-family:var(--mono);font-size:13px;color:var(--dim);background:none;border:0;cursor:pointer;padding:8px 0;margin-top:14px}
+.thread-post{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:20px;margin-bottom:18px}
+.thread-post h2{margin:6px 0 10px;font-size:24px;font-weight:800}
+.body{white-space:pre-wrap;font-size:15px;line-height:1.6}
+.byline{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+.byline a{color:var(--text);text-decoration:none;font-weight:600}
+.byline a:hover{color:var(--accent-d)}
+.reply{border:1px solid var(--line);border-radius:12px;background:#fff;padding:15px;margin-bottom:10px}
+.reply .byline{margin-bottom:8px}
+.sec-h{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin:22px 0 12px}
+
+textarea,input[type=text],input[type=email],input[type=password],select{
+  width:100%;font-family:var(--display);font-size:15px;color:var(--text);background:#fff;
+  border:1px solid var(--line-2);border-radius:10px;padding:11px 13px;margin-top:6px}
+textarea{resize:vertical;min-height:120px}
+label{font-family:var(--mono);font-size:12px;color:var(--dim);display:block;margin-top:12px}
+.composer{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(20,18,14,.45);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:40px 16px;overflow:auto}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h3{margin:0 0 4px;font-size:21px;font-weight:800}
+.modal .x{float:right;background:none;border:0;font-size:22px;color:var(--dim);cursor:pointer;line-height:1}
+.note{font-size:13px;color:var(--dim);margin-top:10px}
+.err{color:var(--red);font-size:13px;margin-top:10px;min-height:1px}
+.tabs{display:flex;gap:6px;margin:14px 0}
+.tabs button{flex:1;padding:9px;border:1px solid var(--line-2);background:#fff;border-radius:9px;font-family:var(--mono);font-size:13px;cursor:pointer;color:var(--dim)}
+.tabs button.active{background:var(--text);color:#fff;border-color:var(--text)}
+.section-row{display:flex;align-items:center;gap:16px;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:12px;cursor:pointer;transition:border-color .15s,transform .12s}
+.section-row:hover{border-color:var(--line-2);transform:translateY(-1px)}
+.section-ic{width:48px;height:48px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.section-main{flex:1;min-width:0}
+.section-main h3{margin:0 0 3px;font-size:18px;font-weight:700}
+.section-main p{margin:0;color:var(--dim);font-size:14px}
+.section-count{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent-d);text-align:center;line-height:1;flex:none;min-width:42px}
+.section-count span{display:block;font-size:10px;font-weight:400;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.post-img{max-width:100%;border-radius:10px;margin-top:12px;border:1px solid var(--line);display:block}
+input[type=file]{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:6px;width:100%}
+.imgprev img{max-width:150px;border-radius:8px;margin-top:8px;border:1px solid var(--line);display:block}
+.wn-head{display:block;background:#1a1a1a;border-bottom:1px solid #383838;position:sticky;top:0;z-index:30;padding:0}
+.wn-wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 22px}
+.wn-brand{font-family:'Saira',system-ui,sans-serif;font-weight:800;font-size:20px;color:#ece9e2;text-decoration:none;flex:none}
+.wn-brand span{color:#EF9F27}
+.wn-nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.wn-nav a{font-family:'Saira',system-ui,sans-serif;color:#B4B2A9;margin-left:22px;font-size:14px;text-decoration:none;white-space:nowrap}
+.wn-nav a:hover{color:#ece9e2}
+.wn-nav a.wn-courses{color:#EF9F27;font-weight:700}
+.wn-nav .logout{margin-left:22px}
+@media(max-width:780px){.wn-wrap{flex-direction:column;align-items:flex-start;gap:10px}.wn-nav{justify-content:flex-start}.wn-nav a{margin-left:0;margin-right:18px}.wn-nav .logout{margin-left:0}}
+footer{border-top:1px solid var(--line);margin-top:50px;padding:24px 0;color:var(--dim);font-family:var(--mono);font-size:12.5px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header class="wn-head"><div class="wn-wrap">
+  <a class="wn-brand" href="/">wire<span>nerd</span></a>
+  <nav class="wn-nav">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a>
+    <a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+    <a href="/course-ground-zero.html" class="wn-courses">Courses</a>
+  </nav>
+</div></header>
+
+<main class="wrap" id="app">
+  <div class="spin">Loading…</div>
+</main>
+
+<footer class="wrap">© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+
+<!-- Auth modal -->
+<div class="modal-bg" id="authModal">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3 id="authTitle">Sign in</h3>
+    <div class="tabs">
+      <button id="tabIn" class="active">Sign in</button>
+      <button id="tabUp">Create account</button>
+    </div>
+    <label>Email</label><input type="email" id="authEmail" placeholder="you@email.com">
+    <label>Password</label><input type="password" id="authPass" placeholder="••••••••">
+    <div class="err" id="authErr"></div>
+    <button class="btn primary" id="authGo" style="width:100%;margin-top:16px">Sign in</button>
+    <div class="note">Posting needs an account. Reading is open to everyone.</div>
+  </div>
+</div>
+
+<!-- New post modal -->
+<div class="modal-bg" id="postModal">
+  <div class="modal">
+    <button class="x" data-close>×</button>
+    <h3>New post</h3>
+    <label>Category</label>
+    <select id="npCat"></select>
+    <label>Title</label><input type="text" id="npTitle" placeholder="What's your question?">
+    <label>Details</label><textarea id="npBody" placeholder="Add the details — what you've tried, what you're stuck on…"></textarea>
+    <label>Photo (optional)</label><input type="file" id="npImg" accept="image/*">
+    <div id="npImgPrev" class="imgprev"></div>
+    <div class="err" id="npErr"></div>
+    <button class="btn primary" id="npGo" style="width:100%;margin-top:16px">Post it</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://ntlfuexiilxydnpuqhhv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const CATEGORIES = [
+  { name:"Homework Help",     icon:"\uD83D\uDCD0", desc:"Stuck on a calculation or a code question for school or your apprenticeship? Post it and get a hand." },
+  { name:"General Q&A",       icon:"\uD83D\uDCA1", desc:"Wiring, theory, troubleshooting \u2014 ask anything about the trade." },
+  { name:"Jobs & Trade Talk", icon:"\uD83E\uDE9B", desc:"Careers, licensing, pay, and shop talk for working electricians." },
+  { name:"Gear & Tools",      icon:"\uD83E\uDDF0", desc:"Meters, hand tools, PPE \u2014 what to buy and what to skip." }
+];
+const CAT_NAMES = CATEGORIES.map(c=>c.name);
+const AV_COLORS = ["#EF9F27","#1D9E75","#2f6fb0","#9b59b6","#d63b3a","#e08e0b"];
+const $ = s => document.querySelector(s);
+
+let me = null;            // {id, email}
+let myProfile = null;     // {display_name, avatar_url}
+let filter = "All";
+
+/* ---------- helpers ---------- */
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function initials(name){return (name||"?").trim().slice(0,2).toUpperCase();}
+function avColor(id){let h=0;for(const c of (id||"")) h=(h*31+c.charCodeAt(0))>>>0;return AV_COLORS[h%AV_COLORS.length];}
+function avatar(p, cls){
+  const prof = p || {};
+  const name = prof.display_name || "User";
+  if(prof.avatar_url) return `<img class="avatar ${cls||""}" src="${esc(prof.avatar_url)}" alt="${esc(name)}">`;
+  return `<span class="avatar ${cls||""}" style="background:${avColor(prof.id||name)}">${esc(initials(name))}</span>`;
+}
+function ago(ts){
+  const d=(Date.now()-new Date(ts).getTime())/1000;
+  if(d<60)return "just now"; if(d<3600)return Math.floor(d/60)+"m ago";
+  if(d<86400)return Math.floor(d/3600)+"h ago"; if(d<604800)return Math.floor(d/86400)+"d ago";
+  return new Date(ts).toLocaleDateString();
+}
+function setHash(h){ if(location.hash!==h) history.pushState(null,"",h||location.pathname); }
+
+/* ---------- image upload ---------- */
+async function uploadImage(bucket, file){
+  if(!file) return null;
+  if(!file.type || !file.type.startsWith("image/")) throw new Error("Please choose an image file.");
+  if(file.size > 5*1024*1024) throw new Error("Image must be under 5 MB.");
+  const ext=((file.name.split(".").pop())||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+  const path=me.id+"/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+"."+ext;
+  const { error }=await sb.storage.from(bucket).upload(path, file, { upsert:false });
+  if(error) throw error;
+  return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+}
+
+/* ---------- auth ---------- */
+async function loadMe(){
+  const { data:{ session } } = await sb.auth.getSession();
+  me = session ? session.user : null;
+  myProfile = null;
+  if(me){
+    const { data } = await sb.from("profiles").select("id,display_name,avatar_url").eq("id",me.id).maybeSingle();
+    myProfile = data || { id:me.id, display_name:(me.email||"").split("@")[0] };
+  }
+  renderAuthbox();
+}
+function renderAuthbox(){
+  const box = $("#authbox"); if(!box) return;
+  if(me){
+    box.innerHTML = `<a href="/profile.html" title="Your profile" style="text-decoration:none">${avatar(myProfile,"sm")}</a>`
+      + `<button class="btn link" id="signout">Sign out</button>`;
+    $("#signout").onclick = async ()=>{ await sb.auth.signOut(); await loadMe(); route(); };
+  } else {
+    box.innerHTML = `<button class="btn primary sm" id="signin">Sign in</button>`;
+    $("#signin").onclick = ()=>openAuth();
+  }
+}
+function openAuth(){ $("#authErr").textContent=""; $("#authModal").classList.add("show"); }
+let authMode="in";
+$("#tabIn").onclick=()=>{authMode="in";$("#tabIn").classList.add("active");$("#tabUp").classList.remove("active");$("#authTitle").textContent="Sign in";$("#authGo").textContent="Sign in";};
+$("#tabUp").onclick=()=>{authMode="up";$("#tabUp").classList.add("active");$("#tabIn").classList.remove("active");$("#authTitle").textContent="Create account";$("#authGo").textContent="Create account";};
+$("#authGo").onclick=async ()=>{
+  const email=$("#authEmail").value.trim(), pass=$("#authPass").value;
+  $("#authErr").textContent="";
+  if(!email||!pass){ $("#authErr").textContent="Enter an email and password."; return; }
+  try{
+    if(authMode==="up"){
+      const { error } = await sb.auth.signUp({ email, password:pass });
+      if(error) throw error;
+      const { data:{ session } } = await sb.auth.getSession();
+      if(!session){ $("#authErr").style.color="var(--green)"; $("#authErr").textContent="Check your email to confirm your account, then sign in."; return; }
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email, password:pass });
+      if(error) throw error;
+    }
+    $("#authModal").classList.remove("show");
+    await loadMe(); route();
+  }catch(e){ $("#authErr").style.color="var(--red)"; $("#authErr").textContent = e.message || "Something went wrong."; }
+};
+
+/* ---------- section index (landing) ---------- */
+async function renderCats(){
+  const app=$("#app");
+  app.innerHTML = `
+    <section class="hero">
+      <div class="kicker">WireNerd · Community</div>
+      <h1>The Forum</h1>
+      <p class="sub">Ask questions, get homework help, and talk shop with other electricians and apprentices. Pick a section below — read freely, sign in to post.</p>
+    </section>
+    <div id="sections"><div class="spin">Loading…</div></div>`;
+  let counts={};
+  try{ const { data } = await sb.from("forum_posts").select("category"); (data||[]).forEach(r=>{ counts[r.category]=(counts[r.category]||0)+1; }); }catch(e){}
+  $("#sections").innerHTML = CATEGORIES.map(c=>{
+    const n=counts[c.name]||0;
+    return `<div class="section-row" data-cat="${esc(c.name)}">
+      <div class="section-ic">${c.icon}</div>
+      <div class="section-main"><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p></div>
+      <div class="section-count">${n}<span>${n===1?"post":"posts"}</span></div>
+    </div>`;
+  }).join("");
+  $("#sections").querySelectorAll(".section-row").forEach(el=>el.onclick=()=>{ setHash("#cat="+encodeURIComponent(el.dataset.cat)); route(); });
+}
+
+/* ---------- posts within a section ---------- */
+async function renderList(category){
+  filter=category;
+  const app=$("#app");
+  app.innerHTML = `
+    <button class="back" id="toCats">← All sections</button>
+    <div class="toolbar">
+      <div><div class="kicker">Section</div><h1 style="font-size:26px;margin:4px 0 0">${esc(category)}</h1></div>
+      <button class="btn primary sm" id="newBtn">＋ New post</button>
+    </div>
+    <div id="list"><div class="spin">Loading posts…</div></div>`;
+  $("#toCats").onclick=()=>{ setHash(""); route(); };
+  $("#newBtn").onclick = ()=> me ? openNewPost(category) : openAuth();
+  const { data, error } = await sb.from("forum_posts").select("id,category,title,body,image_url,created_at,profiles(id,display_name,avatar_url),forum_replies(count)").eq("category",category).order("created_at",{ascending:false}).limit(100);
+  const list=$("#list");
+  if(error){ list.innerHTML=`<div class="empty">Couldn't load posts. ${esc(error.message)}</div>`; return; }
+  if(!data||!data.length){ list.innerHTML=`<div class="empty">No posts in this section yet — be the first to start a thread.</div>`; return; }
+  list.innerHTML = data.map(p=>{
+    const rc = (p.forum_replies && p.forum_replies[0]) ? p.forum_replies[0].count : 0;
+    return `<div class="post" data-id="${p.id}">
+      ${avatar(p.profiles)}
+      <div style="flex:1;min-width:0">
+        <div class="meta">${esc((p.profiles&&p.profiles.display_name)||"User")} · ${ago(p.created_at)}${p.image_url?" · 📷":""}
+          <span class="rcount">${rc} ${rc===1?"reply":"replies"}</span></div>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.body)}</p>
+      </div></div>`;
+  }).join("");
+  list.querySelectorAll(".post").forEach(el=>el.onclick=()=>{ setHash("#post="+el.dataset.id); route(); });
+}
+
+/* ---------- new post ---------- */
+function openNewPost(defaultCat){
+  $("#npCat").innerHTML = CAT_NAMES.map(c=>`<option${defaultCat===c?" selected":""}>${esc(c)}</option>`).join("");
+  $("#npTitle").value=""; $("#npBody").value=""; $("#npErr").textContent="";
+  $("#postModal").classList.add("show");
+}
+$("#npImg").addEventListener("change",()=>{ const f=$("#npImg").files[0]; $("#npImgPrev").innerHTML = f?`<img src="${URL.createObjectURL(f)}" alt="">`:""; });
+$("#npGo").onclick=async ()=>{
+  const category=$("#npCat").value, title=$("#npTitle").value.trim(), body=$("#npBody").value.trim();
+  $("#npErr").textContent="";
+  if(!title||!body){ $("#npErr").textContent="Add a title and some details."; return; }
+  const btn=$("#npGo"); btn.disabled=true; const orig=btn.textContent;
+  try{
+    let image_url=null; const file=$("#npImg").files[0];
+    if(file){ btn.textContent="Uploading…"; image_url=await uploadImage("post-images", file); }
+    btn.textContent="Posting…";
+    const { data, error } = await sb.from("forum_posts").insert({ user_id:me.id, category, title, body, image_url }).select("id").single();
+    if(error) throw error;
+    $("#postModal").classList.remove("show");
+    setHash("#post="+data.id); route();
+  }catch(e){ $("#npErr").textContent = e.message || "Couldn't post."; }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+};
+
+/* ---------- thread view ---------- */
+async function renderThread(id){
+  const app=$("#app");
+  app.innerHTML = `<button class="back" id="back">← Back to forum</button><div id="thread"><div class="spin">Loading…</div></div>`;
+  $("#back").onclick=()=>{ setHash(""); route(); };
+  const { data:p, error } = await sb.from("forum_posts").select("id,category,title,body,image_url,created_at,user_id,profiles(id,display_name,avatar_url)").eq("id",id).maybeSingle();
+  if(error||!p){ $("#thread").innerHTML=`<div class="empty">That post couldn't be found.</div>`; return; }
+  { const bk=$("#back"); if(bk){ bk.textContent="← "+p.category; bk.onclick=()=>{ setHash("#cat="+encodeURIComponent(p.category)); route(); }; } }
+  const { data:replies } = await sb.from("forum_replies").select("id,body,image_url,created_at,user_id,profiles(id,display_name,avatar_url)").eq("post_id",id).order("created_at",{ascending:true});
+  const mine = me && me.id===p.user_id;
+  const author = (p.profiles&&p.profiles.display_name)||"User";
+  let html = `<div class="thread-post">
+      <span class="badge">${esc(p.category)}</span>
+      <h2>${esc(p.title)}</h2>
+      <div class="byline">${avatar(p.profiles,"sm")} <a href="/member.html?id=${p.profiles?p.profiles.id:""}">${esc(author)}</a> · ${ago(p.created_at)}
+        ${mine?` · <button class="btn link" id="delPost">delete</button>`:""}</div>
+      <div class="body" style="margin-top:12px">${esc(p.body)}</div>
+      ${p.image_url?`<img class="post-img" src="${esc(p.image_url)}" alt="">`:""}
+    </div>
+    <div class="sec-h">${(replies||[]).length} ${ (replies||[]).length===1?"reply":"replies"}</div>
+    <div id="replies">${(replies||[]).map(r=>{
+      const rmine = me && me.id===r.user_id;
+      const rn=(r.profiles&&r.profiles.display_name)||"User";
+      return `<div class="reply">
+        <div class="byline">${avatar(r.profiles,"sm")} <a href="/member.html?id=${r.profiles?r.profiles.id:""}">${esc(rn)}</a> · ${ago(r.created_at)}
+          ${rmine?` · <button class="btn link delReply" data-id="${r.id}">delete</button>`:""}</div>
+        <div class="body">${esc(r.body)}</div>${r.image_url?`<img class="post-img" src="${esc(r.image_url)}" alt="">`:""}</div>`;
+    }).join("")||`<div class="empty" style="padding:24px 0">No replies yet.</div>`}</div>`;
+
+  html += me
+    ? `<div class="composer" style="margin-top:18px"><label>Your reply</label><textarea id="rbody" placeholder="Share what you know…"></textarea><label>Photo (optional)</label><input type="file" id="rImg" accept="image/*"><div class="err" id="rErr"></div><button class="btn primary sm" id="rGo" style="margin-top:10px">Post reply</button></div>`
+    : `<div class="composer" style="margin-top:18px;text-align:center">Want to answer? <button class="btn link" id="signinReply">Sign in</button> to reply.</div>`;
+  $("#thread").innerHTML = html;
+
+  if(mine) $("#delPost").onclick=async ()=>{ if(confirm("Delete this post?")){ await sb.from("forum_posts").delete().eq("id",id); setHash(""); route(); } };
+  $("#thread").querySelectorAll(".delReply").forEach(b=>b.onclick=async ()=>{ if(confirm("Delete this reply?")){ await sb.from("forum_replies").delete().eq("id",b.dataset.id); route(); } });
+  const sr=$("#signinReply"); if(sr) sr.onclick=()=>openAuth();
+  const rGo=$("#rGo");
+  if(rGo) rGo.onclick=async ()=>{
+    const body=$("#rbody").value.trim(); $("#rErr").textContent="";
+    if(!body){ $("#rErr").textContent="Write something first."; return; }
+    rGo.disabled=true;
+    try{
+      let image_url=null; const file=$("#rImg")?$("#rImg").files[0]:null;
+      if(file){ rGo.textContent="Uploading…"; image_url=await uploadImage("post-images", file); }
+      const { error } = await sb.from("forum_replies").insert({ post_id:id, user_id:me.id, body, image_url });
+      if(error) throw error;
+      route();
+    }catch(e){ $("#rErr").textContent = e.message || "Couldn't post reply."; }
+    finally{ rGo.disabled=false; rGo.textContent="Post reply"; }
+  };
+}
+
+/* ---------- router ---------- */
+function route(){
+  const mp = location.hash.match(/post=([0-9a-f-]+)/i);
+  if(mp){ renderThread(mp[1]); return; }
+  const mc = location.hash.match(/cat=([^&]+)/);
+  if(mc){ renderList(decodeURIComponent(mc[1])); return; }
+  renderCats();
+}
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal-bg").classList.remove("show"));
+document.querySelectorAll(".modal-bg").forEach(bg=>bg.onclick=e=>{ if(e.target===bg) bg.classList.remove("show"); });
+window.addEventListener("popstate", route);
+sb.auth.onAuthStateChange(()=>{ /* session persisted; UI refreshes on actions */ });
+
+(async ()=>{ await loadMe(); route(); })();
+</script>
+</body>
+</html>

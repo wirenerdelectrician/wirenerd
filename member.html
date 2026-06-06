@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member · WireNerd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--surface:#f6f5f2;--card:#ffffff;--line:#e7e4dc;--line-2:#d9d6cc;
+  --text:#1b1a17;--dim:#6c6a62;--accent:#EF9F27;--accent-d:#a86a0a;
+  --display:'Saira',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:20}
+.bar{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.brand{font-weight:800;font-size:22px;letter-spacing:.4px;color:var(--text);text-decoration:none}
+.brand b{color:var(--accent)}
+.nav{display:flex;align-items:center;gap:18px}
+.nav a{font-family:var(--mono);font-size:13px;color:var(--dim);text-decoration:none}
+.nav a:hover{color:var(--text)}
+.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;color:#fff;flex:none;overflow:hidden;font-size:36px}
+.card{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:24px;margin-top:26px}
+.phead{display:flex;gap:18px;align-items:center}
+.phead h1{margin:0;font-size:26px;font-weight:800}
+.joined{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:4px}
+.bio{margin-top:16px;white-space:pre-wrap;font-size:15px}
+.bio.empty{color:var(--dim);font-style:italic}
+.sec-h{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin:30px 0 12px}
+.post{display:block;padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--card);margin-bottom:11px;text-decoration:none;color:inherit}
+.post:hover{border-color:var(--line-2)}
+.post .meta{font-family:var(--mono);font-size:12px;color:var(--dim);margin-bottom:4px}
+.post h3{margin:0;font-size:17px;font-weight:700}
+.empty{color:var(--dim);padding:22px 0;font-size:15px}
+.spin{text-align:center;color:var(--dim);padding:44px 0;font-family:var(--mono);font-size:13px}
+.wn-head{display:block;background:#1a1a1a;border-bottom:1px solid #383838;position:sticky;top:0;z-index:30;padding:0}
+.wn-wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 22px}
+.wn-brand{font-family:'Saira',system-ui,sans-serif;font-weight:800;font-size:20px;color:#ece9e2;text-decoration:none;flex:none}
+.wn-brand span{color:#EF9F27}
+.wn-nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.wn-nav a{font-family:'Saira',system-ui,sans-serif;color:#B4B2A9;margin-left:22px;font-size:14px;text-decoration:none;white-space:nowrap}
+.wn-nav a:hover{color:#ece9e2}
+.wn-nav a.wn-courses{color:#EF9F27;font-weight:700}
+.wn-nav .logout{margin-left:22px}
+@media(max-width:780px){.wn-wrap{flex-direction:column;align-items:flex-start;gap:10px}.wn-nav{justify-content:flex-start}.wn-nav a{margin-left:0;margin-right:18px}.wn-nav .logout{margin-left:0}}
+footer{border-top:1px solid var(--line);margin-top:50px;padding:24px 0;color:var(--dim);font-family:var(--mono);font-size:12.5px}
+</style>
+</head>
+<body>
+<header class="wn-head"><div class="wn-wrap">
+  <a class="wn-brand" href="/">wire<span>nerd</span></a>
+  <nav class="wn-nav">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a>
+    <a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+    <a href="/course-ground-zero.html" class="wn-courses">Courses</a>
+  </nav>
+</div></header>
+
+<main class="wrap" id="app"><div class="spin">Loading…</div></main>
+<footer class="wrap">© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
+const SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+const AV=["#EF9F27","#1D9E75","#2f6fb0","#9b59b6","#d63b3a","#e08e0b"];
+const $=s=>document.querySelector(s);
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function initials(n){return (n||"?").trim().slice(0,2).toUpperCase();}
+function avColor(id){let h=0;for(const c of(id||""))h=(h*31+c.charCodeAt(0))>>>0;return AV[h%AV.length];}
+function ago(ts){const d=(Date.now()-new Date(ts).getTime())/1000;
+  if(d<60)return"just now";if(d<3600)return Math.floor(d/60)+"m ago";if(d<86400)return Math.floor(d/3600)+"h ago";
+  if(d<604800)return Math.floor(d/86400)+"d ago";return new Date(ts).toLocaleDateString();}
+
+async function render(){
+  const app=$("#app");
+  let id=new URLSearchParams(location.search).get("id");
+  if(!id){ try{const {data:{session}}=await sb.auth.getSession(); if(session)id=session.user.id;}catch(e){} }
+  if(!id){ app.innerHTML=`<div class="card"><div class="empty">No member specified.</div></div>`; return; }
+  const {data:p}=await sb.from("profiles").select("id,display_name,bio,avatar_url,created_at").eq("id",id).maybeSingle();
+  if(!p){ app.innerHTML=`<div class="card"><div class="empty">Member not found.</div></div>`; return; }
+  const name=p.display_name||"User";
+  const av=p.avatar_url
+    ? `<img class="avatar" src="${esc(p.avatar_url)}" alt="${esc(name)}">`
+    : `<span class="avatar" style="background:${avColor(p.id)}">${esc(initials(name))}</span>`;
+  app.innerHTML=`<div class="card">
+      <div class="phead">${av}<div><h1>${esc(name)}</h1><div class="joined">Member since ${new Date(p.created_at).toLocaleDateString()}</div></div></div>
+      <div class="bio ${p.bio?"":"empty"}">${p.bio?esc(p.bio):"No description yet."}</div>
+    </div>
+    <div class="sec-h">Posts by ${esc(name)}</div><div id="posts"><div class="spin">Loading…</div></div>`;
+  const {data:posts}=await sb.from("forum_posts").select("id,category,title,created_at").eq("user_id",id).order("created_at",{ascending:false}).limit(50);
+  const box=$("#posts");
+  if(!posts||!posts.length){ box.innerHTML=`<div class="empty">No posts yet.</div>`; return; }
+  box.innerHTML=posts.map(po=>`<a class="post" href="/forum.html#post=${po.id}">
+    <div class="meta">${esc(po.category)} · ${ago(po.created_at)}</div><h3>${esc(po.title)}</h3></a>`).join("");
+}
+render();
+</script>
+</body>
+</html>
