@@ -83,7 +83,6 @@ main{flex:1;display:flex;justify-content:center;padding:36px 18px 60px}
 footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:12.5px;text-align:center}
 @media(max-width:560px){.welcome h1{font-size:23px}}
 </style>
-<style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
 </head>
 <body>
 <header class="wn-head"><div class="wn-wrap">
@@ -115,6 +114,9 @@ footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);fon
       <div class="stat"><div class="num" id="statCourses">—</div><div class="lbl">Courses enrolled</div></div>
       <div class="stat"><div class="num" id="statCerts">—</div><div class="lbl">Certificates</div></div>
     </div>
+
+    <h2 class="sec-h">Notifications</h2>
+    <div id="notifs" style="margin-bottom:36px"></div>
 
     <h2 class="sec-h">My courses</h2>
     <div id="myCourses" class="grid"></div>
@@ -162,6 +164,7 @@ const SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
 let USER=null;
+function esc(s){return (s||"").replace(/[&<>"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
 async function uploadImage(bucket,file){
   if(!file)return null;
   if(!file.type||!file.type.startsWith("image/"))throw new Error("Please choose an image file.");
@@ -258,6 +261,18 @@ async function load(user){
   }else{
     cd.innerHTML='<div class="empty">No certificates yet. Finish a course and your certificate will be saved right here for easy access.</div>';
   }
+
+  // Notifications
+  try{
+    const {data:nt}=await sb.from("notifications").select("id,read,created_at,actor_name,post_id,post_title").eq("user_id",user.id).order("created_at",{ascending:false}).limit(30);
+    const nd=$("notifs");
+    if(nt&&nt.length){
+      nd.innerHTML=nt.map(n=>'<a class="certrow" style="text-decoration:none" href="/forum.html#post='+n.post_id+'"><div><div class="ct">'+esc(n.actor_name||"Someone")+' replied to your post</div><div class="cd">'+(n.post_title?('"'+esc(n.post_title)+'" \u00b7 '):'')+fmtShort(n.created_at)+'</div></div><span class="dlbtn">View</span></a>').join("");
+      await sb.from("notifications").update({read:true}).eq("user_id",user.id).eq("read",false);
+    }else{
+      nd.innerHTML='<div class="empty">No notifications yet. When someone replies to one of your forum posts, you will see it here.</div>';
+    }
+  }catch(e){}
 
   // Waitlist buttons
   document.querySelectorAll(".notify").forEach(btn=>{

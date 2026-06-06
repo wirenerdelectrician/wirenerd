@@ -111,10 +111,20 @@ input[type=file]{font-family:var(--mono);font-size:12px;color:var(--dim);margin-
 .wn-nav a.wn-courses{color:#EF9F27;font-weight:700}
 .wn-nav .logout{margin-left:22px}
 @media(max-width:780px){.wn-wrap{flex-direction:column;align-items:flex-start;gap:10px}.wn-nav{justify-content:flex-start}.wn-nav a{margin-left:0;margin-right:18px}.wn-nav .logout{margin-left:0}}
+.wn-bell{position:relative;margin-left:22px;background:none;border:0;cursor:pointer;font-size:18px;line-height:1;padding:2px;color:#ece9e2}
+.wn-badge{position:absolute;top:-6px;right:-8px;min-width:16px;height:16px;padding:0 4px;border-radius:9px;background:#E24B4A;color:#fff;font-family:var(--mono);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;line-height:16px}
+.wn-notif{position:fixed;top:60px;right:18px;width:330px;max-width:calc(100vw - 24px);max-height:72vh;overflow:auto;background:#fff;border:1px solid var(--line-2);border-radius:14px;box-shadow:0 16px 50px rgba(0,0,0,.28);z-index:60}
+.wn-notif-h{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);padding:14px 16px 8px}
+.wn-notif-item{display:block;padding:12px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--text);text-decoration:none;line-height:1.45}
+.wn-notif-item:hover{background:var(--surface)}
+.wn-notif-item.unread{background:#fff7ec}
+.wn-notif-item.unread:hover{background:#fdf0d9}
+.wn-notif-t{color:var(--dim)}
+.wn-notif-time{display:block;font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:3px}
+.wn-notif-empty{padding:22px 16px;color:var(--dim);font-size:14px;line-height:1.5}
 footer{border-top:1px solid var(--line);margin-top:50px;padding:24px 0;color:var(--dim);font-family:var(--mono);font-size:12.5px}
 .hide{display:none!important}
 </style>
-<style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
 </head>
 <body>
 <header class="wn-head"><div class="wn-wrap">
@@ -129,8 +139,11 @@ footer{border-top:1px solid var(--line);margin-top:50px;padding:24px 0;color:var
     <a href="/forum.html">Forum</a>
     <a href="/profile.html">Profile</a>
     <a href="/course-ground-zero.html" class="wn-courses">Courses</a>
+    <button id="wnBell" class="wn-bell" type="button" aria-label="Notifications" style="display:none">🔔<span id="wnBadge" class="wn-badge"></span></button>
   </nav>
 </div></header>
+
+<div id="wnNotifPanel" class="wn-notif" style="display:none"></div>
 
 <main class="wrap" id="app">
   <div class="spin">Loading…</div>
@@ -231,6 +244,7 @@ async function loadMe(){
     myProfile = data || { id:me.id, display_name:(me.email||"").split("@")[0] };
   }
   renderAuthbox();
+  initNotifs();
 }
 function renderAuthbox(){
   const box = $("#authbox"); if(!box) return;
@@ -395,6 +409,52 @@ async function renderThread(id){
     }catch(e){ $("#rErr").textContent = e.message || "Couldn't post reply."; }
     finally{ rGo.disabled=false; rGo.textContent="Post reply"; }
   };
+}
+
+/* ---------- notifications ---------- */
+let wnNotifs=[], wnUnread=0, wnPanelOpen=false, wnSubbed=false;
+function renderBadge(){ const b=$("#wnBadge"); if(!b) return; if(wnUnread>0){ b.textContent=wnUnread>9?"9+":String(wnUnread); b.style.display="inline-flex"; } else { b.style.display="none"; } }
+async function loadNotifs(){
+  if(!me) return;
+  try{
+    const { data } = await sb.from("notifications").select("id,read,created_at,actor_name,post_id,post_title").eq("user_id",me.id).order("created_at",{ascending:false}).limit(30);
+    wnNotifs = data||[]; wnUnread = wnNotifs.filter(n=>!n.read).length; renderBadge();
+    if(wnPanelOpen) renderNotifPanel();
+  }catch(e){}
+}
+function renderNotifPanel(){
+  const p=$("#wnNotifPanel"); if(!p) return;
+  if(!wnNotifs.length){ p.innerHTML=`<div class="wn-notif-empty">No notifications yet. When someone replies to one of your posts, you'll see it here.</div>`; return; }
+  p.innerHTML = `<div class="wn-notif-h">Notifications</div>` + wnNotifs.map(n=>`
+    <a class="wn-notif-item ${n.read?"":"unread"}" href="#post=${n.post_id}" data-id="${esc(n.post_id)}">
+      <b>${esc(n.actor_name||"Someone")}</b> replied to your post${n.post_title?` <span class="wn-notif-t">"${esc(n.post_title)}"</span>`:""}
+      <span class="wn-notif-time">${ago(n.created_at)}</span>
+    </a>`).join("");
+  p.querySelectorAll(".wn-notif-item").forEach(a=>a.onclick=(e)=>{ e.preventDefault(); setHash("#post="+a.dataset.id); route(); closeNotif(); });
+}
+async function markAllRead(){
+  if(!wnUnread) return;
+  wnUnread=0; renderBadge(); wnNotifs.forEach(n=>n.read=true);
+  try{ await sb.from("notifications").update({read:true}).eq("user_id",me.id).eq("read",false); }catch(e){}
+}
+function openNotif(){ wnPanelOpen=true; const p=$("#wnNotifPanel"); if(p) p.style.display="block"; renderNotifPanel(); markAllRead(); }
+function closeNotif(){ wnPanelOpen=false; const p=$("#wnNotifPanel"); if(p) p.style.display="none"; }
+function initNotifs(){
+  const bell=$("#wnBell"); if(!bell) return;
+  if(!me){ bell.style.display="none"; closeNotif(); return; }
+  bell.style.display="inline-flex";
+  bell.onclick=(e)=>{ e.stopPropagation(); wnPanelOpen?closeNotif():openNotif(); };
+  if(!window.__wnOutside){ window.__wnOutside=true; document.addEventListener("click",(e)=>{ if(wnPanelOpen){ const p=$("#wnNotifPanel"), b=$("#wnBell"); if(p && !p.contains(e.target) && e.target!==b) closeNotif(); } }); }
+  loadNotifs();
+  if(!wnSubbed){
+    wnSubbed=true;
+    try{
+      sb.channel("wn-notif-"+me.id).on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:"user_id=eq."+me.id},(payload)=>{
+        wnNotifs.unshift(payload.new); wnUnread++; renderBadge(); if(wnPanelOpen) renderNotifPanel();
+      }).subscribe();
+    }catch(e){}
+    setInterval(loadNotifs, 45000);
+  }
 }
 
 /* ---------- router ---------- */
