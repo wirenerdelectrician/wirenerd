@@ -40,6 +40,11 @@
     .hint { margin-top: 8px; font-size: 12px; color: #777; line-height: 1.5; }
     .found-banner { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8); background:#1D9E75; color:#fff; font-size:22px; font-weight:700; padding:16px 28px; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); opacity:0; pointer-events:none; z-index:20; transition:opacity .25s, transform .25s; text-align:center; }
     .found-banner.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    .zoom-rail { flex:none; display:flex; flex-direction:column; gap:6px; padding-top:2px; }
+    .zoom-rail button { width:42px; height:42px; border-radius:8px; border:1px solid #555; background:#2f2f2f; color:#eee; font-size:24px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-user-select:none; user-select:none; }
+    .zoom-rail button:hover { background:#3a3a3a; border-color:#EF9F27; color:#EF9F27; }
+    .zoom-rail button:active { transform:translateY(1px); }
+    .zoom-rail .zreset { font-size:12px; font-weight:600; margin-top:8px; }
     @keyframes repairGlow { 0%,100%{ filter:none; } 50%{ filter:drop-shadow(0 0 8px #27B888); } }
     .repaired-glow { animation: repairGlow 0.4s ease-in-out 3; stroke:#27B888 !important; }
     @keyframes flowDash { to { stroke-dashoffset: -24; } }
@@ -88,6 +93,11 @@
   </div>
 
   <div class="layout">
+    <div class="zoom-rail">
+      <button id="zoomIn" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="zoomOut" type="button" title="Zoom out" aria-label="Zoom out">&#8722;</button>
+      <button id="zoomReset" type="button" class="zreset" title="Reset view" aria-label="Reset view">Fit</button>
+    </div>
     <div class="canvas-wrap">
       <svg id="panel" viewBox="0 0 720 640"></svg>
     </div>
@@ -150,18 +160,19 @@
     // ----- Zoom & Pan (adjusts the SVG viewBox) -----
     let vb={x:0,y:0,w:720,h:640};
     function applyVB(){ svg.setAttribute('viewBox', vb.x+' '+vb.y+' '+vb.w+' '+vb.h); }
-    svg.addEventListener('wheel', function(e){
-      e.preventDefault();
-      const r=svg.getBoundingClientRect();
-      const mx=vb.x + (e.clientX-r.left)/r.width*vb.w;
-      const my=vb.y + (e.clientY-r.top)/r.height*vb.h;
-      const factor = e.deltaY<0 ? 0.9 : 1.1;   // wheel up = zoom in
+    function zoomBy(factor){
+      const mx=vb.x+vb.w/2, my=vb.y+vb.h/2;          // zoom toward the center of the view
       const nw=Math.min(2400, Math.max(200, vb.w*factor));
       const nh=nw*(640/720);
-      vb.x = mx - (mx-vb.x)*(nw/vb.w);
-      vb.y = my - (my-vb.y)*(nh/vb.h);
+      vb.x = mx-(mx-vb.x)*(nw/vb.w);
+      vb.y = my-(my-vb.y)*(nh/vb.h);
       vb.w=nw; vb.h=nh; applyVB();
-    }, {passive:false});
+    }
+    function zoomReset(){ vb.x=0; vb.y=0; vb.w=720; vb.h=640; applyVB(); }
+    document.getElementById('zoomIn').addEventListener('click', function(){ zoomBy(0.8); });
+    document.getElementById('zoomOut').addEventListener('click', function(){ zoomBy(1.25); });
+    document.getElementById('zoomReset').addEventListener('click', zoomReset);
+    // (scroll-wheel zoom removed — zoom is via the on-screen + / − buttons only)
     // Pan by dragging empty canvas (background), middle-button, or space — only when not on a device/terminal/wire
     let panning=false, panSX, panSY, panOX, panOY;
     svg.addEventListener('mousedown', function(e){
