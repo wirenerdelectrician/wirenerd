@@ -52,7 +52,7 @@
   loadSupabase(function () {
     if (!(window.supabase && window.supabase.createClient)) return;
     var sb = window.supabase.createClient(SB_URL, SB_KEY);
-    var nav = document.querySelector('header nav') || document.querySelector('header');
+    var nav = document.querySelector('header nav') || document.querySelector('.topnav .navlinks') || document.querySelector('nav .navlinks') || document.querySelector('nav') || document.querySelector('header');
     if (!nav) return;
 
     sb.auth.getSession().then(function (res) {
