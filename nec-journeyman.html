@@ -135,6 +135,17 @@ ul.tight li{margin:6px 0}
 .histrow{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:11px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);margin:8px 0;font-size:14px}
 .histrow .hscore{font-family:var(--mono);font-weight:700}
 .hidden{display:none}
+.wn-lock .wn-lockcard{background:#232323;border:1px solid #3a3a3a;border-radius:16px;padding:34px 28px;text-align:center;max-width:580px;margin:14px auto}
+.wn-lockic{font-size:32px;margin-bottom:6px}
+.wn-lock h3{font-size:22px;margin-bottom:10px;color:#ece9e2}
+.wn-lock p{color:#B4B2A9;font-size:15px;line-height:1.6;margin-bottom:22px}
+.wn-actions{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+.wn-free{background:#2f2f2f;border:1px solid #1D9E75;color:#1D9E75;font-weight:700;padding:12px 22px;border-radius:9px;font-size:15px;cursor:pointer}
+.wn-free:hover{background:#1D9E75;color:#fff}
+.gbtn{background:#EF9F27;color:#1a1a1a;font-weight:800;padding:12px 24px;border-radius:9px;font-size:15px;cursor:pointer;border:none;text-decoration:none;display:inline-block}
+.gbtn:hover{background:#ffb13d}
+.glink{display:block;width:100%;color:#B4B2A9;font-size:13px;margin-top:14px;cursor:pointer;text-decoration:underline}
+.wn-lock .muted{color:#777;margin:0}
 
 footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px}
 footer .wrap{display:flex;flex-direction:column;gap:8px}
@@ -160,7 +171,6 @@ footer a{color:var(--text-dim)}
 .bk-art .bk-t{color:var(--text)}
 .bk-art mark{background:rgba(239,159,39,.32);color:var(--text);border-radius:3px;padding:0 1px}
 </style>
-<style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
 </head>
 <body>
 
@@ -172,7 +182,7 @@ footer a{color:var(--text-dim)}
     <a href="/components.html">Components</a>
     <a href="/trainer.html">Sandbox</a>
     <a href="#" class="active">Become a Journeyman</a>
-    <a href="/classes.html">Classes</a><a href="/forum.html">Forum</a><a href="/profile.html">Profile</a><a href="/course-ground-zero.html" style="color:var(--accent);font-weight:700">Courses</a>
+    <a href="/classes.html">Classes</a>
   </div>
 </div></nav>
 
@@ -276,6 +286,7 @@ footer a{color:var(--text-dim)}
       <h2>Topic practice</h2>
       <p class="lead">Untimed. Pick a subject, answer one question at a time, and see the worked solution and code reference right after each. Use this to build accuracy before you worry about the clock.</p>
       <div class="grid" id="topicGrid"></div>
+      <div id="practiceLock" class="wn-lock hidden"></div>
     </div>
     <div id="practiceRun" class="hidden"></div>
   </section>
@@ -286,6 +297,7 @@ footer a{color:var(--text-dim)}
       <h2>Timed mock exams</h2>
       <p class="lead">A countdown timer, a question palette you can flag and jump around in, and a full breakdown at the end with every solution reviewed. The Quick Mock reshuffles every time; the numbered exams are fixed sets, so you can retake the same one and watch your score climb.</p>
       <div class="grid" id="mockMenu"></div>
+      <div id="mockLock" class="wn-lock hidden"></div>
       <p class="muted" style="margin-top:16px;font-size:14px">No penalty for guessing — answer every question. The exam auto-submits when time runs out.</p>
     </div>
     <div id="mockRun" class="hidden"></div>
@@ -1457,7 +1469,7 @@ const practiceRun=$("#practiceRun");
 })();
 
 function startPractice(topic){
-  const qs=shuffle(byTopic(topic));
+  const qs=Array.isArray(topic)?topic.slice():shuffle(byTopic(topic));
   let idx=0;
   practiceHome.classList.add("hidden");
   practiceRun.classList.remove("hidden");
@@ -1508,6 +1520,12 @@ function startPractice(topic){
   function exit(){practiceRun.classList.add("hidden");practiceRun.innerHTML="";practiceHome.classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});}
   draw();
 }
+
+// Free 10-question sample — always available, even without an account (used by the paywall card)
+window.WN_startSample=function(){
+  var t=document.querySelector('.tab[data-view="practice"]'); if(t){ t.click(); }
+  startPractice(shuffle(BANK).slice(0,10));
+};
 
 /* =========================== TIMED MOCK =========================== */
 const mockHome=$("#mockHome"),mockRun=$("#mockRun"),mockResult=$("#mockResult");
@@ -1847,6 +1865,75 @@ $("#clearHistory").addEventListener("click",()=>{
   search.addEventListener("input",e=>render(e.target.value));
 })();
 </script>
-<script defer src="/wn-notify.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===== Exam Helper paywall: gates Topic Practice + Timed Mock; sample stays free ===== */
+(function(){
+  var SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
+  var SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
+  /* ▼▼▼  FILL THESE IN  ▼▼▼ */
+  var EXAM_PAY  = "";                 // Stripe Payment Link for the Exam Helper (paste it here once created)
+  var EXAM_PRICE= "$19";              // price shown on the unlock card
+  var EXAM_ID   = "nec-exam-helper";  // must match the product id your Stripe webhook records in `purchases`
+  /* ▲▲▲  FILL THESE IN  ▲▲▲ */
+
+  var topicGrid=document.getElementById("topicGrid");
+  var mockMenu=document.getElementById("mockMenu");
+  var practiceLock=document.getElementById("practiceLock");
+  var mockLock=document.getElementById("mockLock");
+  var state={paid:false,user:null};
+  var sbc=null;
+
+  function lockHTML(where){
+    var buy;
+    if(state.user){
+      buy = EXAM_PAY
+        ? '<button class="gbtn" data-buy="1">Unlock full access — '+EXAM_PRICE+'</button>'
+        : '<p class="muted">Checkout opens soon.</p>';
+    } else {
+      buy = '<a class="gbtn" href="account.html">Log in / Create account to unlock</a>';
+    }
+    var refresh = (state.user && EXAM_PAY) ? '<a class="glink" data-refresh="1">Already purchased? Refresh</a>' : '';
+    return '<div class="wn-lockcard">'
+      + '<div class="wn-lockic">🔒</div>'
+      + '<h3>'+(where==="mock"?"Timed Mock Exams":"Topic Practice")+' — full access</h3>'
+      + '<p>Unlock <b>all topic practice</b> and <b>every timed mock exam</b> — one-time, lifetime access. Try it first with a free 10-question sample.</p>'
+      + '<div class="wn-actions"><button class="wn-free" data-sample="1">▶ Try 10 free questions</button> '+buy+'</div>'
+      + refresh
+      + '</div>';
+  }
+  function wire(){
+    document.querySelectorAll('[data-sample="1"]').forEach(function(b){ b.onclick=function(){ if(window.WN_startSample) window.WN_startSample(); }; });
+    document.querySelectorAll('[data-buy="1"]').forEach(function(b){ b.onclick=function(){ if(!EXAM_PAY||!state.user)return; location.href=EXAM_PAY+"?client_reference_id="+encodeURIComponent(state.user.id)+"&prefilled_email="+encodeURIComponent(state.user.email||""); }; });
+    document.querySelectorAll('[data-refresh="1"]').forEach(function(a){ a.onclick=function(e){ e.preventDefault(); runCheck().then(applyGate); }; });
+  }
+  function applyGate(){
+    var paid=state.paid;
+    if(topicGrid) topicGrid.classList.toggle("hidden",!paid);
+    if(mockMenu)  mockMenu.classList.toggle("hidden",!paid);
+    if(practiceLock){ practiceLock.classList.toggle("hidden",paid); if(!paid) practiceLock.innerHTML=lockHTML("practice"); }
+    if(mockLock){ mockLock.classList.toggle("hidden",paid); if(!paid) mockLock.innerHTML=lockHTML("mock"); }
+    wire();
+  }
+  async function runCheck(){
+    try{
+      if(!window.supabase){ state.paid=false; return; }
+      if(!sbc) sbc=window.supabase.createClient(SB_URL,SB_KEY);
+      var s=await sbc.auth.getSession(); var session=s.data.session;
+      if(!session){ state.user=null; state.paid=false; return; }
+      state.user=session.user;
+      var r=await sbc.from("purchases").select("id").eq("course_id",EXAM_ID).limit(1);
+      state.paid=!!(r.data && r.data.length);
+    }catch(e){ state.paid=false; }
+  }
+  // lock immediately on load (until the check resolves); sample stays reachable
+  if(topicGrid) topicGrid.classList.add("hidden");
+  if(mockMenu)  mockMenu.classList.add("hidden");
+  if(practiceLock){ practiceLock.classList.remove("hidden"); practiceLock.innerHTML=lockHTML("practice"); }
+  if(mockLock){ mockLock.classList.remove("hidden"); mockLock.innerHTML=lockHTML("mock"); }
+  wire();
+  runCheck().then(applyGate);
+})();
+</script>
 </body>
 </html>
