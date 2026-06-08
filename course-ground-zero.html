@@ -327,16 +327,26 @@ footer .social{display:flex;gap:16px;margin-top:2px}
 </div></section>
 </div>
 
-<style>.wn-legal{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;font-size:12.5px;margin-top:12px}.wn-legal a{color:#B4B2A9;text-decoration:none}.wn-legal a:hover{color:#EF9F27}</style>
-<footer><div class="wrap">
-  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
-  <div>Built by Bryan Barrios</div>
+<style>
+.wn-foot{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding-top:6px}
+.wn-foot .wn-legal{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13.5px;margin:0}
+.wn-foot .wn-legal a{color:#ece9e2;text-decoration:none;font-weight:500}
+.wn-foot .wn-legal a:hover{color:#EF9F27}
+.wn-foot .social{display:flex;gap:20px;justify-content:center;margin:0}
+.wn-foot .social a{color:#B4B2A9;text-decoration:none;font-size:13.5px}
+.wn-foot .social a:hover{color:#EF9F27}
+.wn-foot .wn-divider{width:46px;height:1px;background:#383838;margin:2px 0}
+.wn-foot .copy{color:#7f7d76;font-size:12.5px;line-height:1.7}
+</style>
+<footer><div class="wrap wn-foot">
   <div class="wn-legal"><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/refunds.html">Refunds</a><a href="/contact.html">Contact</a></div>
   <div class="social">
     <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
     <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
     <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
   </div>
+  <div class="wn-divider"></div>
+  <div class="copy">© 2026 WireNerd · Industrial Electrical · Made Clear<br>Built by Bryan Barrios</div>
 </div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
