@@ -36,6 +36,11 @@ input:focus{outline:none;border-color:var(--accent)}
 .msg.ok{color:var(--green)}
 footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:12.5px;text-align:center}
 .hide{display:none}
+.consent{font-size:12px;color:var(--muted);margin:16px 0 0;line-height:1.4;text-align:center}
+.consent a{color:var(--muted);text-decoration:underline}
+.wn-legal{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;font-size:12px;margin-top:10px}
+.wn-legal a{color:var(--muted);text-decoration:none}
+.wn-legal a:hover{color:var(--accent)}
 </style>
 <style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
 </head>
@@ -62,9 +67,10 @@ footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);fon
     <input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password">
     <button class="btn" id="go">Log in</button>
     <div class="msg" id="msg"></div>
+    <p class="consent">By continuing, you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.</p>
   </div>
 </main>
-<footer>© 2026 WireNerd · Industrial Electrical · Made Clear</footer>
+<footer>© 2026 WireNerd · Industrial Electrical · Made Clear<div class="wn-legal"><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/refunds.html">Refunds</a><a href="/contact.html">Contact</a></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";

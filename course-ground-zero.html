@@ -327,9 +327,11 @@ footer .social{display:flex;gap:16px;margin-top:2px}
 </div></section>
 </div>
 
+<style>.wn-legal{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;font-size:12.5px;margin-top:12px}.wn-legal a{color:#B4B2A9;text-decoration:none}.wn-legal a:hover{color:#EF9F27}</style>
 <footer><div class="wrap">
   <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
   <div>Built by Bryan Barrios</div>
+  <div class="wn-legal"><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/refunds.html">Refunds</a><a href="/contact.html">Contact</a></div>
   <div class="social">
     <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
     <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
@@ -1595,7 +1597,7 @@ renderHome();
     wireClose();
   }
   function buyState(user){
-    show('<button class="gx" id="wn-x">&times;</button><h2>Ground Zero: Intro to Electrical</h2><div class="price">$29</div><p>One-time \u2014 lifetime access.</p><div class="feat">\u2713 9 lessons + hands-on interactives<br>\u2713 Final exam<br>\u2713 Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now \u2014 $29</button><a class="glink" id="wn-refresh">Already purchased? Refresh</a><a class="glink" id="wn-close2">Maybe later</a>');
+    show('<button class="gx" id="wn-x">&times;</button><h2>Ground Zero: Intro to Electrical</h2><div class="price">$29</div><p>One-time \u2014 lifetime access.</p><div class="feat">\u2713 9 lessons + hands-on interactives<br>\u2713 Final exam<br>\u2713 Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now \u2014 $29</button><div style="font-size:11.5px;color:#9a978d;margin:10px 0 2px;line-height:1.4">By purchasing, you agree to our <a href="/terms.html" style="color:#9a978d;text-decoration:underline">Terms</a> &amp; <a href="/refunds.html" style="color:#9a978d;text-decoration:underline">Refund Policy</a>.</div><a class="glink" id="wn-refresh">Already purchased? Refresh</a><a class="glink" id="wn-close2">Maybe later</a>');
     document.getElementById("wn-buy").onclick=function(){ location.href=PAY+"?client_reference_id="+encodeURIComponent(user.id)+"&prefilled_email="+encodeURIComponent(user.email||""); };
     document.getElementById("wn-refresh").onclick=function(e){e.preventDefault(); checkPromise=runCheck(); tryEnter(wantIdx);};
     wireClose();
