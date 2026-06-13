@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLC Sandbox · WireNerd</title>
+<style>
+  :root{
+    --bg:#f3f4f6; --panel:#ffffff; --panel-2:#f6f7f9; --line:#dfe2e6; --line-2:#e8eaed;
+    --accent:#d98512; --accent-soft:#EF9F27; --green:#159c6f; --blue:#2b6cb0; --red:#d23b3a;
+    --text:#1d2125; --muted:#5e6470; --dim:#9aa1a9; --off:#7b828b; --wire:#b3b9bf; --liquid:#4a93dd;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);padding:18px;max-width:1280px;margin:0 auto;}
+  h1{font-size:22px;margin:0 0 2px;font-weight:700;} h1 b{color:var(--accent);}
+  .subtitle{color:var(--muted);font-size:13px;margin:0 0 14px;}
+  .toolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:9px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;}
+  .toolbar .label{flex-basis:100%;font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;}
+  button.tbtn,select.tbtn{background:#fff;color:var(--text);border:1px solid var(--line);padding:6px 11px;border-radius:7px;font-size:13px;cursor:pointer;transition:.12s;}
+  button.tbtn:hover{border-color:var(--accent);color:var(--accent);background:#fff8ee;}
+  button.tbtn.primary{background:#eafaf3;border-color:#9fdcc4;color:#0f7a55;}
+  button.tbtn.running{background:#fdecec;border-color:#f0b0af;color:#b5302f;}
+  .sep{width:1px;align-self:stretch;background:var(--line);margin:0 3px;}
+  .scan-dot{width:11px;height:11px;border-radius:50%;background:#cfd4d9;display:inline-block;vertical-align:middle;margin-right:6px;}
+  .scan-dot.on{background:var(--green);box-shadow:0 0 8px var(--green);}
+  .panel-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:11px;overflow:auto;box-shadow:0 1px 2px rgba(20,30,40,.04);}
+  .panel-title{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;padding:3px 6px 6px;}
+  svg.canvas{display:block;}
+  #procWrap{background:#fff;border:1px solid var(--line-2);border-radius:7px;}
+  #traceWrap{background:#fff;border:1px solid var(--line-2);border-radius:7px;}
+  .iostrip{display:flex;gap:8px;flex-wrap:wrap;padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:12px;margin-bottom:11px;}
+  .iochip{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:3px 10px;}
+  .iochip .a{font-family:'SF Mono',Menlo,monospace;color:var(--blue);}
+  .iochip .nm{color:var(--muted);}
+  .iochip .d{width:9px;height:9px;border-radius:50%;background:#cfd4d9;}
+  .iochip .d.on{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .iochip.analog{border-color:#bcd3ec;background:#f3f8fd;}
+  .iostrip .none{color:var(--dim);font-style:italic;}
+  .status{margin-top:4px;padding:12px 15px;background:#fff;border:1px solid var(--line);border-radius:9px;font-size:13px;color:var(--muted);min-height:44px;display:flex;align-items:center;}
+  .status b{color:var(--text);}
+  #picker{position:fixed;z-index:50;background:#fff;border:1px solid var(--accent);border-radius:10px;padding:12px;width:252px;box-shadow:0 10px 34px rgba(20,30,40,.18);display:none;}
+  #picker h4{margin:0 0 9px;font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;}
+  #picker label{display:block;font-size:11px;color:var(--muted);margin:8px 0 3px;}
+  #picker select,#picker input{width:100%;background:#fff;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px;font-size:13px;}
+  #picker .row{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap;}
+  #picker button{flex:1;min-width:64px;background:#fff;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px;font-size:12px;cursor:pointer;}
+  #picker button.go{border-color:#9fdcc4;color:#0f7a55;background:#eafaf3;}
+  #picker button.del{border-color:#f0b0af;color:#b5302f;background:#fdecec;}
+  .legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:8px;}
+  .legend span b{color:var(--text);font-family:'SF Mono',Menlo,monospace;}
+</style>
+</head>
+<body>
+  <h1>PLC <b>Sandbox</b> <span style="font-size:13px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--accent);padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px">BETA</span></h1>
+  <div style="display:flex;align-items:center;gap:8px;background:#fff7ec;border:1px solid var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:9px 13px;margin:2px 0 12px;font-size:13px;color:#7a4e10">
+    <span style="font-size:15px">🛠️</span><span><b>Beta — under active development.</b> This trainer is still being built out, so you may hit rough edges and features can change. Found a bug or have a request? I'd love to hear it.</span>
+  </div>
+  <p class="subtitle">Drop equipment, give each its own I/O, wire it to the PLC, then write ladder logic that drives the machine. Hit RUN and watch it come alive.</p>
+
+  <div class="toolbar">
+    <span class="label">Equipment — click to drop, drag to place, tap to set its I/O</span>
+    <button class="tbtn" onclick="addDevice('conveyor')">+ Conveyor</button>
+    <button class="tbtn" onclick="addDevice('feeder')">+ Feeder</button>
+    <button class="tbtn" onclick="addDevice('prox')">+ Prox / limit sw</button>
+    <button class="tbtn" onclick="addDevice('div')">+ Diverter</button>
+    <button class="tbtn" onclick="addDevice('cyl')">+ Cylinder</button>
+    <button class="tbtn" onclick="addDevice('tank')">+ Tank</button>
+    <button class="tbtn" onclick="addDevice('xmtr')">+ Analog Tx</button>
+    <button class="tbtn" onclick="addDevice('pump')">+ Pump</button>
+    <button class="tbtn" onclick="addDevice('drain')">+ Drain</button>
+    <button class="tbtn" onclick="addDevice('hi')">+ Hi sw</button>
+    <button class="tbtn" onclick="addDevice('lo')">+ Lo sw</button>
+    <button class="tbtn" onclick="addDevice('pb')">+ Button</button>
+    <button class="tbtn" onclick="addDevice('lamp')">+ Light</button>
+    <button class="tbtn" onclick="addDevice('selector')">+ Selector</button>
+    <button class="tbtn" onclick="addDevice('pblit')">+ Lit button</button>
+    <button class="tbtn" onclick="addDevice('display')">+ Readout</button>
+    <button class="tbtn" onclick="addDevice('traffic')">+ Intersection</button>
+  </div>
+
+  <div class="toolbar">
+    <span class="label">Examples &amp; run</span>
+    <select class="tbtn" id="exSel" onchange="loadExample(this.value);this.selectedIndex=0;">
+      <option value="">Examples ▾</option>
+      <option value="conveyor">Conveyor &amp; count</option>
+      <option value="cylinder">Cylinder stamp ×3</option>
+      <option value="analog">Analog level control</option>
+      <option value="sort">Sort line (2 belts)</option>
+      <option value="hmi">HMI bottling station</option>
+      <option value="traffic">Traffic intersection</option>
+      <option value="batch">Auto batch ×3</option>
+      <option value="pump">Pump control</option>
+    </select>
+    <button class="tbtn" onclick="addRung()">+ Rung</button>
+    <button class="tbtn" onclick="clearAll()">Clear all</button>
+    <span class="sep"></span>
+    <button class="tbtn primary" id="runBtn" onclick="toggleRun()">▶ RUN</button>
+    <button class="tbtn" onclick="stepOnce()">⏭ Step</button>
+    <button class="tbtn" onclick="resetSim()">Reset</button>
+    <span style="margin-left:6px;font-size:12px;color:var(--muted)"><span class="scan-dot" id="scanDot"></span><span id="scanTxt">Stopped</span></span>
+  </div>
+
+  <div class="toolbar">
+    <span class="label">Lessons — pick a challenge, build the ladder, then check it</span>
+    <select class="tbtn" id="lesSel" onchange="loadLesson(this.value);this.selectedIndex=0;">
+      <option value="">Lessons ▾</option>
+      <option value="seal">1 · Motor seal-in (start/stop)</option>
+      <option value="interlock">2 · Safety interlock</option>
+      <option value="count">3 · Count to three</option>
+    </select>
+    <button class="tbtn primary" id="checkBtn" style="display:none" onclick="checkLesson()">✓ Check my logic</button>
+    <span id="lesGoal" style="font-size:12px;color:var(--muted)"></span>
+  </div>
+
+  <div class="panel-box"><div class="panel-title">Process &amp; wiring</div>
+    <div id="procWrap"><svg id="process" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
+
+  <div class="iostrip" id="iostrip"></div>
+
+  <div class="panel-box"><div class="panel-title">I/O chassis — live module points</div>
+    <div id="chassisWrap"><svg id="chassis" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
+
+  <div class="panel-box"><div class="panel-title">Ladder logic</div>
+    <svg id="ladder" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
+
+  <div class="panel-box"><div class="panel-title">Timing chart — live I/O trace</div>
+    <div id="traceWrap"><svg id="trace" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
+
+  <div class="status" id="status"></div>
+  <div class="legend">
+    <span><b>] [</b> XIC</span><span><b>]/[</b> XIO</span><span><b>GEQ/LEQ</b> compare</span>
+    <span><b>( )</b> OTE</span><span><b>(L)/(U)</b> latch</span><span><b>TON</b> timer</span><span><b>CTU</b> counter</span>
+  </div>
+  <div id="picker"></div>
+
+<script>
+/* ======================================================================
+   MODEL
+   ====================================================================== */
+const NI=8, NO=8, NB=8, NT=4, NC=4, NA=4;
+const M={ bits:{}, analogs:{}, timers:{}, counters:{}, rungs:[], running:false };
+const labels={};
+let devices=[], parts=[], partSeq=0, devSeq=0, traceBuf=[]; const TRACE_MAX=170;
+function initIO(){
+  M.bits={}; M.analogs={}; M.timers={}; M.counters={};
+  for(let i=0;i<NI;i++)M.bits['I'+i]=false;
+  for(let i=0;i<NO;i++)M.bits['O'+i]=false;
+  for(let i=0;i<NB;i++)M.bits['B'+i]=false;
+  for(let i=0;i<NA;i++)M.analogs['A'+i]=0;
+  for(let i=0;i<NT;i++)M.timers['T'+i]={preset:3000,acc:0,done:false};
+  for(let i=0;i<NC;i++)M.counters['C'+i]={preset:5,acc:0,done:false,_prev:false};
+}
+initIO();
+
+/* ---------- ENGINE (unit-tested) ---------- */
+const CMP=['GEQ','GRT','LEQ','LES','EQU'];
+function tagVal(M,t){if(!t)return false;if(t[0]==='T')return M.timers[t]?M.timers[t].done:false;if(t[0]==='C')return M.counters[t]?M.counters[t].done:false;return !!M.bits[t];}
+function analogVal(M,t){return (M.analogs&&M.analogs[t]!=null)?M.analogs[t]:0;}
+function contactConducts(M,c){
+  if(c.instr==='XIC')return !!tagVal(M,c.tag);
+  if(c.instr==='XIO')return !tagVal(M,c.tag);
+  const s=analogVal(M,c.tag),v=Number(c.value)||0;
+  switch(c.instr){case 'GEQ':return s>=v;case 'GRT':return s>v;case 'LEQ':return s<=v;case 'LES':return s<v;case 'EQU':return s===v;}
+  return false;
+}
+function rungPower(M,r){let p=true;for(const cell of r.cells){if(!cell.contacts.length)continue;let cv=false;for(const c of cell.contacts)cv=cv||contactConducts(M,c);p=p&&cv;}return p;}
+function applyOutput(M,o,pw,dt){const t=o.tag;switch(o.instr){
+  case 'OTE':M.bits[t]=pw;break;case 'OTL':if(pw)M.bits[t]=true;break;case 'OTU':if(pw)M.bits[t]=false;break;
+  case 'TON':{const tm=M.timers[t];if(pw){tm.acc+=dt;if(tm.acc>=tm.preset){tm.acc=tm.preset;tm.done=true;}}else{tm.acc=0;tm.done=false;}break;}
+  case 'CTU':{const c=M.counters[t];if(pw&&!c._prev)c.acc++;c._prev=pw;c.done=c.acc>=c.preset;break;}
+  case 'RES':{if(pw){if(M.timers[t]){M.timers[t].acc=0;M.timers[t].done=false;}if(M.counters[t]){M.counters[t].acc=0;M.counters[t].done=false;}}break;}
+}}
+function scanOnce(M,dt){for(const r of M.rungs){if(!r.output)continue;r._power=rungPower(M,r);applyOutput(M,r.output,r._power,dt);}}
+
+/* ---------- PHYSICS (unit-tested) ---------- */
+function processSense(){const tank=devices.find(d=>d.type==='tank');if(!tank)return;const lvl=tank.params.level;devices.forEach(d=>{if(d.type==='hi')M.bits[d.tag]=lvl>=d.params.trip;if(d.type==='lo')M.bits[d.tag]=lvl>=d.params.trip;});}
+function processAnalog(){const tank=devices.find(d=>d.type==='tank');devices.filter(d=>d.type==='xmtr').forEach(x=>{if(x.tag)M.analogs[x.tag]=tank?tank.params.level:0;});}
+function processIntegrate(dt){const tank=devices.find(d=>d.type==='tank');if(!tank)return;let fill=0,drain=0;devices.forEach(d=>{if(d.type==='pump'&&M.bits[d.tag])fill+=d.params.rate;if(d.type==='drain'&&M.bits[d.tag])drain+=d.params.rate;});let l=tank.params.level+(fill-drain)*dt/1000;tank.params.level=Math.max(0,Math.min(100,l));}
+function processCylinders(dt){devices.filter(d=>d.type==='cyl').forEach(d=>{const ext=!!M.bits[d.tag];let pos=d.params.pos||0;pos+=(ext?1:-1)*d.params.speed*dt/1000;pos=Math.max(0,Math.min(1,pos));d.params.pos=pos;if(d.params.extTag)M.bits[d.params.extTag]=pos>=0.99;if(d.params.retTag)M.bits[d.params.retTag]=pos<=0.01;});}
+function processProx(){devices.filter(d=>d.type==='prox').forEach(s=>{let on=false;parts.forEach(p=>{const cv=devices.find(d=>d.id===p.conv);if(!cv)return;if(Math.abs(cv.y-s.y)>34)return;const px=cv.x+p.pos;if(Math.abs(px-s.x)<18)on=true;});M.bits[s.tag]=on;});}
+function processConveyors(dt){parts.forEach(p=>{const cv=devices.find(d=>d.id===p.conv);if(cv&&M.bits[cv.tag])p.pos+=cv.params.speed*dt/1000;});parts=parts.filter(p=>{const cv=devices.find(d=>d.id===p.conv);return cv&&p.pos<=cv.params.len;});}
+function processDiverters(){devices.filter(d=>d.type==='div').forEach(dv=>{if(!M.bits[dv.tag])return;const target=devices.find(d=>d.id===dv.params.target&&d.type==='conveyor');if(!target)return;parts.forEach(p=>{const cv=devices.find(d=>d.id===p.conv);if(!cv)return;const onBelt=Math.abs(cv.y-dv.y)<30&&dv.x>=cv.x&&dv.x<=cv.x+cv.params.len;if(!onBelt)return;const px=cv.x+p.pos;if(Math.abs(px-dv.x)<14){p.conv=target.id;p.pos=0;}});});}
+function processFeeders(){devices.filter(d=>d.type==='feeder').forEach(f=>{const on=!!M.bits[f.tag];if(on&&!f._prev){const cv=devices.find(d=>d.type==='conveyor');if(cv)parts.push({id:++partSeq,conv:cv.id,pos:0});}f._prev=on;});}
+function tickAll(dt){processSense();processAnalog();processProx();scanOnce(M,dt);processIntegrate(dt);processCylinders(dt);processConveyors(dt);processDiverters();processFeeders();}
+
+/* ======================================================================
+   DEVICE CONFIG
+   ====================================================================== */
+const DEV={
+  conveyor:{label:'Conveyor',dir:'out',defName:'Conveyor',params:{len:300,speed:80}},
+  feeder:  {label:'Part feeder',dir:'out',defName:'Feeder',params:{}},
+  prox:    {label:'Proximity / limit sw',dir:'in',defName:'Sensor',params:{}},
+  div:     {label:'Diverter gate',dir:'out',defName:'Diverter',params:{target:null}},
+  cyl:     {label:'Cylinder (stamp/clamp)',dir:'out',defName:'Cylinder',params:{pos:0,speed:1.3}},
+  tank:    {label:'Tank',dir:null,defName:'Tank',params:{level:0}},
+  xmtr:    {label:'Analog level Tx',dir:'ain',defName:'Level Tx',params:{}},
+  pump:    {label:'Pump',dir:'out',defName:'Pump',params:{rate:25}},
+  drain:   {label:'Drain valve',dir:'out',defName:'Drain',params:{rate:18}},
+  lamp:    {label:'Pilot light',dir:'out',defName:'Light',params:{}},
+  hi:      {label:'Hi-level switch',dir:'in',defName:'Hi level',params:{trip:80}},
+  lo:      {label:'Lo-level switch',dir:'in',defName:'Lo level',params:{trip:20}},
+  pb:      {label:'Push button',dir:'in',defName:'Button',params:{nc:false}},
+  selector:{label:'Selector switch',dir:'in',defName:'Selector',params:{positions:3,pos:0,posTags:[],posNames:['OFF','HAND','AUTO']}},
+  pblit:   {label:'Illuminated button',dir:'in',defName:'Lit button',params:{lampTag:null}},
+  display: {label:'Digital readout',dir:null,defName:'Readout',params:{src:'C0'}},
+  traffic: {label:'Traffic intersection',dir:'out',defName:'Intersection',params:{lamps:{}}},
+};
+// every I/O point a device owns: {tag,dir}
+function deviceTags(d){
+  if(d.type==='cyl')return [d.tag&&{tag:d.tag,dir:'out'},d.params.extTag&&{tag:d.params.extTag,dir:'in'},d.params.retTag&&{tag:d.params.retTag,dir:'in'}].filter(Boolean);
+  if(d.type==='selector')return (d.params.posTags||[]).filter(Boolean).map(t=>({tag:t,dir:'in'}));
+  if(d.type==='pblit')return [d.tag&&{tag:d.tag,dir:'in'},d.params.lampTag&&{tag:d.params.lampTag,dir:'out'}].filter(Boolean);
+  if(d.type==='traffic')return Object.values(d.params.lamps||{}).filter(Boolean).map(t=>({tag:t,dir:'out'}));
+  if(d.type==='display')return [];
+  const dir=DEV[d.type].dir; return (d.tag&&dir)?[{tag:d.tag,dir}]:[];
+}
+function usedTagsSet(){const s=new Set();devices.forEach(d=>deviceTags(d).forEach(e=>s.add(e.tag)));return s;}
+function nextFreeTag(dir){const pre=dir==='in'?'I':dir==='ain'?'A':'O',N=dir==='in'?NI:dir==='ain'?NA:NO,used=usedTagsSet();for(let i=0;i<N;i++){if(!used.has(pre+i))return pre+i;}return null;}
+// return k free tags for a direction, or null if not enough room
+function freeTags(dir,k){if(!k)return [];const pre=dir==='in'?'I':dir==='ain'?'A':'O',N=dir==='in'?NI:dir==='ain'?NA:NO,used=usedTagsSet(),out=[];for(let i=0;i<N&&out.length<k;i++){if(!used.has(pre+i))out.push(pre+i);}return out.length===k?out:null;}
+function addDevice(type){
+  if(M.running){status('Stop the sim to add equipment.');return;}
+  if(type==='tank'&&devices.some(d=>d.type==='tank')){status('One tank is enough.');return;}
+  if(type==='traffic'&&devices.some(d=>d.type==='traffic')){status('One intersection at a time.');return;}
+  const cfg=DEV[type];
+  const need=({cyl:{out:1,in:2},div:{out:1},selector:{in:cfg.params.positions||3},pblit:{in:1,out:1},traffic:{out:6},display:{}})[type] || (cfg.dir?{[cfg.dir]:1}:{});
+  const fIn=freeTags('in',need.in||0),fOut=freeTags('out',need.out||0),fAin=freeTags('ain',need.ain||0);
+  if(fIn===null||fOut===null||fAin===null){const miss=fIn===null?(need.in+' input'):fOut===null?(need.out+' output'):(need.ain+' analog');status(`Not enough free ${miss} addresses for a ${cfg.label} — this trainer has 8 of each. Delete a device to make room.`);return;}
+  const d={id:++devSeq,type,name:cfg.defName,params:JSON.parse(JSON.stringify(cfg.params)),x:150+(devSeq*30)%280,y:150+(devSeq*22)%120};
+  if(type==='conveyor'){d.x=120;d.y=205;}
+  if(type==='tank'){d.x=110;d.y=170;}
+  if(type==='traffic'){d.x=300;d.y=200;}
+  devices.push(d);
+  if(type==='cyl'){ d.tag=fOut[0]; d.params.extTag=fIn[0]; d.params.retTag=fIn[1]; labels[d.tag]=d.name; labels[d.params.extTag]=d.name+' ext'; labels[d.params.retTag]=d.name+' ret'; }
+  else if(type==='div'){ d.tag=fOut[0]; const cv=devices.find(x=>x.type==='conveyor'&&x.id!==d.id); d.params.target=cv?cv.id:null; labels[d.tag]=d.name; }
+  else if(type==='selector'){ d.params.posTags=fIn.slice(0,d.params.positions); d.params.posTags.forEach((t,i)=>labels[t]=d.name+' '+(d.params.posNames[i]||('P'+i))); }
+  else if(type==='pblit'){ d.tag=fIn[0]; labels[d.tag]=d.name; d.params.lampTag=fOut[0]; labels[d.params.lampTag]=d.name+' lamp'; }
+  else if(type==='traffic'){ const names={gNS:'NS green',yNS:'NS yellow',rNS:'NS red',gEW:'EW green',yEW:'EW yellow',rEW:'EW red'}; d.params.lamps={}; ['gNS','yNS','rNS','gEW','yEW','rEW'].forEach((k,i)=>{d.params.lamps[k]=fOut[i];labels[fOut[i]]=names[k];}); }
+  else if(type==='display'){ const c=Object.keys(M.counters)[0]||'C0'; d.params.src=c; }
+  else if(cfg.dir){ d.tag=(cfg.dir==='in'?fIn:cfg.dir==='ain'?fAin:fOut)[0]; labels[d.tag]=d.name; }
+  drawAll();
+  status(`Dropped ${cfg.label}. Drag to place; tap to set it up.`);
+}
+
+/* ======================================================================
+   PROCESS CANVAS
+   ====================================================================== */
+const pSVG=document.getElementById('process');
+const PW=860, PH=400;
+const PLC={x:662,y:46,w:178,h:330};
+let spinPhase=0, beltPhase=0;
+function anchorOf(d){ if(d.type==='conveyor')return {x:d.x+20,y:d.y-14}; return {x:d.x,y:d.y}; }
+function ioEntries(){ const ins=[],outs=[]; devices.forEach(d=>{ deviceTags(d).forEach(e=>{ if(e.dir==='in'||e.dir==='ain')ins.push({tag:e.tag,dev:d}); else if(e.dir==='out')outs.push({tag:e.tag,dev:d}); }); }); return {ins,outs,all:[...ins,...outs]}; }
+// terminal y-position for every entry, grouped INPUTS then OUTPUTS with headers
+function termLayout(io){
+  const nIn=io.ins.length,nOut=io.outs.length,top=PLC.y+34,bot=PLC.y+PLC.h-12;
+  const step=Math.max(19,Math.min(30,(bot-top-40)/Math.max(1,nIn+nOut)));
+  const ty=[],heads=[]; let cur=top;
+  if(nIn){heads.push({y:cur+4,t:'INPUTS',c:'var(--blue)'});cur+=20;}
+  for(let i=0;i<nIn;i++){ty[i]=cur;cur+=step;}
+  if(nOut){cur+=10;heads.push({y:cur+4,t:'OUTPUTS',c:'var(--accent)'});cur+=20;}
+  for(let i=0;i<nOut;i++){ty[nIn+i]=cur;cur+=step;}
+  return {ty,heads,step};
+}
+
+function drawProcess(){
+  let s='';
+  s+=`<defs><pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0 L0 0 0 26" fill="none" stroke="#eef1f3" stroke-width="1"/></pattern></defs>`;
+  s+=`<rect x="0" y="0" width="${PW}" height="${PH}" fill="url(#grid)"/>`;
+  const io=ioEntries(), lay=termLayout(io), total=io.all.length;
+  // PLC module body
+  s+=`<rect x="${PLC.x}" y="${PLC.y}" width="${PLC.w}" height="${PLC.h}" rx="10" fill="var(--panel-2)" stroke="#cfd4d9" stroke-width="1.5"/>`;
+  s+=`<rect x="${PLC.x}" y="${PLC.y}" width="${PLC.w}" height="26" rx="10" fill="#eef0f3"/>`;
+  s+=`<text x="${PLC.x+PLC.w/2}" y="${PLC.y+18}" fill="var(--accent)" font-size="14" font-weight="700" text-anchor="middle">PLC</text>`;
+  lay.heads.forEach(h=>{ s+=`<text x="${PLC.x+30}" y="${h.y}" fill="${h.c}" font-size="9" font-weight="700" letter-spacing="1.2" text-anchor="start">${h.t}</text><line x1="${PLC.x+10}" y1="${h.y+3}" x2="${PLC.x+PLC.w-10}" y2="${h.y+3}" stroke="var(--line)"/>`; });
+  // wires — each entry gets its own vertical lane just left of the PLC, so none overlap
+  io.all.forEach((e,idx)=>{ const a=anchorOf(e.dev),ty=lay.ty[idx],analog=e.tag[0]==='A',on=!!M.bits[e.tag];
+    const wc=analog?'var(--blue)':(on?'var(--green)':'var(--wire)'),lane=PLC.x-12-idx*7;
+    s+=`<path d="M ${a.x} ${a.y} L ${lane} ${a.y} L ${lane} ${ty} L ${PLC.x} ${ty}" fill="none" stroke="${wc}" stroke-width="2" ${analog?'stroke-dasharray="5 3"':''}/>`;
+  });
+  // terminal pads with exact addresses + live state
+  io.all.forEach((e,idx)=>{ const ty=lay.ty[idx],analog=e.tag[0]==='A',on=!!M.bits[e.tag];
+    const padC=analog?'#eef5fc':(on?'#e6f6ef':'#fff'),padS=analog?'var(--blue)':(on?'var(--green)':'#cfd4d9');
+    s+=`<rect x="${PLC.x-4}" y="${ty-9}" width="14" height="18" rx="2" fill="${padC}" stroke="${padS}" stroke-width="1.5"/>`;
+    s+=`<circle cx="${PLC.x+3}" cy="${ty}" r="3" fill="${analog?'var(--blue)':(on?'var(--green)':'#cfd4d9')}"/>`;
+    s+=`<text x="${PLC.x+20}" y="${ty+4}" fill="${analog?'var(--blue)':(on?'#0f7a55':'var(--text)')}" font-size="12" font-weight="700" font-family="monospace">${e.tag}</text>`;
+    const nm=analog?`= ${Math.round(M.analogs[e.tag]||0)}%`:(labels[e.tag]||'');
+    if(nm)s+=`<text x="${PLC.x+50}" y="${ty+4}" fill="var(--muted)" font-size="10">${esc(String(nm)).slice(0,16)}</text>`;
+  });
+  devices.forEach(d=>{ s+=drawDevice(d); });
+  parts.forEach(p=>{ const cv=devices.find(d=>d.id===p.conv); if(!cv)return; const px=cv.x+p.pos,py=cv.y-23; s+=`<rect x="${px-9}" y="${py}" width="18" height="14" rx="2" fill="var(--accent-soft)" stroke="#b5740c" stroke-width="1.2"/>`; });
+  if(!devices.length) s+=`<text x="40" y="52" fill="var(--dim)" font-size="14" font-style="italic">Drop equipment to begin — or pick an Example above.</text>`;
+  pSVG.setAttribute('viewBox',`0 0 ${PW} ${PH}`); pSVG.style.height=PH+'px'; pSVG.style.width='100%'; pSVG.innerHTML=s;
+}
+
+function drawDevice(d){
+  const on=d.tag?!!M.bits[d.tag]:false, nm=esc(d.name||'');
+  const tagTxt=d.tag?`<text x="${d.x}" y="${d.y-2}" fill="var(--blue)" font-size="10" font-family="monospace" text-anchor="middle" style="pointer-events:none">${d.tag}</text>`:'';
+  let body='';
+  if(d.type==='conveyor'){
+    const len=d.params.len,x=d.x,y=d.y,h=18,c='#9aa1a9';
+    body=`<rect x="${x}" y="${y-h/2}" width="${len}" height="${h}" rx="3" fill="#d7dce0" stroke="${c}"/><circle cx="${x}" cy="${y}" r="${h/2+3}" fill="#eceef1" stroke="${c}"/><circle cx="${x+len}" cy="${y}" r="${h/2+3}" fill="#eceef1" stroke="${c}"/>`;
+    const off=on?(beltPhase%26):0;
+    for(let cx=x+6+off;cx<x+len-6;cx+=26){body+=`<path d="M ${cx} ${y-5} L ${cx+7} ${y} L ${cx} ${y+5}" fill="none" stroke="${on?'#7e858d':'#aab0b6'}" stroke-width="2"/>`;}
+    body+=`<line x1="${x+14}" y1="${y+h/2}" x2="${x+14}" y2="${y+h/2+24}" stroke="${c}" stroke-width="3"/><line x1="${x+len-14}" y1="${y+h/2}" x2="${x+len-14}" y2="${y+h/2+24}" stroke="${c}" stroke-width="3"/>`;
+    if(d.tag)body=`<text x="${x+len/2}" y="${y-h/2-7}" fill="${on?'var(--green)':'var(--blue)'}" font-size="10" font-family="monospace" text-anchor="middle">${d.tag}</text>`+body;
+    body+=`<text x="${x+len/2}" y="${y+h/2+40}" fill="var(--muted)" font-size="11" text-anchor="middle">${nm}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='div'){
+    const c=on?'var(--green)':'#8b9097', ang=(on?38:-2)*Math.PI/180, L=24;
+    body=`<circle cx="${d.x}" cy="${d.y}" r="3.5" fill="${c}"/><line x1="${d.x}" y1="${d.y}" x2="${d.x+L*Math.cos(ang)}" y2="${d.y+L*Math.sin(ang)}" stroke="${c}" stroke-width="4"/>`;
+    body+=`<text x="${d.x}" y="${d.y-12}" fill="var(--muted)" font-size="10" text-anchor="middle">${nm}${d.tag?' · '+d.tag:''}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='cyl'){
+    const bx=d.x-30,by=d.y-15,bw=46,bh=30,stroke=46,rx=bx+bw;
+    const rod=10+(d.params.pos||0)*stroke;
+    const ext=!!M.bits[d.params.extTag], ret=!!M.bits[d.params.retTag];
+    body=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="3" fill="#eceef1" stroke="#9aa1a9" stroke-width="2"/>`;
+    body+=`<line x1="${rx}" y1="${d.y}" x2="${rx+rod}" y2="${d.y}" stroke="${on?'var(--green)':'#8b9097'}" stroke-width="5"/>`;
+    body+=`<rect x="${rx+rod}" y="${d.y-10}" width="11" height="20" rx="2" fill="#cfd4d9" stroke="#8b9097"/>`;
+    body+=`<circle cx="${rx+4}" cy="${d.y+22}" r="4" fill="${ret?'var(--green)':'#d3d8dc'}"/><text x="${rx+4}" y="${d.y+36}" fill="var(--muted)" font-size="8" text-anchor="middle">RET</text>`;
+    body+=`<circle cx="${rx+stroke+12}" cy="${d.y+22}" r="4" fill="${ext?'var(--green)':'#d3d8dc'}"/><text x="${rx+stroke+12}" y="${d.y+36}" fill="var(--muted)" font-size="8" text-anchor="middle">EXT</text>`;
+    body+=`<text x="${d.x}" y="${by-6}" fill="var(--muted)" font-size="10" text-anchor="middle">${nm}${d.tag?' · '+d.tag:''}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='xmtr'){
+    const v=Math.round(M.analogs[d.tag]||0);
+    body=`<rect x="${d.x-21}" y="${d.y-14}" width="42" height="28" rx="5" fill="#fff" stroke="var(--blue)" stroke-width="2"/><text x="${d.x}" y="${d.y+5}" fill="var(--blue)" font-size="13" font-weight="700" text-anchor="middle" style="pointer-events:none">${v}%</text>`;
+    body+=`<text x="${d.x}" y="${d.y+28}" fill="var(--muted)" font-size="10" text-anchor="middle" style="pointer-events:none">${nm} · ${d.tag||''}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='selector'){
+    const n=d.params.positions,pos=d.params.pos||0,w=Math.max(72,n*30),x=d.x-w/2,y=d.y-22,h=46;
+    body=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#2a2d31" stroke="#15171a"/>`;
+    body+=`<circle cx="${d.x}" cy="${d.y-3}" r="13" fill="#cfd4d9" stroke="#8b9097" stroke-width="2"/>`;
+    const ang=(n>1?(-52+104*pos/(n-1)):0)*Math.PI/180;
+    body+=`<line x1="${d.x}" y1="${d.y-3}" x2="${d.x+13*Math.sin(ang)}" y2="${d.y-3-13*Math.cos(ang)}" stroke="#15171a" stroke-width="3"/>`;
+    for(let i=0;i<n;i++){const lx=x+(w/n)*(i+0.5),onp=i===pos;body+=`<text x="${lx}" y="${y+h-5}" fill="${onp?'#37e29a':'#9aa1a9'}" font-size="9" font-weight="${onp?'700':'400'}" text-anchor="middle" style="pointer-events:none">${esc(d.params.posNames[i]||('P'+i))}</text>`;}
+    body+=`<text x="${d.x}" y="${y-6}" fill="var(--muted)" font-size="10" text-anchor="middle">${nm}</text>`;
+    return `<g style="cursor:${M.running?'pointer':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='pblit'){
+    const lit=!!M.bits[d.params.lampTag],pressed=!!M.bits[d.tag],ring=lit?'var(--green)':'#8b9097';
+    body=`<circle cx="${d.x}" cy="${d.y}" r="20" fill="${lit?'#eafaf3':'#fff'}" stroke="${ring}" stroke-width="3" ${lit?'style="filter:drop-shadow(0 0 7px var(--green))"':''}/>`;
+    body+=`<circle cx="${d.x}" cy="${d.y}" r="11" fill="${pressed?'var(--green)':(lit?'#7fd9b8':'#dde1e5')}"/>`;
+    body+=`<text x="${d.x}" y="${d.y+34}" fill="var(--muted)" font-size="11" text-anchor="middle" style="pointer-events:none">${nm}</text>`;
+    return `<g style="cursor:${M.running?'pointer':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='display'){
+    const v=srcValue(d.params.src),w=86;
+    body=`<rect x="${d.x-w/2}" y="${d.y-20}" width="${w}" height="40" rx="5" fill="#10231a" stroke="#0a3d2a" stroke-width="2"/>`;
+    body+=`<text x="${d.x}" y="${d.y+9}" fill="#36e29a" font-size="22" font-weight="700" font-family="monospace" text-anchor="middle" style="pointer-events:none">${v}</text>`;
+    body+=`<text x="${d.x}" y="${d.y+34}" fill="var(--muted)" font-size="10" text-anchor="middle" style="pointer-events:none">${nm} · ${d.params.src}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='traffic'){
+    const L=d.params.lamps||{},gN=!!M.bits[L.gNS],yN=!!M.bits[L.yNS],rN=!!M.bits[L.rNS],gE=!!M.bits[L.gEW],yE=!!M.bits[L.yEW],rE=!!M.bits[L.rEW];
+    const cx=d.x,cy=d.y,road=42;
+    body=`<rect x="${cx-road}" y="${cy-150}" width="${2*road}" height="300" fill="#3a3d41"/><rect x="${cx-150}" y="${cy-road}" width="300" height="${2*road}" fill="#3a3d41"/>`;
+    body+=`<line x1="${cx}" y1="${cy-150}" x2="${cx}" y2="${cy-road}" stroke="#e8c33b" stroke-width="2" stroke-dasharray="9 9"/><line x1="${cx}" y1="${cy+road}" x2="${cx}" y2="${cy+150}" stroke="#e8c33b" stroke-width="2" stroke-dasharray="9 9"/>`;
+    body+=`<line x1="${cx-150}" y1="${cy}" x2="${cx-road}" y2="${cy}" stroke="#e8c33b" stroke-width="2" stroke-dasharray="9 9"/><line x1="${cx+road}" y1="${cy}" x2="${cx+150}" y2="${cy}" stroke="#e8c33b" stroke-width="2" stroke-dasharray="9 9"/>`;
+    const head=(hx,hy,g,yl,r)=>`<rect x="${hx-9}" y="${hy-30}" width="18" height="60" rx="4" fill="#1c1e21"/><circle cx="${hx}" cy="${hy-19}" r="6" fill="${r?'#ff4b4b':'#4a1c1c'}"/><circle cx="${hx}" cy="${hy}" r="6" fill="${yl?'#ffd23b':'#4a401c'}"/><circle cx="${hx}" cy="${hy+19}" r="6" fill="${g?'#37e29a':'#1c4a36'}"/>`;
+    body+=head(cx-road-15,cy-road-38,gN,yN,rN)+head(cx+road+15,cy+road+38,gN,yN,rN);
+    body+=head(cx-road-38,cy+road+15,gE,yE,rE)+head(cx+road+38,cy-road-15,gE,yE,rE);
+    body+=`<text x="${cx}" y="${cy+166}" fill="var(--muted)" font-size="11" text-anchor="middle">${nm}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='feeder'){
+    const c=on?'var(--green)':'#9aa1a9';
+    body=`<polygon points="${d.x-18},${d.y-15} ${d.x+18},${d.y-15} ${d.x+6},${d.y+11} ${d.x-6},${d.y+11}" fill="#fff" stroke="${c}" stroke-width="2"/><rect x="${d.x-7}" y="${d.y+11}" width="14" height="7" fill="${on?'var(--green)':'#e3e6e9'}" stroke="${c}"/>`;
+    body+=`<text x="${d.x}" y="${d.y-21}" fill="var(--muted)" font-size="10" text-anchor="middle">${nm}${d.tag?' · '+d.tag:''}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='prox'){
+    const c=on?'var(--green)':'#9aa1a9';
+    body=`<rect x="${d.x-13}" y="${d.y-13}" width="26" height="17" rx="3" fill="#fff" stroke="${c}" stroke-width="2"/><circle cx="${d.x}" cy="${d.y-4}" r="3" fill="${on?'var(--green)':'#cfd4d9'}"/><line x1="${d.x}" y1="${d.y+4}" x2="${d.x}" y2="${d.y+32}" stroke="${on?'var(--green)':'#d3d8dc'}" stroke-width="2" stroke-dasharray="3 3"/>`;
+    body+=`<text x="${d.x}" y="${d.y-17}" fill="var(--muted)" font-size="10" text-anchor="middle">${nm}${d.tag?' · '+d.tag:''}</text>`;
+    return `<g style="cursor:${M.running?'default':'grab'}" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='tank'){
+    const w=92,h=126,x=d.x-w/2,y=d.y-h/2,lvl=d.params.level||0,fh=(h-6)*lvl/100;
+    body=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#eef4fa" stroke="#9fb0bf" stroke-width="2"/><rect x="${x+3}" y="${y+h-3-fh}" width="${w-6}" height="${fh}" rx="5" fill="var(--liquid)" opacity="0.82"/><text x="${d.x}" y="${d.y+5}" fill="${lvl>50?'#fff':'#2b4a63'}" font-size="16" font-weight="700" text-anchor="middle" style="pointer-events:none">${Math.round(lvl)}%</text><text x="${d.x}" y="${y+h+16}" fill="var(--muted)" font-size="11" text-anchor="middle" style="pointer-events:none">${nm}</text>`;
+    return `<g style="cursor:pointer" data-id="${d.id}">${body}</g>`;
+  }
+  if(d.type==='pump'){
+    const r=24,ring=on?'var(--green)':'#8b9097',sp=on?spinPhase:0;
+    body=`${tagTxt}<circle cx="${d.x}" cy="${d.y}" r="${r}" fill="#fff" stroke="${ring}" stroke-width="3"/><g transform="rotate(${sp} ${d.x} ${d.y})" style="pointer-events:none"><line x1="${d.x-14}" y1="${d.y}" x2="${d.x+14}" y2="${d.y}" stroke="${ring}" stroke-width="3"/><line x1="${d.x}" y1="${d.y-14}" x2="${d.x}" y2="${d.y+14}" stroke="${ring}" stroke-width="3"/></g><text x="${d.x}" y="${d.y+r+15}" fill="var(--muted)" font-size="11" text-anchor="middle" style="pointer-events:none">${nm}</text>`;
+  } else if(d.type==='drain'){
+    const c=on?'var(--green)':'#8b9097';
+    body=`${tagTxt}<polygon points="${d.x-16},${d.y-14} ${d.x+16},${d.y-14} ${d.x},${d.y+2}" fill="${on?'#eafaf3':'#fff'}" stroke="${c}" stroke-width="2.5"/><polygon points="${d.x-16},${d.y+18} ${d.x+16},${d.y+18} ${d.x},${d.y+2}" fill="${on?'#eafaf3':'#fff'}" stroke="${c}" stroke-width="2.5"/><text x="${d.x}" y="${d.y+34}" fill="var(--muted)" font-size="11" text-anchor="middle" style="pointer-events:none">${nm}</text>`;
+  } else if(d.type==='lamp'){
+    const c=on?'var(--green)':'#e3e6e9',st=on?'#0f7a55':'#b9bfc5';
+    body=`${tagTxt}<circle cx="${d.x}" cy="${d.y}" r="18" fill="${c}" stroke="${st}" stroke-width="3" ${on?'style="filter:drop-shadow(0 0 7px var(--green))"':''}/><text x="${d.x}" y="${d.y+34}" fill="var(--muted)" font-size="11" text-anchor="middle" style="pointer-events:none">${nm}</text>`;
+  } else if(d.type==='hi'||d.type==='lo'){
+    const c=on?'var(--green)':'#b9bfc5';
+    body=`${tagTxt}<rect x="${d.x-22}" y="${d.y-14}" width="44" height="28" rx="5" fill="#fff" stroke="${c}" stroke-width="2"/><text x="${d.x-4}" y="${d.y+4}" fill="${on?'var(--green)':'var(--muted)'}" font-size="11" font-weight="700" text-anchor="middle" style="pointer-events:none">${d.type==='hi'?'HI':'LO'}</text><circle cx="${d.x+13}" cy="${d.y}" r="4" fill="${on?'var(--green)':'#d3d8dc'}"/><text x="${d.x}" y="${d.y+28}" fill="var(--muted)" font-size="10" text-anchor="middle" style="pointer-events:none">${nm} @${d.params.trip}%</text>`;
+  } else if(d.type==='pb'){
+    const c=on?'var(--green)':'#8b9097';
+    body=`${tagTxt}<circle cx="${d.x}" cy="${d.y}" r="18" fill="${on?'#eafaf3':'#fff'}" stroke="${c}" stroke-width="3"/><circle cx="${d.x}" cy="${d.y}" r="9" fill="${on?'var(--green)':'#dde1e5'}"/><text x="${d.x}" y="${d.y+33}" fill="var(--muted)" font-size="11" text-anchor="middle" style="pointer-events:none">${nm}${d.params.nc?' (NC)':''}</text>`;
+  }
+  return `<g style="cursor:${M.running&&d.type==='pb'?'pointer':'grab'}" data-id="${d.id}">${body}</g>`;
+}
+
+/* interactions */
+let drag=null;
+function svgPt(e){const r=pSVG.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width*PW,y:(e.clientY-r.top)/r.height*PH};}
+pSVG.addEventListener('pointerdown',e=>{const g=e.target.closest('[data-id]');if(!g)return;const d=devices.find(x=>x.id==+g.dataset.id);if(!d)return;
+  if(M.running){if(d.type==='pb'||d.type==='pblit'){d._pressed=true;setPB(d);drawProcess();}else if(d.type==='selector'){d.params.pos=(d.params.pos+1)%d.params.positions;applySelector(d);drawProcess();}return;}
+  const p=svgPt(e);drag={d,dx:p.x-d.x,dy:p.y-d.y,moved:false};pSVG.setPointerCapture(e.pointerId);});
+pSVG.addEventListener('pointermove',e=>{if(!drag)return;const p=svgPt(e),nx=p.x-drag.dx,ny=p.y-drag.dy;if(Math.abs(nx-drag.d.x)>2||Math.abs(ny-drag.d.y)>2)drag.moved=true;const maxX=drag.d.type==='conveyor'?(PLC.x-drag.d.params.len-46):(PLC.x-104);drag.d.x=Math.max(20,Math.min(maxX,nx));drag.d.y=Math.max(34,Math.min(PH-44,ny));drawProcess();});
+pSVG.addEventListener('pointerup',e=>{if(M.running){let ch=false;devices.forEach(d=>{if(d._pressed){d._pressed=false;setPB(d);ch=true;}});if(ch)drawProcess();return;}if(drag){const d=drag.d,moved=drag.moved;drag=null;if(!moved)editDevice(d,e.clientX+8,e.clientY+8);}});
+function setPB(d){const t=d.tag;if(!t)return;if(d.type==='pblit')M.bits[t]=!!d._pressed;else M.bits[t]=d.params.nc?!d._pressed:!!d._pressed;}
+function applySelector(d){(d.params.posTags||[]).forEach((t,i)=>{M.bits[t]=(i===(d.params.pos||0));});}
+function srcValue(src){if(!src)return 0;if(src[0]==='C')return M.counters[src]?M.counters[src].acc:0;if(src[0]==='T')return M.timers[src]?(M.timers[src].acc/1000).toFixed(1):0;if(src[0]==='A')return Math.round(M.analogs[src]||0);return M.bits[src]?1:0;}
+
+/* device editor */
+function editDevice(d,px,py){const cfg=DEV[d.type];let extra='';
+  if(d.type==='hi'||d.type==='lo')extra=`<label>Trip level (%)</label><input id="pTrip" type="number" min="0" max="100" value="${d.params.trip}">`;
+  if(d.type==='pump'||d.type==='drain')extra=`<label>Flow rate (% / sec)</label><input id="pRate" type="number" min="1" value="${d.params.rate}">`;
+  if(d.type==='conveyor')extra=`<label>Belt length</label><input id="pLen" type="number" min="80" max="540" value="${d.params.len}"><label>Belt speed (px/sec)</label><input id="pSpeed" type="number" min="10" value="${d.params.speed}">`;
+  if(d.type==='cyl'){const inOpts=(sel)=>{let o='';for(let i=0;i<NI;i++){const a='I'+i;o+=`<option ${a===sel?'selected':''}>${a}</option>`;}return o;};
+    extra=`<label>Extend limit (input)</label><select id="pExt">${inOpts(d.params.extTag)}</select><label>Retract limit (input)</label><select id="pRet">${inOpts(d.params.retTag)}</select><label>Stroke speed (/sec)</label><input id="pSpeed" type="number" step="0.1" min="0.2" value="${d.params.speed}">`;}
+  if(d.type==='div'){let o='<option value="">— none —</option>';devices.filter(x=>x.type==='conveyor').forEach(c=>{o+=`<option value="${c.id}" ${d.params.target==c.id?'selected':''}>${esc(c.name)} (${c.tag})</option>`;});extra=`<label>Divert parts onto</label><select id="pTarget">${o}</select>`;}
+  if(d.type==='pb')extra=`<label>Contact</label><select id="pNc"><option value="no" ${!d.params.nc?'selected':''}>Normally open (press = on)</option><option value="nc" ${d.params.nc?'selected':''}>Normally closed (press = off)</option></select>`;
+  if(d.type==='pblit'){let o='';for(let i=0;i<NO;i++){const a='O'+i;o+=`<option ${a===d.params.lampTag?'selected':''}>${a}</option>`;}extra=`<label>Lamp output</label><select id="pLamp">${o}</select>`;}
+  if(d.type==='display'){const used=[...usedTagsSet()];const srcs=[...new Set([...Object.keys(M.counters),...Object.keys(M.timers),...Object.keys(M.analogs),...used])];let o='';srcs.forEach(t=>{o+=`<option value="${t}" ${t===d.params.src?'selected':''}>${t}${labels[t]?' ('+esc(labels[t])+')':''}</option>`;});extra=`<label>Show value of</label><select id="pSrc">${o}</select>`;}
+  if(d.type==='selector')extra=`<label>Positions</label><select id="pPos"><option value="2" ${d.params.positions==2?'selected':''}>2 (OFF / ON)</option><option value="3" ${d.params.positions==3?'selected':''}>3 (OFF / HAND / AUTO)</option></select><label>Position names (comma separated)</label><input id="pNames" value="${esc((d.params.posNames||[]).join(', '))}">`;
+  if(d.type==='traffic')extra=`<label style="color:var(--muted)">Lights use ${esc(Object.values(d.params.lamps||{}).join(', '))}</label>`;
+  let addr='';
+  if(cfg.dir&&d.type!=='selector'&&d.type!=='traffic'){const pre=cfg.dir==='in'?'I':cfg.dir==='ain'?'A':'O',N=cfg.dir==='in'?NI:cfg.dir==='ain'?NA:NO;let o='';for(let i=0;i<N;i++){const a=pre+i;o+=`<option ${a===d.tag?'selected':''}>${a}</option>`;}
+    addr=`<label>Address (${d.type==='pblit'?'button input':cfg.dir==='ain'?'analog in':cfg.dir==='in'?'input':'output'})</label><select id="pAddr">${o}</select>`;}
+  openPicker(`<h4>${cfg.label}</h4><label>Name</label><input id="pName" value="${esc(d.name||'')}">${addr}${extra}<div class="row"><button class="go" onclick="applyDevice(${d.id})">Save</button><button class="del" onclick="delDevice(${d.id})">Delete</button></div>`,px,py);
+}
+function applyDevice(id){const d=devices.find(x=>x.id==id);if(!d)return;
+  d.name=document.getElementById('pName').value.trim()||DEV[d.type].defName;
+  const a=document.getElementById('pAddr');if(a){if(d.tag)delete labels[d.tag];d.tag=a.value;labels[d.tag]=d.name;}
+  const tr=document.getElementById('pTrip');if(tr)d.params.trip=Math.max(0,Math.min(100,+tr.value||0));
+  const rt=document.getElementById('pRate');if(rt)d.params.rate=Math.max(1,+rt.value||1);
+  const ln=document.getElementById('pLen');if(ln)d.params.len=Math.max(80,Math.min(540,+ln.value||300));
+  const sp=document.getElementById('pSpeed');if(sp)d.params.speed=Math.max(0.2,+sp.value||1);
+  const ex=document.getElementById('pExt');if(ex){if(d.params.extTag)delete labels[d.params.extTag];d.params.extTag=ex.value;labels[ex.value]=d.name+' ext';}
+  const re=document.getElementById('pRet');if(re){if(d.params.retTag)delete labels[d.params.retTag];d.params.retTag=re.value;labels[re.value]=d.name+' ret';}
+  const tg=document.getElementById('pTarget');if(tg)d.params.target=tg.value?+tg.value:null;
+  const nc=document.getElementById('pNc');if(nc)d.params.nc=(nc.value==='nc');
+  const lp=document.getElementById('pLamp');if(lp){if(d.params.lampTag)delete labels[d.params.lampTag];d.params.lampTag=lp.value;labels[lp.value]=d.name+' lamp';}
+  const sr=document.getElementById('pSrc');if(sr)d.params.src=sr.value;
+  const ps=document.getElementById('pPos');if(ps){const np=+ps.value;if(np!==d.params.positions){const cur=(d.params.posTags||[]).filter(Boolean);const f=freeTags('in',Math.max(0,np-cur.length));if(np>cur.length&&f===null){status('Not enough free input addresses to add a position.');}else{(d.params.posTags||[]).forEach(t=>delete labels[t]);d.params.positions=np;d.params.posTags=np<=cur.length?cur.slice(0,np):cur.concat(f);}}d.params.posNames=(np===2?['OFF','ON']:['OFF','HAND','AUTO']);if(d.params.pos>=d.params.positions)d.params.pos=0;}
+  const nmf=document.getElementById('pNames');if(nmf){const arr=nmf.value.split(',').map(x=>x.trim()).filter(Boolean);if(arr.length)d.params.posNames=arr;}
+  if(d.type==='selector')(d.params.posTags||[]).forEach((t,i)=>labels[t]=d.name+' '+(d.params.posNames[i]||('P'+i)));
+  closePicker();drawAll();status(`Saved ${d.name}.`);
+}
+function delDevice(id){const d=devices.find(x=>x.id==id);if(d)deviceTags(d).forEach(e=>delete labels[e.tag]);parts=parts.filter(p=>p.conv!==id);devices=devices.filter(x=>x.id!=id);closePicker();drawAll();status('Removed equipment.');}
+
+/* ======================================================================
+   LADDER render + editor
+   ====================================================================== */
+const RAILL=48,CW=128,OUTW=150,ROWTOP=30,SUB=52,RBOT=26;
+const lSVG=document.getElementById('ladder');
+function rungBranchMax(r){let m=1;for(const c of r.cells)m=Math.max(m,c.contacts.length||1);return m;}
+function drawLadder(){
+  let s='',y=14,maxW=460;
+  if(!M.rungs.length){s+=`<text x="40" y="46" fill="var(--dim)" font-size="14" font-style="italic">Clean ladder — tap “+ Rung”, then build your logic.</text>`;lSVG.setAttribute('viewBox','0 0 600 90');lSVG.style.height='90px';lSVG.innerHTML=s;return;}
+  M.rungs.forEach((r,ri)=>{const bMax=rungBranchMax(r),blockH=ROWTOP+(bMax-1)*SUB+RBOT,cy=y+ROWTOP,railRX=RAILL+r.cells.length*CW+OUTW;maxW=Math.max(maxW,railRX+24);
+    const live=M.running||r._power!==undefined,railClr=(live&&r._power)?'var(--green)':'var(--wire)';
+    s+=`<line x1="${RAILL}" y1="${y+8}" x2="${RAILL}" y2="${y+blockH-6}" stroke="var(--wire)" stroke-width="3"/><line x1="${railRX}" y1="${y+8}" x2="${railRX}" y2="${y+blockH-6}" stroke="var(--wire)" stroke-width="3"/>`;
+    s+=`<text x="14" y="${cy-12}" fill="var(--dim)" font-size="11" font-family="monospace">${ri}</text>`;
+    s+=`<g style="cursor:pointer" data-act="delrung" data-r="${ri}"><circle cx="20" cy="${cy+6}" r="9" fill="#fff" stroke="var(--line)"/><text x="20" y="${cy+10}" fill="var(--red)" font-size="12" text-anchor="middle" style="pointer-events:none">✕</text></g>`;
+    if(!r.cells.length)s+=`<line x1="${RAILL}" y1="${cy}" x2="${RAILL+12}" y2="${cy}" stroke="${railClr}" stroke-width="2"/>`;
+    r.cells.forEach((cell,ci)=>{const xL=RAILL+ci*CW,xR=xL+CW,xc=xL+CW/2,n=Math.max(1,cell.contacts.length);
+      if(n>1){const yBot=cy+(n-1)*SUB;s+=`<line x1="${xL}" y1="${cy}" x2="${xL}" y2="${yBot}" stroke="${railClr}" stroke-width="2"/><line x1="${xR}" y1="${cy}" x2="${xR}" y2="${yBot}" stroke="${railClr}" stroke-width="2"/>`;}
+      cell.contacts.forEach((c,ti)=>{const yy=cy+ti*SUB,half=CMP.includes(c.instr)?29:12;
+        s+=`<line x1="${xL}" y1="${yy}" x2="${xc-half}" y2="${yy}" stroke="${railClr}" stroke-width="2"/><line x1="${xc+half}" y1="${yy}" x2="${xR}" y2="${yy}" stroke="${railClr}" stroke-width="2"/>`;
+        s+=drawContact(xc,yy,c,ri,ci,ti);});});
+    const xAdd=RAILL+r.cells.length*CW;
+    s+=`<g style="cursor:pointer" data-act="addseries" data-r="${ri}"><rect x="${xAdd-11}" y="${cy-11}" width="22" height="22" rx="5" fill="#fff" stroke="var(--accent)"/><text x="${xAdd}" y="${cy+5}" fill="var(--accent)" font-size="15" text-anchor="middle" style="pointer-events:none">+</text></g>`;
+    s+=drawOutput(railRX-OUTW/2,cy,r,ri);y+=blockH;});
+  const H=y+10;lSVG.setAttribute('viewBox',`0 0 ${maxW} ${H}`);lSVG.style.height=H+'px';lSVG.style.width=maxW+'px';lSVG.innerHTML=s;
+}
+function drawContact(xc,y,c,ri,ci,ti){
+  const conduct=(M.running||M.rungs[ri]._power!==undefined)&&contactConducts(M,c);
+  const clr=conduct?'var(--green)':'var(--off)';
+  let s='';
+  if(CMP.includes(c.instr)){
+    s+=`<rect x="${xc-29}" y="${y-19}" width="58" height="38" rx="4" fill="#fff" stroke="${clr}" stroke-width="2"/>`;
+    s+=`<text x="${xc}" y="${y-5}" fill="${clr}" font-size="11" font-weight="700" text-anchor="middle">${c.instr}</text>`;
+    s+=`<text x="${xc}" y="${y+7}" fill="var(--blue)" font-size="10" font-family="monospace" text-anchor="middle">${c.tag}</text>`;
+    s+=`<text x="${xc}" y="${y+17}" fill="var(--muted)" font-size="9" font-family="monospace" text-anchor="middle">${c.value}</text>`;
+  } else {
+    s+=`<line x1="${xc-12}" y1="${y-13}" x2="${xc-12}" y2="${y+13}" stroke="${clr}" stroke-width="2.5"/><line x1="${xc+12}" y1="${y-13}" x2="${xc+12}" y2="${y+13}" stroke="${clr}" stroke-width="2.5"/>`;
+    if(c.instr==='XIO')s+=`<line x1="${xc-14}" y1="${y+15}" x2="${xc+14}" y2="${y-15}" stroke="${clr}" stroke-width="2.5"/>`;
+    const nm=labels[c.tag]||'';
+    s+=`<text x="${xc}" y="${y-18}" fill="var(--blue)" font-size="12" font-family="monospace" text-anchor="middle">${c.tag}</text>`;
+    if(nm)s+=`<text x="${xc}" y="${y+26}" fill="var(--muted)" font-size="10" text-anchor="middle">${esc(nm)}</text>`;
+  }
+  s+=`<rect x="${xc-30}" y="${y-22}" width="60" height="48" fill="transparent" style="cursor:pointer" data-act="contact" data-r="${ri}" data-c="${ci}" data-t="${ti}"/>`;
+  return s;
+}
+function drawOutput(xc,y,r,ri){let s='';
+  const xLast=RAILL+r.cells.length*CW,railRX=xLast+OUTW,live=M.running||r._power!==undefined,wc=(live&&r._power)?'var(--green)':'var(--wire)';
+  if(!r.output){s+=`<line x1="${xLast+12}" y1="${y}" x2="${xc-46}" y2="${y}" stroke="${wc}" stroke-width="2"/><g style="cursor:pointer" data-act="output" data-r="${ri}"><rect x="${xc-46}" y="${y-15}" width="92" height="30" rx="6" fill="#fff" stroke="var(--accent)" stroke-dasharray="4 3"/><text x="${xc}" y="${y+4}" fill="var(--accent)" font-size="11" text-anchor="middle" style="pointer-events:none">set output</text></g><line x1="${xc+46}" y1="${y}" x2="${railRX}" y2="${y}" stroke="var(--wire)" stroke-width="2"/>`;return s;}
+  const o=r.output,on=outEnergized(o),clr=on?'var(--green)':'var(--off)',coil=['OTE','OTL','OTU'].includes(o.instr),half=coil?22:46;
+  s+=`<line x1="${xLast+12}" y1="${y}" x2="${xc-half}" y2="${y}" stroke="${wc}" stroke-width="2"/><line x1="${xc+half}" y1="${y}" x2="${railRX}" y2="${y}" stroke="var(--wire)" stroke-width="2"/>`;
+  if(coil){
+    s+=`<path d="M ${xc-12} ${y-15} Q ${xc-22} ${y} ${xc-12} ${y+15}" fill="none" stroke="${clr}" stroke-width="2.5"/><path d="M ${xc+12} ${y-15} Q ${xc+22} ${y} ${xc+12} ${y+15}" fill="none" stroke="${clr}" stroke-width="2.5"/>`;
+    if(o.instr!=='OTE')s+=`<text x="${xc}" y="${y+5}" fill="${clr}" font-size="13" text-anchor="middle" font-weight="700">${o.instr==='OTL'?'L':'U'}</text>`;
+    const nm=labels[o.tag]||'';s+=`<text x="${xc}" y="${y-20}" fill="var(--blue)" font-size="12" font-family="monospace" text-anchor="middle">${o.tag}</text>`;
+    if(nm)s+=`<text x="${xc}" y="${y+30}" fill="var(--muted)" font-size="10" text-anchor="middle">${esc(nm)}</text>`;
+  } else {const bw=92,bh=46,bc=on?'var(--green)':'var(--line)';
+    s+=`<rect x="${xc-bw/2}" y="${y-bh/2}" width="${bw}" height="${bh}" rx="6" fill="#fff" stroke="${bc}" stroke-width="2"/><text x="${xc}" y="${y-bh/2+15}" fill="var(--accent)" font-size="12" text-anchor="middle" font-weight="700">${o.instr}</text><text x="${xc}" y="${y-bh/2+30}" fill="var(--blue)" font-size="11" font-family="monospace" text-anchor="middle">${o.tag}</text>`;
+    let info='';if(o.instr==='TON'){const tm=M.timers[o.tag];info=(tm.acc/1000).toFixed(1)+'/'+(tm.preset/1000).toFixed(1)+'s';}if(o.instr==='CTU'){const c=M.counters[o.tag];info=c.acc+'/'+c.preset;}
+    if(info)s+=`<text x="${xc}" y="${y+bh/2-5}" fill="var(--muted)" font-size="10" font-family="monospace" text-anchor="middle">${info}</text>`;
+  }
+  s+=`<rect x="${xc-46}" y="${y-24}" width="92" height="48" fill="transparent" style="cursor:pointer" data-act="output" data-r="${ri}"/>`;return s;
+}
+function outEnergized(o){if(o.instr==='TON')return M.timers[o.tag]&&M.timers[o.tag].done;if(o.instr==='CTU')return M.counters[o.tag]&&M.counters[o.tag].done;if(['OTE','OTL','OTU'].includes(o.instr))return !!M.bits[o.tag];return false;}
+
+function tagList(kinds){const out=[];if(kinds.includes('I'))for(let i=0;i<NI;i++)out.push('I'+i);if(kinds.includes('O'))for(let i=0;i<NO;i++)out.push('O'+i);if(kinds.includes('B'))for(let i=0;i<NB;i++)out.push('B'+i);if(kinds.includes('A'))for(let i=0;i<NA;i++)out.push('A'+i);if(kinds.includes('T'))for(let i=0;i<NT;i++)out.push('T'+i);if(kinds.includes('C'))for(let i=0;i<NC;i++)out.push('C'+i);return out;}
+function opts(list,sel){return list.map(t=>{const nm=labels[t]?'  ('+labels[t]+')':'';return `<option value="${t}" ${t===sel?'selected':''}>${t}${nm}</option>`;}).join('');}
+function typeSelect(sel){return `<select id="pType" onchange="cmpVis()"><optgroup label="Discrete"><option value="XIC" ${sel==='XIC'?'selected':''}>XIC ] [ examine-on</option><option value="XIO" ${sel==='XIO'?'selected':''}>XIO ]/[ examine-off</option></optgroup><optgroup label="Compare (analog)"><option value="GEQ" ${sel==='GEQ'?'selected':''}>GEQ ≥</option><option value="GRT" ${sel==='GRT'?'selected':''}>GRT &gt;</option><option value="LEQ" ${sel==='LEQ'?'selected':''}>LEQ ≤</option><option value="LES" ${sel==='LES'?'selected':''}>LES &lt;</option><option value="EQU" ${sel==='EQU'?'selected':''}>EQU =</option></optgroup></select>`;}
+function cmpVis(){const t=document.getElementById('pType').value,cmp=CMP.includes(t);
+  document.getElementById('discRow').style.display=cmp?'none':'block';
+  document.getElementById('cmpRow').style.display=cmp?'block':'none';}
+function contactForm(c){return `<label>Type</label>${typeSelect(c?c.instr:'XIC')}
+  <div id="discRow"><label>Tag</label><select id="pTag">${opts(tagList(['I','O','B','T','C']),c&&!CMP.includes(c.instr)?c.tag:'I0')}</select></div>
+  <div id="cmpRow" style="display:none"><label>Source (analog)</label><select id="pSrc">${opts(tagList(['A']),c&&CMP.includes(c.instr)?c.tag:'A0')}</select><label>Compare to value</label><input id="pVal" type="number" value="${c&&CMP.includes(c.instr)?c.value:50}"></div>`;}
+function readContact(){const instr=document.getElementById('pType').value;
+  if(CMP.includes(instr))return {instr,tag:document.getElementById('pSrc').value,value:Number(document.getElementById('pVal').value)||0};
+  return {instr,tag:document.getElementById('pTag').value};}
+function editContact(ri,ci,ti,px,py){const c=M.rungs[ri].cells[ci].contacts[ti];
+  openPicker(`<h4>Contact</h4>${contactForm(c)}<div class="row"><button class="go" onclick="applyContact(${ri},${ci},${ti})">Save</button><button onclick="addParallel(${ri},${ci})">⑂ Parallel</button></div><div class="row"><button class="del" onclick="delContact(${ri},${ci},${ti})">Delete</button></div>`,px,py);cmpVis();}
+function applyContact(ri,ci,ti){M.rungs[ri].cells[ci].contacts[ti]=readContact();closePicker();drawAll();}
+function addParallel(ri,ci){M.rungs[ri].cells[ci].contacts.push({instr:'XIC',tag:'I0'});closePicker();drawAll();status('Added a parallel (OR) branch.');}
+function delContact(ri,ci,ti){const cell=M.rungs[ri].cells[ci];cell.contacts.splice(ti,1);if(!cell.contacts.length)M.rungs[ri].cells.splice(ci,1);closePicker();drawAll();}
+function addSeries(ri,px,py){openPicker(`<h4>Add series contact</h4>${contactForm(null)}<div class="row"><button class="go" onclick="commitSeries(${ri})">Add</button><button onclick="closePicker()">Cancel</button></div>`,px,py);cmpVis();}
+function commitSeries(ri){M.rungs[ri].cells.push({contacts:[readContact()]});closePicker();drawAll();}
+function editOutput(ri,px,py){const o=M.rungs[ri].output||{instr:'OTE',tag:'O0'};
+  openPicker(`<h4>Output</h4><label>Instruction</label><select id="pType" onchange="presetVis()"><option value="OTE" ${o.instr==='OTE'?'selected':''}>OTE ( ) energize</option><option value="OTL" ${o.instr==='OTL'?'selected':''}>OTL (L) latch</option><option value="OTU" ${o.instr==='OTU'?'selected':''}>OTU (U) unlatch</option><option value="TON" ${o.instr==='TON'?'selected':''}>TON on-delay</option><option value="CTU" ${o.instr==='CTU'?'selected':''}>CTU count-up</option><option value="RES" ${o.instr==='RES'?'selected':''}>RES reset T/C</option></select><label>Tag</label><select id="pTag"></select><div id="presetWrap"><label id="presetLbl">Preset</label><input id="pPreset" type="number" step="0.1" min="0"></div><div class="row"><button class="go" onclick="applyOut(${ri})">Set</button><button class="del" onclick="removeOut(${ri})">Remove</button></div>`,px,py);
+  fillOutTag(o.tag);presetVis();}
+function outKinds(i){if(i==='TON')return['T'];if(i==='CTU')return['C'];if(i==='RES')return['T','C'];return['O','B'];}
+function fillOutTag(sel){const list=tagList(outKinds(document.getElementById('pType').value));document.getElementById('pTag').innerHTML=opts(list,list.includes(sel)?sel:list[0]);}
+function presetVis(){const i=document.getElementById('pType').value,wrap=document.getElementById('presetWrap');fillOutTag(document.getElementById('pTag').value);
+  if(i==='TON'){wrap.style.display='block';document.getElementById('presetLbl').textContent='Preset (seconds)';document.getElementById('pPreset').value=(M.timers[document.getElementById('pTag').value]?.preset||3000)/1000;}
+  else if(i==='CTU'){wrap.style.display='block';document.getElementById('presetLbl').textContent='Preset (count)';document.getElementById('pPreset').value=M.counters[document.getElementById('pTag').value]?.preset||5;}
+  else wrap.style.display='none';}
+function applyOut(ri){const instr=document.getElementById('pType').value,tag=document.getElementById('pTag').value;M.rungs[ri].output={instr,tag};const pv=parseFloat(document.getElementById('pPreset').value);
+  if(instr==='TON'&&!isNaN(pv))M.timers[tag].preset=Math.max(0,pv*1000);if(instr==='CTU'&&!isNaN(pv))M.counters[tag].preset=Math.max(1,Math.round(pv));closePicker();drawAll();}
+function removeOut(ri){M.rungs[ri].output=null;closePicker();drawAll();}
+lSVG.addEventListener('click',e=>{const g=e.target.closest('[data-act]');if(!g)return;const act=g.dataset.act,ri=+g.dataset.r,px=e.clientX+8,py=e.clientY+8;
+  if(act==='delrung'){M.rungs.splice(ri,1);closePicker();drawAll();return;}
+  if(M.running){status('Stop the sim to edit the ladder.');return;}
+  if(act==='contact')editContact(ri,+g.dataset.c,+g.dataset.t,px,py);else if(act==='addseries')addSeries(ri,px,py);else if(act==='output')editOutput(ri,px,py);});
+
+/* ======================================================================
+   TIMING CHART
+   ====================================================================== */
+const tSVG=document.getElementById('trace');
+function tracedTags(){const set=new Set();M.rungs.forEach(r=>{r.cells.forEach(c=>c.contacts.forEach(k=>{if('IOB'.includes(k.tag[0]))set.add(k.tag);}));if(r.output&&'IOB'.includes(r.output.tag[0]))set.add(r.output.tag);});devices.forEach(d=>{if(d.tag&&'IO'.includes(d.tag[0]))set.add(d.tag);});return [...set].sort((a,b)=>a<b?-1:1);}
+function recordTrace(){const snap={};const tt=tracedTags();tt.forEach(t=>snap[t]=M.bits[t]?1:0);traceBuf.push(snap);if(traceBuf.length>TRACE_MAX)traceBuf.shift();}
+function drawTrace(){
+  const tags=tracedTags(); const padL=104,padR=14,rowH=26,top=10;
+  const W=Math.max(640, tSVG.clientWidth||760), H=top+tags.length*rowH+14;
+  if(!tags.length){tSVG.setAttribute('viewBox',`0 0 ${W} 60`);tSVG.style.height='60px';tSVG.innerHTML=`<text x="20" y="34" fill="var(--dim)" font-size="13" font-style="italic">Run or Step the program — input/output states will trace here over time.</text>`;return;}
+  const plotW=W-padL-padR, n=Math.max(2,TRACE_MAX), dx=plotW/(n-1);
+  let s='';
+  tags.forEach((tag,ri)=>{const ry=top+ri*rowH; const hi=ry+5, lo=ry+rowH-7;
+    s+=`<text x="8" y="${ry+rowH/2+3}" fill="var(--muted)" font-size="11" font-family="monospace">${tag}${labels[tag]?' '+esc(labels[tag]).slice(0,9):''}</text>`;
+    s+=`<line x1="${padL}" y1="${lo}" x2="${W-padR}" y2="${lo}" stroke="#eef1f3"/>`;
+    if(traceBuf.length>1){ let pts=''; for(let i=0;i<traceBuf.length;i++){ const x=padL+ (n-traceBuf.length+i)*dx; const yv=traceBuf[i][tag]?hi:lo; if(i>0){const yp=traceBuf[i-1][tag]?hi:lo; pts+=`${x},${yp} `;} pts+=`${x},${yv} `; }
+      s+=`<polyline points="${pts.trim()}" fill="none" stroke="var(--green)" stroke-width="2"/>`; }
+  });
+  tSVG.setAttribute('viewBox',`0 0 ${W} ${H}`);tSVG.style.height=H+'px';tSVG.style.width='100%';tSVG.innerHTML=s;
+}
+
+/* ======================================================================
+   picker / io / controls
+   ====================================================================== */
+const picker=document.getElementById('picker');
+function openPicker(html,x,y){picker.innerHTML=html;picker.style.display='block';const w=picker.offsetWidth,h=picker.offsetHeight;picker.style.left=Math.min(x,window.innerWidth-w-12)+'px';picker.style.top=Math.min(y,window.innerHeight-h-12)+'px';}
+function closePicker(){picker.style.display='none';}
+document.addEventListener('mousedown',e=>{if(picker.style.display==='block'&&!picker.contains(e.target)&&!e.target.closest('#ladder')&&!e.target.closest('#process'))closePicker();});
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function renderIO(){
+  const used=new Set();M.rungs.forEach(r=>{r.cells.forEach(c=>c.contacts.forEach(k=>used.add(k.tag)));if(r.output)used.add(r.output.tag);});devices.forEach(d=>{if(d.tag)used.add(d.tag);if(d.params.extTag)used.add(d.params.extTag);if(d.params.retTag)used.add(d.params.retTag);});
+  let h='';[...used].filter(Boolean).sort().forEach(t=>{
+    if(t[0]==='A'){h+=`<div class="iochip analog"><span class="a">${t}</span><span class="nm">= ${Math.round(M.analogs[t]||0)}</span></div>`;return;}
+    let on=false;if(t[0]==='T')on=M.timers[t]?.done;else if(t[0]==='C')on=M.counters[t]?.done;else on=M.bits[t];
+    h+=`<div class="iochip"><span class="d ${on?'on':''}"></span><span class="a">${t}</span>${labels[t]?`<span class="nm">${esc(labels[t])}</span>`:''}</div>`;});
+  document.getElementById('iostrip').innerHTML=h||'<span class="none">No I/O in use yet — drop equipment or build a rung.</span>';
+}
+let loop=null,lastT=0;
+function toggleRun(){M.running?stop():run();}
+function run(){M.running=true;lastT=performance.now();traceBuf=[];devices.filter(d=>d.type==='selector').forEach(applySelector);setBtn(true);status('<b>Running.</b> Operate the panel — selector, buttons — and watch the machine, the I/O chassis, and the timing chart.');
+  loop=setInterval(()=>{const now=performance.now(),dt=now-lastT;lastT=now;spinPhase=(spinPhase+dt*0.4)%360;if(devices.some(d=>d.type==='conveyor'&&M.bits[d.tag]))beltPhase=(beltPhase+dt*0.07)%26;tickAll(dt);recordTrace();drawAll();},60);}
+function stop(){M.running=false;if(loop)clearInterval(loop);loop=null;setBtn(false);status('Stopped. Arrange equipment, set I/O, edit the ladder — or use <b>Step</b> to scan once at a time.');}
+function stepOnce(){if(M.running)return;spinPhase=(spinPhase+24)%360;if(devices.some(d=>d.type==='conveyor'&&M.bits[d.tag]))beltPhase=(beltPhase+5)%26;tickAll(60);recordTrace();drawAll();status('Stepped one scan — watch the chart advance one tick.');}
+function setBtn(on){const b=document.getElementById('runBtn');b.textContent=on?'■ STOP':'▶ RUN';b.classList.toggle('running',on);b.classList.toggle('primary',!on);document.getElementById('scanDot').classList.toggle('on',on);document.getElementById('scanTxt').textContent=on?'Running':'Stopped';}
+function resetSim(){for(const k in M.bits)M.bits[k]=false;for(const k in M.analogs)M.analogs[k]=0;for(const k in M.timers){M.timers[k].acc=0;M.timers[k].done=false;}for(const k in M.counters){M.counters[k].acc=0;M.counters[k].done=false;M.counters[k]._prev=false;}const tank=devices.find(d=>d.type==='tank');if(tank)tank.params.level=0;devices.forEach(d=>{d._prev=false;if(d.type==='cyl')d.params.pos=0;if(d.type==='selector')d.params.pos=0;});parts=[];traceBuf=[];M.rungs.forEach(r=>r._power=undefined);drawAll();status('Reset — parts cleared, tank empty, cylinders home, all I/O off.');}
+function addRung(){if(M.running){status('Stop to edit.');return;}M.rungs.push({cells:[],output:null});drawAll();status('Added a rung. Tap “+” for a contact, the dashed box for an output.');}
+function clearAll(){if(M.running)stop();devices=[];parts=[];M.rungs=[];for(const k in labels)delete labels[k];initIO();traceBuf=[];lessonMode=null;document.getElementById('checkBtn').style.display='none';document.getElementById('lesGoal').textContent='';drawAll();status('Cleared everything. Drop equipment and build from scratch.');}
+function status(m){document.getElementById('status').innerHTML=m;}
+function drawAll(){drawProcess();drawLadder();renderIO();drawTrace();drawChassis();}
+
+/* ======================================================================
+   I/O CHASSIS (live module rack)
+   ====================================================================== */
+const cSVG=document.getElementById('chassis');
+function drawChassis(){
+  const used=new Set();devices.forEach(d=>deviceTags(d).forEach(e=>used.add(e.tag)));M.rungs.forEach(r=>{r.cells.forEach(c=>c.contacts.forEach(k=>used.add(k.tag)));if(r.output)used.add(r.output.tag);});
+  const W=860,modW=150,gap=14,x0=14,top=30,H=150;
+  let s=`<rect x="0" y="0" width="${W}" height="${H}" fill="#eceef1" rx="8"/>`;
+  // rail
+  s+=`<rect x="6" y="14" width="${W-12}" height="${H-22}" rx="6" fill="#f6f7f9" stroke="#dfe2e6"/>`;
+  // CPU module
+  let mx=x0;
+  s+=`<rect x="${mx}" y="${top}" width="74" height="${H-50}" rx="5" fill="#2a2d31" stroke="#15171a"/>`;
+  s+=`<text x="${mx+37}" y="${top+18}" fill="#cfd4d9" font-size="11" font-weight="700" text-anchor="middle">CPU</text>`;
+  s+=`<circle cx="${mx+24}" cy="${top+44}" r="6" fill="${M.running?'#37e29a':'#3a3d41'}" ${M.running?'style="filter:drop-shadow(0 0 5px #37e29a)"':''}/><text x="${mx+40}" y="${top+48}" fill="#9aa1a9" font-size="9" text-anchor="start">RUN</text>`;
+  s+=`<circle cx="${mx+24}" cy="${top+64}" r="6" fill="${M.running?'#3a3d41':'#ffd23b'}"/><text x="${mx+40}" y="${top+68}" fill="#9aa1a9" font-size="9" text-anchor="start">PROG</text>`;
+  mx+=74+gap;
+  const card=(title,pre,N,color)=>{let g=`<rect x="${mx}" y="${top}" width="${modW}" height="${H-50}" rx="5" fill="#fff" stroke="#cfd4d9"/>`;
+    g+=`<rect x="${mx}" y="${top}" width="${modW}" height="18" rx="5" fill="${color}"/><text x="${mx+modW/2}" y="${top+13}" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">${title}</text>`;
+    for(let i=0;i<N;i++){const tag=pre+i,col=i%4,row=Math.floor(i/4),lx=mx+18+col*32,ly=top+38+row*30,on=M.bits[tag],live=used.has(tag);
+      g+=`<circle cx="${lx}" cy="${ly}" r="7" fill="${on?'#37e29a':(live?'#e3e6e9':'#f1f2f4')}" stroke="${live?(on?'#0f7a55':'#b9bfc5'):'#e3e6e9'}" stroke-width="1.5" ${on?'style="filter:drop-shadow(0 0 5px #37e29a)"':''}/>`;
+      g+=`<text x="${lx}" y="${ly+20}" fill="${live?'var(--muted)':'#c3c8cd'}" font-size="8" font-family="monospace" text-anchor="middle">${i}</text>`;}
+    mx+=modW+gap;return g;};
+  s+=card('INPUT  I0–I7','I',NI,'var(--blue)');
+  s+=card('OUTPUT  O0–O7','O',NO,'var(--accent)');
+  // analog module
+  s+=`<rect x="${mx}" y="${top}" width="${modW}" height="${H-50}" rx="5" fill="#fff" stroke="#cfd4d9"/><rect x="${mx}" y="${top}" width="${modW}" height="18" rx="5" fill="#159c6f"/><text x="${mx+modW/2}" y="${top+13}" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">ANALOG  A0–A3</text>`;
+  for(let i=0;i<NA;i++){const tag='A'+i,live=used.has(tag),v=Math.round(M.analogs[tag]||0),ly=top+34+i*16;
+    s+=`<text x="${mx+12}" y="${ly}" fill="${live?'var(--blue)':'#c3c8cd'}" font-size="10" font-family="monospace">${tag}</text>`;
+    s+=`<rect x="${mx+40}" y="${ly-8}" width="80" height="9" rx="2" fill="#eef1f3"/><rect x="${mx+40}" y="${ly-8}" width="${live?80*v/100:0}" height="9" rx="2" fill="var(--blue)"/><text x="${mx+128}" y="${ly}" fill="var(--muted)" font-size="9" font-family="monospace">${live?v:'–'}</text>`;}
+  cSVG.setAttribute('viewBox',`0 0 ${W} ${H}`);cSVG.style.height=H+'px';cSVG.style.width='100%';cSVG.innerHTML=s;
+}
+
+/* ======================================================================
+   EXAMPLES
+   ====================================================================== */
+function loadExample(which){
+  if(!which)return; if(M.running)stop(); devices=[];parts=[];for(const k in labels)delete labels[k];initIO();devSeq=0;partSeq=0;traceBuf=[];lessonMode=null;document.getElementById('checkBtn').style.display='none';document.getElementById('lesGoal').textContent='';
+
+  if(which==='traffic'){
+    devices=[
+      {id:++devSeq,type:'traffic',name:'Main & 1st',params:{lamps:{gNS:'O0',yNS:'O1',rNS:'O2',gEW:'O3',yEW:'O4',rEW:'O5'}},x:300,y:200},
+      {id:++devSeq,type:'pblit',name:'Start',tag:'I0',params:{lampTag:'O6'},x:560,y:120},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I1',params:{nc:false},x:560,y:300},
+    ];
+    labels.O0='NS green';labels.O1='NS yellow';labels.O2='NS red';labels.O3='EW green';labels.O4='EW yellow';labels.O5='EW red';labels.O6='Start lamp';
+    labels.I0='Start';labels.I1='Stop';labels.B0='NS-GREEN';labels.B1='NS-YELLOW';labels.B2='EW-GREEN';labels.B3='EW-YELLOW';
+    labels.T0='NS grn timer';labels.T1='NS yel timer';labels.T2='EW grn timer';labels.T3='EW yel timer';
+    M.timers.T0.preset=5000;M.timers.T1.preset=2000;M.timers.T2.preset=5000;M.timers.T3.preset=2000;
+    M.rungs=[
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'OTU',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'OTU',tag:'B2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'OTU',tag:'B3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I1'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I1'}]}],output:{instr:'OTU',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I1'}]}],output:{instr:'OTU',tag:'B2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I1'}]}],output:{instr:'OTU',tag:'B3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'TON',tag:'T0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B1'}]}],output:{instr:'TON',tag:'T1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B2'}]}],output:{instr:'TON',tag:'T2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B3'}]}],output:{instr:'TON',tag:'T3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T0'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T0'}]}],output:{instr:'OTL',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T1'}]}],output:{instr:'OTU',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T1'}]}],output:{instr:'OTL',tag:'B2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T2'}]}],output:{instr:'OTU',tag:'B2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T2'}]}],output:{instr:'OTL',tag:'B3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T3'}]}],output:{instr:'OTU',tag:'B3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T3'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B1'}]}],output:{instr:'OTE',tag:'O1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B2'},{instr:'XIC',tag:'B3'}]}],output:{instr:'OTE',tag:'O2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B2'}]}],output:{instr:'OTE',tag:'O3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B3'}]}],output:{instr:'OTE',tag:'O4'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'},{instr:'XIC',tag:'B1'}]}],output:{instr:'OTE',tag:'O5'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'},{instr:'XIC',tag:'B1'},{instr:'XIC',tag:'B2'},{instr:'XIC',tag:'B3'}]}],output:{instr:'OTE',tag:'O6'}},
+    ];
+    drawAll();status('<b>Traffic intersection.</b> RUN → <b>Start</b>: a 4-phase signal cycle (NS green 5s → yellow 2s → EW green 5s → yellow 2s, looping) built from four chained timers and a step latch. Stop clears it.');return;
+  }
+
+  if(which==='hmi'){
+    devices=[
+      {id:++devSeq,type:'conveyor',name:'Bottling belt',tag:'O0',params:{len:300,speed:80},x:120,y:150},
+      {id:++devSeq,type:'feeder',name:'Filler',tag:'O1',params:{},x:130,y:96},
+      {id:++devSeq,type:'prox',name:'Bottle sensor',tag:'I0',params:{},x:385,y:128},
+      {id:++devSeq,type:'selector',name:'Mode',params:{positions:3,pos:0,posTags:['I2','I3','I4'],posNames:['OFF','HAND','AUTO']},x:470,y:250},
+      {id:++devSeq,type:'pblit',name:'Start',tag:'I5',params:{lampTag:'O2'},x:300,y:250},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I6',params:{nc:false},x:370,y:250},
+      {id:++devSeq,type:'display',name:'Bottle count',params:{src:'C0'},x:560,y:150},
+    ];
+    devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});
+    labels.I2='Mode OFF';labels.I3='Mode HAND';labels.I4='Mode AUTO';labels.O2='Start lamp';labels.B0='RUN';labels.T0='Fill timer';labels.C0='Bottle count';
+    M.timers.T0.preset=1500;M.counters.C0.preset=99;
+    M.rungs=[
+      // RUN latches when (AUTO + Start) ; drop on Stop or OFF
+      {cells:[{contacts:[{instr:'XIC',tag:'I4'}]},{contacts:[{instr:'XIC',tag:'I5'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I6'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'OTU',tag:'B0'}},
+      // Start lamp on while RUN
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O2'}},
+      // belt + filler oscillator while RUN
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'T0'}]}],output:{instr:'TON',tag:'T0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T0'}]}],output:{instr:'OTE',tag:'O1'}},
+      // count bottles at sensor
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'CTU',tag:'C0'}},
+    ];
+    drawAll();status('<b>HMI bottling station.</b> RUN → turn the <b>Mode</b> selector to AUTO, press the lit <b>Start</b> — the line runs, the readout tallies bottles. Stop or OFF halts it. A real operator panel driving the process.');return;
+  }
+
+  if(which==='conveyor'){
+    devices=[
+      {id:++devSeq,type:'conveyor',name:'Belt',tag:'O0',params:{len:300,speed:80},x:120,y:205},
+      {id:++devSeq,type:'feeder',name:'Feeder',tag:'O1',params:{},x:130,y:150},
+      {id:++devSeq,type:'prox',name:'Part sensor',tag:'I0',params:{},x:385,y:178},
+      {id:++devSeq,type:'pb',name:'Start',tag:'I2',params:{nc:false},x:500,y:120},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I3',params:{nc:false},x:500,y:205},
+      {id:++devSeq,type:'lamp',name:'Running',tag:'O2',params:{},x:500,y:290},
+      {id:++devSeq,type:'lamp',name:'Batch done',tag:'O3',params:{},x:560,y:290},
+    ];
+    devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});labels.B0='AUTO';labels.C0='Part count';labels.T0='Feed timer';
+    M.timers.T0.preset=1500;M.counters.C0.preset=5;
+    M.rungs=[
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'RES',tag:'C0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I3'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'C0'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'T0'}]},{contacts:[{instr:'XIO',tag:'C0'}]}],output:{instr:'TON',tag:'T0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T0'}]}],output:{instr:'OTE',tag:'O1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'CTU',tag:'C0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'C0'}]}],output:{instr:'OTE',tag:'O3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'C0'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O2'}},
+    ];
+    drawAll();status('<b>Conveyor &amp; count.</b> RUN → <b>Start</b>: feeder drops parts, belt carries them past the sensor, counts 5, then stops. Watch the timing chart trace the sensor + feeder.');return;
+  }
+
+  if(which==='cylinder'){
+    devices=[
+      {id:++devSeq,type:'cyl',name:'Stamp',tag:'O0',params:{pos:0,speed:1.3,extTag:'I0',retTag:'I1'},x:250,y:165},
+      {id:++devSeq,type:'pb',name:'Start',tag:'I2',params:{nc:false},x:470,y:120},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I3',params:{nc:false},x:470,y:205},
+      {id:++devSeq,type:'lamp',name:'Running',tag:'O2',params:{},x:470,y:290},
+      {id:++devSeq,type:'lamp',name:'Done',tag:'O3',params:{},x:530,y:290},
+    ];
+    devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});labels.I0='Stamp ext';labels.I1='Stamp ret';labels.B0='AUTO';labels.B1='Extending';labels.C0='Strokes';M.counters.C0.preset=3;
+    M.rungs=[
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'RES',tag:'C0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I3'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIC',tag:'I1'}]},{contacts:[{instr:'XIO',tag:'C0'}]}],output:{instr:'OTL',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'OTU',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIC',tag:'B1'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'CTU',tag:'C0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'C0'}]}],output:{instr:'OTE',tag:'O3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'C0'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O2'}},
+    ];
+    drawAll();status('<b>Cylinder stamp ×3.</b> RUN → <b>Start</b>: the cylinder extends to its <b>EXT</b> limit, retracts to <b>RET</b>, repeats 3 strokes, then stops. The two limit switches are discrete inputs driving the sequence.');return;
+  }
+
+  if(which==='analog'){
+    devices=[
+      {id:++devSeq,type:'tank',name:'Tank',params:{level:0},x:120,y:175},
+      {id:++devSeq,type:'xmtr',name:'Level Tx',tag:'A0',params:{},x:240,y:120},
+      {id:++devSeq,type:'pump',name:'Fill pump',tag:'O0',params:{rate:26},x:330,y:120},
+      {id:++devSeq,type:'drain',name:'Drain',tag:'O1',params:{rate:16},x:330,y:250},
+      {id:++devSeq,type:'pb',name:'Start',tag:'I2',params:{nc:false},x:480,y:130},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I3',params:{nc:false},x:480,y:215},
+      {id:++devSeq,type:'lamp',name:'Running',tag:'O2',params:{},x:480,y:300},
+    ];
+    devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});labels.B0='AUTO';labels.B1='Calling fill';
+    M.rungs=[
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I3'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'LEQ',tag:'A0',value:20}]}],output:{instr:'OTL',tag:'B1'}},
+      {cells:[{contacts:[{instr:'GEQ',tag:'A0',value:80}]}],output:{instr:'OTU',tag:'B1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIC',tag:'B1'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'B1'}]}],output:{instr:'OTE',tag:'O1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O2'}},
+    ];
+    drawAll();status('<b>Analog level control.</b> RUN → <b>Start</b>: the transmitter reads the tank level into <b>A0</b>. Compare blocks hold it between setpoints — pump on below <b>20%</b> (LEQ), off above <b>80%</b> (GEQ). No float switches — that\'s the analog difference.');return;
+  }
+
+  if(which==='sort'){
+    const beltA=++devSeq, beltB=beltA+1;
+    devices=[
+      {id:beltA,type:'conveyor',name:'Belt A',tag:'O0',params:{len:300,speed:85},x:110,y:160},
+      {id:beltB,type:'conveyor',name:'Belt B',tag:'O1',params:{len:300,speed:85},x:110,y:300},
+      {id:++devSeq,type:'feeder',name:'Feeder',tag:'O2',params:{},x:120,y:110},
+      {id:++devSeq,type:'div',name:'Diverter',tag:'O3',params:{target:beltB},x:300,y:160},
+      {id:++devSeq,type:'prox',name:'A out',tag:'I0',params:{},x:400,y:138},
+      {id:++devSeq,type:'prox',name:'B out',tag:'I1',params:{},x:400,y:278},
+      {id:++devSeq,type:'pb',name:'Start',tag:'I2',params:{nc:false},x:500,y:110},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I3',params:{nc:false},x:560,y:110},
+      {id:++devSeq,type:'pb',name:'Divert',tag:'I4',params:{nc:false},x:530,y:200},
+      {id:++devSeq,type:'lamp',name:'Running',tag:'O4',params:{},x:530,y:290},
+    ];
+    devSeq=Math.max(...devices.map(d=>d.id));
+    devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});labels.B0='AUTO';labels.C0='A count';labels.C1='B count';labels.T0='Feed timer';
+    M.timers.T0.preset=1600;M.counters.C0.preset=99;M.counters.C1.preset=99;
+    M.rungs=[
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'OTL',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I3'}]}],output:{instr:'OTU',tag:'B0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'T0'}]}],output:{instr:'TON',tag:'T0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'T0'}]}],output:{instr:'OTE',tag:'O2'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIC',tag:'I4'}]}],output:{instr:'OTE',tag:'O3'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'CTU',tag:'C0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'I1'}]}],output:{instr:'CTU',tag:'C1'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O4'}},
+    ];
+    drawAll();status('<b>Sort line.</b> RUN → <b>Start</b>: both belts run, the feeder drops parts on Belt A. Hold <b>Divert</b> and parts cross the gate onto Belt B. Two sensors tally each line (C0 / C1).');return;
+  }
+
+  // batch + pump (unchanged logic)
+  if(which==='pump'){
+    devices=[
+      {id:++devSeq,type:'tank',name:'Tank',params:{level:0},x:115,y:175},
+      {id:++devSeq,type:'pump',name:'Fill pump',tag:'O0',params:{rate:22},x:300,y:120},
+      {id:++devSeq,type:'drain',name:'Drain',tag:'O1',params:{rate:14},x:300,y:240},
+      {id:++devSeq,type:'hi',name:'Hi level',tag:'I0',params:{trip:85},x:300,y:60},
+      {id:++devSeq,type:'lo',name:'Lo level',tag:'I1',params:{trip:15},x:300,y:300},
+      {id:++devSeq,type:'pb',name:'Start',tag:'I2',params:{nc:false},x:470,y:110},
+      {id:++devSeq,type:'pb',name:'Stop',tag:'I3',params:{nc:true},x:470,y:200},
+      {id:++devSeq,type:'lamp',name:'Run light',tag:'O2',params:{},x:470,y:300},
+    ];
+    devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});
+    M.rungs=[
+      {cells:[{contacts:[{instr:'XIC',tag:'I2'},{instr:'XIC',tag:'O0'}]},{contacts:[{instr:'XIC',tag:'I3'}]},{contacts:[{instr:'XIO',tag:'I0'}]}],output:{instr:'OTE',tag:'O0'}},
+      {cells:[{contacts:[{instr:'XIC',tag:'O0'}]}],output:{instr:'OTE',tag:'O2'}}
+    ];
+    drawAll();status('<b>Pump control.</b> RUN → <b>Start</b>: pump fills the tank, Hi switch stops it at 85%, Stop drops it.');return;
+  }
+
+  // AUTO BATCH x3
+  devices=[
+    {id:++devSeq,type:'tank',name:'Process tank',params:{level:0},x:115,y:175},
+    {id:++devSeq,type:'pump',name:'Fill pump',tag:'O0',params:{rate:22},x:300,y:130},
+    {id:++devSeq,type:'drain',name:'Dump valve',tag:'O1',params:{rate:14},x:300,y:250},
+    {id:++devSeq,type:'hi',name:'Hi level',tag:'I0',params:{trip:85},x:300,y:62},
+    {id:++devSeq,type:'lo',name:'Lo level',tag:'I1',params:{trip:15},x:300,y:312},
+    {id:++devSeq,type:'pb',name:'Start',tag:'I2',params:{nc:false},x:475,y:95},
+    {id:++devSeq,type:'pb',name:'Stop',tag:'I3',params:{nc:false},x:475,y:175},
+    {id:++devSeq,type:'lamp',name:'Running',tag:'O2',params:{},x:475,y:255},
+    {id:++devSeq,type:'lamp',name:'Batch complete',tag:'O3',params:{},x:475,y:325},
+  ];
+  devices.forEach(d=>{if(d.tag)labels[d.tag]=d.name;});labels.B0='AUTO';labels.B1='Filling';labels.C0='Batch count';M.counters.C0.preset=3;
+  M.rungs=[
+    {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'OTL',tag:'B0'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'I2'}]}],output:{instr:'RES',tag:'C0'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'I3'}]}],output:{instr:'OTU',tag:'B0'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'I1'}]}],output:{instr:'OTL',tag:'B1'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'OTU',tag:'B1'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIC',tag:'B1'}]},{contacts:[{instr:'XIO',tag:'I0'}]}],output:{instr:'OTE',tag:'O0'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'B0'}]},{contacts:[{instr:'XIO',tag:'B1'}]}],output:{instr:'OTE',tag:'O1'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'B0'}]}],output:{instr:'OTE',tag:'O2'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'I0'}]}],output:{instr:'CTU',tag:'C0'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'C0'}]}],output:{instr:'OTE',tag:'O3'}},
+    {cells:[{contacts:[{instr:'XIC',tag:'C0'}]}],output:{instr:'OTU',tag:'B0'}}
+  ];
+  drawAll();status('<b>Auto batch ×3.</b> RUN → <b>Start</b>: fills to Hi, dumps to Lo, repeats 3×, then stops and lights Batch complete.');
+}
+
+/* ======================================================================
+   GUIDED LESSONS (auto-graded)
+   ====================================================================== */
+let lessonMode=null;
+function grade(fn){const snap={bits:{...M.bits},analogs:{...M.analogs},timers:JSON.parse(JSON.stringify(M.timers)),counters:JSON.parse(JSON.stringify(M.counters))};
+  for(const k in M.bits)M.bits[k]=false;for(const k in M.timers){M.timers[k].acc=0;M.timers[k].done=false;}for(const k in M.counters){M.counters[k].acc=0;M.counters[k].done=false;M.counters[k]._prev=false;}
+  let r;try{r=fn();}finally{Object.assign(M.bits,snap.bits);M.analogs=snap.analogs;M.timers=snap.timers;M.counters=snap.counters;}return r;}
+const LESSONS={
+  seal:{n:'1',title:'Motor seal-in',goal:'Make the motor (O0) start on Start (I0), KEEP running after Start is released, and stop on Stop (I1).',
+    setup(){devices=[{id:++devSeq,type:'pb',name:'Start',tag:'I0',params:{nc:false},x:160,y:150},{id:++devSeq,type:'pb',name:'Stop',tag:'I1',params:{nc:false},x:160,y:250},{id:++devSeq,type:'lamp',name:'Motor',tag:'O0',params:{},x:400,y:200}];labels.I0='Start';labels.I1='Stop';labels.O0='Motor';},
+    check(){return grade(()=>{M.bits.I0=true;scanOnce(M,50);M.bits.I0=false;scanOnce(M,50);const held=M.bits.O0===true;M.bits.I1=true;scanOnce(M,50);const stop=M.bits.O0===false;
+      if(!held)return{pass:false,msg:'The motor dropped out the moment you released Start. Add a holding (seal-in) contact — branch the motor’s own O0 in parallel with the Start button.'};
+      if(!stop)return{pass:false,msg:'Good seal-in, but Stop didn’t drop it. Put a normally-closed Stop (XIO I1) in series with the rung.'};
+      return{pass:true,msg:'Starts, holds after release, and stops. That’s a textbook seal-in.'};});}},
+  interlock:{n:'2',title:'Safety interlock',goal:'Run the belt (O0) only while Run (I1) is on AND the Jam sensor (I0) is clear. A jam stops it instantly.',
+    setup(){devices=[{id:++devSeq,type:'pb',name:'Jam',tag:'I0',params:{nc:false},x:160,y:150},{id:++devSeq,type:'pb',name:'Run',tag:'I1',params:{nc:false},x:160,y:250},{id:++devSeq,type:'conveyor',name:'Belt',tag:'O0',params:{len:230,speed:70},x:340,y:200}];labels.I0='Jam';labels.I1='Run';labels.O0='Belt';},
+    check(){return grade(()=>{M.bits.I1=true;M.bits.I0=false;scanOnce(M,50);const a=M.bits.O0===true;M.bits.I0=true;scanOnce(M,50);const b=M.bits.O0===false;M.bits.I1=false;M.bits.I0=false;scanOnce(M,50);const c=M.bits.O0===false;
+      if(!a)return{pass:false,msg:'Belt didn’t run with Run on and no jam. You need XIC I1 driving the belt O0.'};
+      if(!b)return{pass:false,msg:'Belt kept running during a jam. Add the jam as a normally-closed interlock (XIO I0) in series.'};
+      if(!c)return{pass:false,msg:'Belt ran with Run released. Run (XIC I1) has to be in the rung.'};
+      return{pass:true,msg:'Runs only when enabled and stops instantly on a jam. Solid interlock.'};});}},
+  count:{n:'3',title:'Count to three',goal:'Light Done (O0) after the sensor (I0) triggers 3 times. Use a count-up (CTU) with preset 3, then drive Done from its done bit.',
+    setup(){devices=[{id:++devSeq,type:'pb',name:'Sensor',tag:'I0',params:{nc:false},x:170,y:200},{id:++devSeq,type:'lamp',name:'Done',tag:'O0',params:{},x:400,y:200}];labels.I0='Sensor';labels.O0='Done';labels.C0='Count';},
+    check(){return grade(()=>{const pulse=n=>{for(let i=0;i<n;i++){M.bits.I0=true;scanOnce(M,50);M.bits.I0=false;scanOnce(M,50);}};pulse(2);const two=M.bits.O0===false;pulse(1);const three=M.bits.O0===true;
+      if(!two)return{pass:false,msg:'Done lit before 3 counts. Make sure the counter preset is 3 and Done is XIC of the counter.'};
+      if(!three)return{pass:false,msg:'Done didn’t light after 3. Wire the sensor to a CTU (preset 3) and drive Done (OTE O0) from the counter’s done bit.'};
+      return{pass:true,msg:'Done lights on exactly the third count. Counter logic is correct.'};});}},
+};
+function loadLesson(id){if(!id)return;if(M.running)stop();const L=LESSONS[id];if(!L)return;
+  devices=[];parts=[];for(const k in labels)delete labels[k];initIO();devSeq=0;partSeq=0;traceBuf=[];M.rungs=[];lessonMode=id;L.setup();
+  document.getElementById('checkBtn').style.display='';document.getElementById('lesGoal').textContent='';
+  drawAll();status(`<b>Lesson ${L.n} — ${L.title}.</b> ${L.goal} Build it with “+ Rung”, then press <b>Check my logic</b>.`);
+}
+function checkLesson(){if(!lessonMode){status('Pick a lesson first.');return;}const L=LESSONS[lessonMode];if(!M.rungs.length){status('Build a rung or two first, then check.');return;}
+  const r=L.check();
+  status(r.pass?`<b style="color:var(--green)">✓ Passed — ${esc(L.title)}.</b> ${esc(r.msg)}`:`<b style="color:var(--red)">✗ Not yet.</b> ${esc(r.msg)}`);
+}
+
+/* boot */
+loadExample('conveyor');
+</script>
+</body>
+</html>
