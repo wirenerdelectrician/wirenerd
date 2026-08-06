@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courses · WireNerd</title>
+<meta name="description" content="Self-paced electrical courses from WireNerd — animated lessons, hands-on interactives, tests, and a certificate at completion. Start at Ground Zero, then wire, size, and ground real circuits.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --purple:#C9A0FF;
+  --panel-2:#2b2b2b; --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:var(--text);text-decoration:none}
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:18px;padding:14px 20px}
+.brand{font-weight:700;font-size:22px;letter-spacing:.5px}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text)}
+.navlinks a.active{color:var(--accent)}
+.hero{position:relative;padding:56px 0 40px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(620px 280px at 78% -10%, rgba(239,159,39,.13), transparent 70%),
+  radial-gradient(520px 300px at 8% 120%, rgba(133,183,235,.08), transparent 70%);pointer-events:none}
+.hero .wrap{position:relative}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-weight:800;font-size:clamp(32px,5.5vw,52px);line-height:1.04;letter-spacing:-.5px;margin:8px 0 14px}
+h1 .alt{color:var(--accent)}
+.sub{color:var(--text-dim);font-size:18px;max-width:660px;margin:0}
+section.block{padding:42px 0}
+.courses{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.course{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;transition:border-color .15s ease,transform .15s ease}
+.course:hover{border-color:rgba(239,159,39,.5);transform:translateY(-3px)}
+.course .ctag{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.course h2{font-weight:800;font-size:24px;margin:0 0 8px;letter-spacing:-.3px}
+.course h2 span{color:var(--accent)}
+.course p{color:var(--text-dim);font-size:15px;margin:0 0 16px}
+.course ul{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:8px}
+.course li{display:flex;gap:9px;font-size:14px;color:var(--text-dim)}
+.course li::before{content:"✓";color:var(--green);font-weight:700}
+.meta{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--text-dim);margin-bottom:18px}
+.meta b{color:var(--accent)}
+.cbtm{margin-top:auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.price{font-weight:800;font-size:28px;color:var(--accent)}
+.price small{font-size:12.5px;color:var(--text-dim);font-weight:500;display:block}
+.gobtn{font-weight:700;font-size:15px;background:var(--accent);color:#1a1a1a;border-radius:9px;padding:12px 22px;margin-left:auto;transition:filter .12s ease}
+.gobtn:hover{filter:brightness(1.06)}
+.newflag{position:absolute;top:0;right:0;font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:#1a1a1a;background:var(--green);padding:5px 12px;border-radius:0 14px 0 10px}
+.path{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;margin-top:26px}
+.path h3{margin:0 0 6px;font-size:19px}
+.path p{color:var(--text-dim);font-size:14.5px;margin:0}
+.path b{color:var(--accent)}
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px;margin-top:30px}
+.wn-foot{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding-top:6px}
+.wn-foot .wn-legal{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13.5px;margin:0}
+.wn-foot .wn-legal a{color:#ece9e2;font-weight:500}
+.wn-foot .wn-legal a:hover{color:#EF9F27}
+.wn-foot .social{display:flex;gap:20px;justify-content:center;margin:0}
+.wn-foot .social a{color:#B4B2A9;font-size:13.5px}
+.wn-foot .social a:hover{color:#EF9F27}
+.wn-foot .wn-divider{width:46px;height:1px;background:#383838;margin:2px 0}
+.wn-foot .copy{color:#7f7d76;font-size:12.5px;line-height:1.7}
+</style>
+<style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a><a href="/plc-sandbox.html">PLC Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a><a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+    <a href="#" class="active">Courses</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">Self-Paced Courses</div>
+  <h1>Learn it for real.<br><span class="alt">Certificate included.</span></h1>
+  <p class="sub">Animated lessons, hands-on interactives, tests you have to pass, and a certificate saved to your account. One-time price, lifetime access, learn at your own pace.</p>
+</div></header>
+
+<section class="block"><div class="wrap">
+  <div class="courses">
+
+    <a class="course" href="/course-ground-zero.html">
+      <div class="ctag">Course 1 · Start Here</div>
+      <h2>Ground Zero: <span>Intro to Electrical</span></h2>
+      <p>Start from nothing and build a real, working understanding of electricity — what it is, how it behaves, and how to read, calculate, and wire it. No experience needed.</p>
+      <div class="meta"><span><b>9</b> modules</span><span><b>~4</b> hrs</span><span><b>Final</b> exam</span></div>
+      <ul>
+        <li>Ohm's Law, AC/DC, magnetism, series &amp; parallel</li>
+        <li>Circuit labs, wiring sandbox, multimeter practice</li>
+        <li>Safety, LOTO &amp; PPE — the habits that keep you alive</li>
+      </ul>
+      <div class="cbtm"><div class="price">$29<small>one-time · lifetime access</small></div><span class="gobtn">View course →</span></div>
+    </a>
+
+    <a class="course" href="/course-circuits-conductors.html">
+      <div class="newflag">New</div>
+      <div class="ctag">Course 2 · Next Step</div>
+      <h2>Circuits &amp; Conductors: <span>Wire It, Size It, Ground It</span></h2>
+      <p>The course that makes you dangerous on a real job — wire simple circuits, size conductors, feeders and panels, run the derating and box-fill math, and ground a system the right way.</p>
+      <div class="meta"><span><b>10</b> modules</span><span><b>~6</b> hrs</span><span><b>Final</b> exam</span></div>
+      <ul>
+        <li>Branch &amp; dedicated circuits, panels &amp; feeders</li>
+        <li>Ampacity, derating &amp; box fill — with code-book calculators</li>
+        <li>EGC sizing and grounding a service, step by step</li>
+      </ul>
+      <div class="cbtm"><div class="price">$29<small>one-time · lifetime access</small></div><span class="gobtn">View course →</span></div>
+    </a>
+
+  </div>
+
+  <div class="path">
+    <h3>Which one first?</h3>
+    <p>New to electrical? Start with <b>Ground Zero</b> — it assumes nothing and builds the foundation. Already comfortable with volts, amps, and Ohm's Law? Jump straight into <b>Circuits &amp; Conductors</b> and start sizing real circuits. Finish both and you've covered the fundamentals most first-year apprentices take months to pick up.</p>
+  </div>
+</div></section>
+
+<footer><div class="wrap wn-foot">
+  <div class="wn-legal"><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/refunds.html">Refunds</a><a href="/contact.html">Contact</a></div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <div class="wn-divider"></div>
+  <div class="copy">© 2026 WireNerd · Industrial Electrical · Made Clear<br>Built by Bryan Barrios</div>
+</div></footer>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c51b41d5f6924872bef5c4e0dd739b97"}'></script><!-- End Cloudflare Web Analytics -->
+<script defer src="/wn-notify.js"></script>
+</body>
+</html>

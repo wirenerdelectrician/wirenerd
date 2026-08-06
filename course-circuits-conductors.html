@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circuits & Conductors: Wire It, Size It, Ground It · WireNerd</title>
+<meta name="description" content="Circuits & Conductors — WireNerd's course 2. Wire real circuits, size branch circuits, feeders and panels, master ampacity, derating and box fill, and ground a system the right way — with calculators, animated lessons and hands-on practice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --purple:#C9A0FF;
+  --panel-2:#2b2b2b; --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);font-weight:400;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:var(--text);text-decoration:none}
+
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:18px;padding:14px 20px}
+.brand{font-weight:700;font-size:22px;letter-spacing:.5px}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text)}
+.navlinks a.active{color:var(--accent)}
+
+.hero{position:relative;padding:48px 0 32px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(620px 280px at 78% -10%, rgba(239,159,39,.13), transparent 70%),
+  radial-gradient(520px 300px at 8% 120%, rgba(133,183,235,.08), transparent 70%);pointer-events:none}
+.hero .wrap{position:relative}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-weight:800;font-size:clamp(32px,5.5vw,52px);line-height:1.04;letter-spacing:-.5px;margin:8px 0 14px}
+h1 .alt{color:var(--accent)}
+.sub{color:var(--text-dim);font-size:18px;max-width:660px;margin:0 0 22px}
+.metarow{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--text-dim);margin-bottom:22px}
+.metarow b{color:var(--accent)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--display);font-weight:600;font-size:15.5px;border-radius:9px;padding:13px 22px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--text);display:inline-block;transition:transform .12s ease,border-color .12s ease}
+.btn:hover{transform:translateY(-1px);border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+.btn.primary:hover{background:#f4ab3e}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.sm{padding:9px 15px;font-size:14px}
+.btn.tog{border-radius:8px}
+.btn.tog.on{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+
+.namebox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.namebox label{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
+input[type=text],input[type=number]{font-family:var(--display);font-size:15px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:11px 14px}
+input[type=text]{min-width:240px}
+input[type=number]{width:110px}
+input:focus{outline:none;border-color:var(--accent)}
+
+section.block{padding:38px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+h2{font-weight:700;font-size:clamp(23px,3.2vw,32px);margin:0 0 6px;letter-spacing:-.3px}
+.lead{color:var(--text-dim);font-size:16px;max-width:680px;margin:0 0 22px}
+
+.pbar{height:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:6px 0 24px;max-width:680px}
+.pbar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .4s ease}
+
+.mods{display:grid;gap:13px}
+.mod{position:relative;display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px 20px;transition:border-color .15s ease,transform .15s ease}
+.mod.unlocked{cursor:pointer}
+.mod.unlocked:hover{border-color:rgba(239,159,39,.45);transform:translateY(-2px)}
+.mod.locked{opacity:.5}
+.mod .idx{font-family:var(--mono);font-size:15px;color:var(--accent);border:1px solid rgba(239,159,39,.4);width:42px;height:42px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.mod .info{flex:1;min-width:0}
+.mod .info .k{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
+.mod .info h3{margin:3px 0 4px;font-size:18px;font-weight:700}
+.mod .info p{margin:0;color:var(--text-dim);font-size:13.5px}
+.mod .tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.mtag{font-family:var(--mono);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-dim);border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+.mtag.sb{color:var(--blue);border-color:rgba(133,183,235,.35)}
+.mtag.cl{color:var(--purple);border-color:rgba(201,160,255,.35)}
+.mod .badge{font-family:var(--mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:5px 10px;border-radius:6px;border:1px solid var(--line);color:var(--text-dim);white-space:nowrap}
+.mod .badge.done{color:var(--green);border-color:rgba(29,158,117,.4);background:rgba(29,158,117,.08)}
+.mod .badge.go{color:var(--accent);border-color:rgba(239,159,39,.4);background:rgba(239,159,39,.08)}
+
+.player{display:none}.player.on{display:block}
+.steps{display:flex;gap:8px;margin:0 0 22px;flex-wrap:wrap}
+.stepchip{font-family:var(--mono);font-size:12px;letter-spacing:.5px;text-transform:uppercase;padding:8px 14px;border-radius:8px;border:1px solid var(--line);color:var(--text-dim);background:var(--panel)}
+.stepchip.clickable{cursor:pointer}
+.stepchip.active{color:#1a1a1a;background:var(--accent);border-color:var(--accent)}
+.stepchip.done{color:var(--green);border-color:rgba(29,158,117,.4)}
+.stepchip.locked{opacity:.45}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+
+.slide{padding:32px 34px 26px;display:grid;gap:22px}
+.slide.has-art{grid-template-columns:1fr 330px;align-items:start}
+@media(max-width:760px){.slide.has-art{grid-template-columns:1fr}}
+.slide .stitle{font-weight:800;font-size:clamp(21px,3.2vw,28px);letter-spacing:-.3px;margin:0 0 16px}
+.slide ul{margin:0;padding:0;list-style:none;display:grid;gap:13px}
+.slide li{display:flex;gap:11px;font-size:16.5px}
+.slide li::before{content:"▸";color:var(--accent);font-weight:700}
+.slide li b{color:var(--accent);font-weight:600}
+.slide .snote{margin-top:16px;font-size:14px;color:var(--text-dim);border-left:2px solid var(--blue);padding:4px 0 4px 14px}
+.art{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:14px;display:flex;align-items:center;justify-content:center}
+.art svg{width:100%;height:auto;max-width:310px}
+.artcap{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-align:center;margin-top:8px}
+
+.slidebar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding:14px 20px;background:var(--panel-2);flex-wrap:wrap}
+.slidebar .count{font-family:var(--mono);font-size:13px;color:var(--text-dim)}
+.spacer{margin-left:auto}
+.readbtn{display:inline-flex;align-items:center;gap:8px}
+.readbtn .ic{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.readbtn.playing .ic{background:var(--accent);animation:pulse 1.4s infinite}
+
+.quiz{padding:28px 30px 24px}
+.q{margin:0 0 20px}
+.q .qt{font-size:16.5px;font-weight:600;margin:0 0 11px}
+.q .qt b{font-family:var(--mono);color:var(--accent);margin-right:8px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);background:var(--panel-2);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;font-size:15px;transition:border-color .12s ease}
+.opt:hover{border-color:var(--muted)}
+.opt.sel{border-color:var(--accent);background:rgba(239,159,39,.08)}
+.opt.correct{border-color:var(--green);background:rgba(29,158,117,.1)}
+.opt.wrong{border-color:var(--red);background:rgba(226,75,74,.1)}
+.opt .mk{font-family:var(--mono);font-size:13px;color:var(--text-dim);flex:none;width:20px}
+.barbtm{border-top:1px solid var(--line);padding:14px 20px;background:var(--panel-2);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.result{font-family:var(--mono);font-size:14px}
+.result.pass{color:var(--green)}.result.fail{color:var(--red)}
+
+.calc{padding:28px 30px 22px;display:grid;gap:22px}
+.calcgrid{display:grid;grid-template-columns:1.2fr 320px;gap:24px;align-items:start}
+@media(max-width:760px){.calcgrid{grid-template-columns:1fr}}
+.calcpanel{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:20px}
+.calcpanel h4{margin:0 0 4px;font-size:17px}
+.calcpanel .hintx{font-size:13px;color:var(--text-dim);margin:0 0 16px}
+.cfields{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.cfield{display:flex;flex-direction:column;gap:5px}
+.cfield label{font-family:var(--mono);font-size:12px;color:var(--text-dim)}
+.cout{font-family:var(--mono);font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px;margin-top:6px}
+.cout b{color:var(--accent)}
+.prob{border:1px solid var(--line);background:var(--panel-2);border-radius:9px;padding:14px 16px;margin-bottom:10px}
+.prob p{margin:0 0 10px;font-size:15.5px}
+.prob .pin{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.prob .pin .unit{font-family:var(--mono);color:var(--text-dim);font-size:13px}
+.prob.right{border-color:rgba(29,158,117,.5)}
+.prob.wrong{border-color:rgba(226,75,74,.5)}
+.prob .ans{font-family:var(--mono);font-size:13px;margin-top:8px}
+.prob .ans.ok{color:var(--green)}.prob .ans.no{color:var(--red)}
+
+/* circuit lab */
+.lab{padding:26px 30px 22px;display:grid;gap:22px}
+.labtop{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
+@media(max-width:760px){.labtop{grid-template-columns:1fr}}
+.labctrl{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:18px}
+.labctrl h4{margin:0 0 12px;font-size:16px}
+.modetog{display:flex;gap:8px;margin-bottom:16px}
+.labfield{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.labfield label{font-family:var(--mono);font-size:13px;color:var(--text-dim)}
+.readout{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:6px}
+.readout table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13.5px}
+.readout td{padding:9px 12px;border-bottom:1px solid var(--line)}
+.readout tr:last-child td{border-bottom:none}
+.readout td.k{color:var(--text-dim)}
+.readout td.v{text-align:right;color:var(--text)}
+.readout td.v b{color:var(--accent)}
+.labart{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:14px}
+.labart svg{width:100%;height:auto;max-width:480px;display:block;margin:0 auto}
+
+.wireintro{padding:22px 28px 4px;color:var(--text-dim);font-size:15.5px}
+.wireintro b{color:var(--text)}
+.svgwrap{padding:14px 20px 6px}
+svg.board{width:100%;height:auto;display:block;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;touch-action:manipulation}
+.term{cursor:pointer}.term circle{transition:fill .1s ease}
+.term:hover circle{fill:var(--accent)}
+.term.armed circle{fill:var(--accent);stroke:var(--accent)}
+.compbox{fill:none;stroke:var(--line);stroke-width:1.5}
+.complabel{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.term text{font-family:var(--mono);font-size:11px;fill:var(--text-dim);pointer-events:none}
+.wireline{stroke:var(--accent);stroke-width:3;stroke-linecap:round;cursor:pointer}
+.wireline:hover{stroke:var(--red)}
+.lamp-glow{opacity:0;transition:opacity .4s ease}.lamp-glow.on{opacity:1}
+.hint{font-size:13.5px;color:var(--text-dim)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:4px 20px 10px}
+input[type=range]{accent-color:var(--accent);vertical-align:middle}
+
+.donecard{text-align:center;padding:38px 30px}
+.donecard .big{font-weight:800;font-size:28px;color:var(--green);margin:0 0 8px}
+
+.certwrap{display:none}.certwrap.on{display:block}
+.cert{background:#faf8f2;color:#1c1c1c;border:14px solid var(--accent);border-radius:6px;padding:44px 42px;max-width:820px;margin:0 auto;position:relative}
+.cert::after{content:"";position:absolute;inset:10px;border:1.5px solid rgba(28,28,28,.25);border-radius:3px;pointer-events:none}
+.cert .cbrand{font-weight:700;font-size:24px;letter-spacing:.5px;text-align:center}
+.cert .cbrand b{color:var(--accent)}
+.cert .ctitle{font-family:var(--mono);font-size:13px;letter-spacing:3px;text-transform:uppercase;text-align:center;color:#7a6a3c;margin:16px 0 10px}
+.cert .ch{font-weight:800;font-size:36px;text-align:center;margin:0 0 20px;letter-spacing:-.5px}
+.cert .cawarded{text-align:center;font-size:15px;color:#444}
+.cert .cnamewrap{text-align:center}
+.cert .cname{font-weight:800;font-size:33px;margin:8px auto 6px;border-bottom:2px solid var(--accent);display:inline-block;padding:0 24px 6px}
+.cert .ccourse{text-align:center;font-size:18px;font-weight:600;margin:18px 0 4px}
+.cert .cmeta{text-align:center;font-family:var(--mono);font-size:13px;color:#555;margin-bottom:24px}
+.cert .crow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:28px;gap:20px}
+.cert .csig{flex:1;text-align:center}
+.cert .csig .line{border-top:1.5px solid #1c1c1c;margin-bottom:6px}
+.cert .csig small{font-family:var(--mono);font-size:11px;color:#666}
+.cert .csig .sig{font-weight:700;font-size:20px}
+.cert .vid{text-align:center;font-family:var(--mono);font-size:11px;color:#888;margin-top:22px;letter-spacing:1px}
+.rtab{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;margin-top:8px}
+.rtab td,.rtab th{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left}
+.rtab th{color:var(--accent);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.rtab td:last-child{text-align:right;color:var(--text)}
+.rtab td:first-child{color:var(--text-dim)}
+.certnote{max-width:820px;margin:16px auto 0;font-size:12.5px;color:var(--text-dim);text-align:center}
+
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px;margin-top:30px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}footer a:hover{color:var(--text)}
+footer .social{display:flex;gap:16px;margin-top:2px}
+
+/* ===== animations ===== */
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,159,39,.55)}70%{box-shadow:0 0 0 7px rgba(239,159,39,0)}100%{box-shadow:0 0 0 0 rgba(239,159,39,0)}}
+@keyframes ants{to{stroke-dashoffset:-24}}
+@keyframes glowp{0%,100%{opacity:.2}50%{opacity:.85}}
+@keyframes spinr{to{transform:rotate(360deg)}}
+.flow{stroke-dasharray:7 7;animation:ants .7s linear infinite}
+.flow.fast{animation-duration:.4s}.flow.slow{animation-duration:1.2s}
+.glowp{animation:glowp 1.7s ease-in-out infinite}
+.rotor{transform-box:fill-box;transform-origin:center;animation:spinr 3s linear infinite}
+
+@media print{
+  body{background:#fff}
+  .topnav,.hero,footer,.steps,#certActions,.certnote,#playerWrap,#homeWrap{display:none !important}
+  .certwrap.on{display:block}.cert{border-color:#EF9F27;margin:0}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+#wn-gate{position:fixed;inset:0;z-index:99999;background:#1a1a1a;display:flex;align-items:center;justify-content:center;padding:24px;font-family:"Saira",system-ui,sans-serif;color:#ece9e2}
+#wn-gate .gcard{position:relative;background:#232323;border:1px solid #383838;border-radius:16px;max-width:460px;width:100%;padding:34px;text-align:center}
+#wn-gate .gx{position:absolute;top:12px;right:16px;background:none;border:none;color:#B4B2A9;font-size:26px;line-height:1;cursor:pointer}
+#wn-gate .gx:hover{color:#ece9e2}
+#wn-gate h2{font-size:24px;margin:0 0 10px;font-weight:800}
+#wn-gate p{color:#B4B2A9;font-size:14.5px;line-height:1.55;margin:0 0 22px}
+#wn-gate .gbtn{display:inline-block;background:#EF9F27;color:#1a1a1a;font-weight:800;padding:14px 24px;border-radius:11px;border:none;cursor:pointer;font-size:16px;font-family:"Saira",sans-serif;text-decoration:none}
+#wn-gate .gbtn:hover{filter:brightness(1.05)}
+#wn-gate .glink{display:block;margin-top:14px;color:#85B7EB;font-size:13.5px;text-decoration:none;cursor:pointer}
+#wn-gate .price{font-size:32px;font-weight:800;color:#EF9F27;margin:0}
+#wn-gate .feat{text-align:left;color:#B4B2A9;font-size:13.5px;line-height:1.8;margin:0 auto 8px;display:inline-block}
+#wn-gate .brandmark{font-weight:800;font-size:20px;margin-bottom:18px}
+#wn-gate .brandmark .n{color:#EF9F27}
+</style>
+<style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
+</head>
+<body>
+<div id="wn-gate" style="display:none"><div class="gcard"><div class="brandmark">wire<span class="n">nerd</span></div><div id="wn-gate-body"></div></div></div>
+
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a><a href="/plc-sandbox.html">PLC Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a><a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+    <a href="/courses.html" class="active">Courses</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">Course 2 · Self-Paced</div>
+  <h1>Circuits &amp; Conductors: <span class="alt">Wire It, Size It, Ground It</span></h1>
+  <p class="sub">The course that makes you dangerous on a real job — wire simple circuits, size conductors, feeders and panels, run the derating and box-fill math, and ground a system the right way. Picks up where Ground Zero ends.</p>
+  <div class="metarow"><span><b>10</b> modules</span><span><b>Final</b> exam</span><span><b>~6</b> hours</span><span><b>Code-book</b> calculators</span><span><b>Certificate</b> at completion</span></div>
+  <div class="cta-row">
+    <button class="btn primary" id="startBtn">Start the course</button>
+    <span class="result" id="progLabel" style="color:var(--text-dim)"></span>
+  </div>
+</div></header>
+
+<div id="homeWrap">
+<section class="block"><div class="wrap">
+  <div class="eyebrow">Your Progress</div>
+  <h2>What you'll learn</h2>
+  <p class="lead">Ten modules with animated lessons. Read at your pace, have it read aloud, pass each test, wire circuits, and run the same sizing math you’ll use on the job.</p>
+  <div class="pbar"><i id="pbarFill"></i></div>
+  <div class="mods" id="modList"></div>
+</div></section>
+</div>
+
+<div id="playerWrap" class="player">
+<section class="block"><div class="wrap">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+    <button class="btn ghost sm" id="backBtn">‹ All modules</button>
+    <a class="btn ghost sm" href="/profile.html" style="text-decoration:none">My Profile ›</a>
+    <div class="eyebrow" id="modKicker" style="margin:0"></div>
+  </div>
+  <h2 id="modTitle"></h2>
+  <div class="steps" id="stepChips"></div>
+  <div id="stage"></div>
+</div></section>
+</div>
+
+<div id="certWrap" class="certwrap">
+<section class="block"><div class="wrap">
+  <div class="eyebrow" style="text-align:center">Course Complete</div>
+  <h2 style="text-align:center">Your certificate is ready 🎉</h2>
+  <div class="cert" id="certCard">
+    <div class="cbrand">wire<b>nerd</b></div>
+    <div class="ctitle">Certificate of Completion</div>
+    <div class="ch">Certificate of Completion</div>
+    <div class="cawarded">This certifies that</div>
+    <div class="cnamewrap"><span class="cname" id="certName">Student Name</span></div>
+    <div class="cawarded">has successfully completed</div>
+    <div class="ccourse" id="certCourse">Circuits &amp; Conductors: Wire It, Size It, Ground It</div>
+    <div class="cmeta" id="certMeta">6 Contact Hours · Completed —</div>
+    <div class="crow">
+      <div class="csig"><div class="sig">Bryan Barrios</div><div class="line"></div><small>Instructor · WireNerd</small></div>
+      <div class="csig"><div class="sig" id="certDate2">—</div><div class="line"></div><small>Date</small></div>
+    </div>
+    <div class="vid" id="certVid">Verification ID: —</div>
+  </div>
+  <p class="certnote">Certificate of completion only. This is <b>not</b> an official state-approved continuing education (CE) credit and does not count toward Utah DOPL license renewal.</p>
+  <div class="cta-row" id="certActions" style="justify-content:center;margin-top:22px">
+    <button class="btn primary" id="dlBtn">Download certificate (PDF)</button>
+    <button class="btn ghost" id="printBtn">Print</button>
+    <button class="btn ghost" id="reviewBtn">Back to course</button>
+  </div>
+</div></section>
+</div>
+
+<style>
+.wn-foot{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding-top:6px}
+.wn-foot .wn-legal{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13.5px;margin:0}
+.wn-foot .wn-legal a{color:#ece9e2;text-decoration:none;font-weight:500}
+.wn-foot .wn-legal a:hover{color:#EF9F27}
+.wn-foot .social{display:flex;gap:20px;justify-content:center;margin:0}
+.wn-foot .social a{color:#B4B2A9;text-decoration:none;font-size:13.5px}
+.wn-foot .social a:hover{color:#EF9F27}
+.wn-foot .wn-divider{width:46px;height:1px;background:#383838;margin:2px 0}
+.wn-foot .copy{color:#7f7d76;font-size:12.5px;line-height:1.7}
+</style>
+<footer><div class="wrap wn-foot">
+  <div class="wn-legal"><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/refunds.html">Refunds</a><a href="/contact.html">Contact</a></div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <div class="wn-divider"></div>
+  <div class="copy">© 2026 WireNerd · Industrial Electrical · Made Clear<br>Built by Bryan Barrios</div>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ===== Animated SVG diagrams ===== */
+const ART = {
+  panelnum:`<svg viewBox="0 0 300 254">
+    <rect x="20" y="20" width="260" height="220" rx="8" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="2"/>
+    <rect x="112" y="28" width="76" height="22" rx="3" fill="#333" stroke="#111" stroke-width="1.5"/><text x="150" y="43" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#fff">MAIN</text>
+    <rect x="32" y="66" width="104" height="24" rx="3" fill="#111" stroke="#000" stroke-width="1"/><text x="42" y="82" font-family="JetBrains Mono" font-size="12" fill="#fff">1</text><text x="126" y="82" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L1 blk</text>
+    <rect x="164" y="66" width="104" height="24" rx="3" fill="#111" stroke="#000" stroke-width="1"/><text x="174" y="82" font-family="JetBrains Mono" font-size="12" fill="#fff">2</text><text x="258" y="82" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L1 blk</text>
+    <rect x="32" y="100" width="104" height="24" rx="3" fill="#E24B4A" stroke="#b83b3a" stroke-width="1"/><text x="42" y="116" font-family="JetBrains Mono" font-size="12" fill="#fff">3</text><text x="126" y="116" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L2 red</text>
+    <rect x="164" y="100" width="104" height="24" rx="3" fill="#E24B4A" stroke="#b83b3a" stroke-width="1"/><text x="174" y="116" font-family="JetBrains Mono" font-size="12" fill="#fff">4</text><text x="258" y="116" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L2 red</text>
+    <rect x="32" y="134" width="104" height="24" rx="3" fill="#111" stroke="#000" stroke-width="1"/><text x="42" y="150" font-family="JetBrains Mono" font-size="12" fill="#fff">5</text><text x="126" y="150" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L1 blk</text>
+    <rect x="164" y="134" width="104" height="24" rx="3" fill="#111" stroke="#000" stroke-width="1"/><text x="174" y="150" font-family="JetBrains Mono" font-size="12" fill="#fff">6</text><text x="258" y="150" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L1 blk</text>
+    <rect x="32" y="168" width="104" height="24" rx="3" fill="#E24B4A" stroke="#b83b3a" stroke-width="1"/><text x="42" y="184" font-family="JetBrains Mono" font-size="12" fill="#fff">7</text><text x="126" y="184" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L2 red</text>
+    <rect x="164" y="168" width="104" height="24" rx="3" fill="#E24B4A" stroke="#b83b3a" stroke-width="1"/><text x="174" y="184" font-family="JetBrains Mono" font-size="12" fill="#fff">8</text><text x="258" y="184" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#fff">L2 red</text>
+    <rect x="27" y="61" width="114" height="68" rx="5" fill="none" stroke="#EF9F27" stroke-width="2.5" stroke-dasharray="5 4"/><text x="84" y="58" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#c47f12">2-POLE</text>
+    <text x="150" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1a1a1a">2-pole (1 + 3) = black L1 + red L2 = 240V</text>
+    <text x="150" y="231" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#555">odd = left · even = right · leg alternates each row</text>
+  </svg>`,
+  splitphase:`<svg viewBox="0 0 300 165">
+    <text x="150" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">120/240V · 1&#216; · 3-WIRE</text>
+    <line x1="80" y1="45" x2="245" y2="45" stroke="#c9c9c9" stroke-width="3"/>
+    <line x1="80" y1="90" x2="245" y2="90" stroke="#ece9e2" stroke-width="3"/>
+    <line x1="80" y1="135" x2="245" y2="135" stroke="#E24B4A" stroke-width="3"/>
+    <text x="72" y="49" text-anchor="end" font-family="JetBrains Mono" font-size="12" fill="#c9c9c9">L1</text>
+    <text x="72" y="94" text-anchor="end" font-family="JetBrains Mono" font-size="12" fill="#ece9e2">N</text>
+    <text x="72" y="139" text-anchor="end" font-family="JetBrains Mono" font-size="12" fill="#E24B4A">L2</text>
+    <line x1="255" y1="45" x2="255" y2="90" stroke="#EF9F27" stroke-width="1.5"/><text x="261" y="71" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">120V</text>
+    <line x1="255" y1="90" x2="255" y2="135" stroke="#EF9F27" stroke-width="1.5"/><text x="261" y="116" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">120V</text>
+    <text x="150" y="158" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">L1&#8211;L2 = 240V</text></svg>`,
+  wye208:`<svg viewBox="0 0 240 205">
+    <text x="120" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">208Y/120V · 3&#216; · 4-WIRE (WYE)</text>
+    <line x1="120" y1="105" x2="120" y2="35" stroke="#c9c9c9" stroke-width="3"/>
+    <line x1="120" y1="105" x2="52" y2="160" stroke="#E24B4A" stroke-width="3"/>
+    <line x1="120" y1="105" x2="188" y2="160" stroke="#85B7EB" stroke-width="3"/>
+    <circle cx="120" cy="105" r="5" fill="#ece9e2"/>
+    <text x="120" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#c9c9c9">A</text>
+    <text x="44" y="172" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#E24B4A">B</text>
+    <text x="196" y="172" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#85B7EB">C</text>
+    <text x="134" y="112" font-family="JetBrains Mono" font-size="11" fill="#ece9e2">N</text>
+    <text x="120" y="196" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">L-N 120V · L-L 208V</text></svg>`,
+  wye480:`<svg viewBox="0 0 240 205">
+    <text x="120" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">277/480V · 3&#216; · 4-WIRE (WYE)</text>
+    <line x1="120" y1="105" x2="120" y2="35" stroke="#9c6b3f" stroke-width="3"/>
+    <line x1="120" y1="105" x2="52" y2="160" stroke="#EF9F27" stroke-width="3"/>
+    <line x1="120" y1="105" x2="188" y2="160" stroke="#E3D24B" stroke-width="3"/>
+    <circle cx="120" cy="105" r="5" fill="#B4B2A9"/>
+    <text x="120" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#9c6b3f">A</text>
+    <text x="44" y="172" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#EF9F27">B</text>
+    <text x="196" y="172" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#E3D24B">C</text>
+    <text x="134" y="112" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">N</text>
+    <text x="120" y="196" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">L-N 277V · L-L 480V</text></svg>`,
+  highleg:`<svg viewBox="0 0 250 205">
+    <text x="125" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#B4B2A9">120/240V · 3&#216; · 4-WIRE · HIGH-LEG DELTA</text>
+    <path d="M125 36 L45 150 L205 150 Z" fill="none" stroke="#B4B2A9" stroke-width="2.5"/>
+    <line x1="125" y1="150" x2="125" y2="184" stroke="#ece9e2" stroke-width="3"/>
+    <circle cx="125" cy="36" r="6" fill="#EF9F27"/>
+    <circle cx="45" cy="150" r="5" fill="#c9c9c9"/>
+    <circle cx="205" cy="150" r="5" fill="#85B7EB"/>
+    <circle cx="125" cy="150" r="4" fill="#ece9e2"/>
+    <text x="125" y="32" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#EF9F27">B</text>
+    <text x="150" y="46" font-family="JetBrains Mono" font-size="9" fill="#EF9F27">HIGH LEG ~208V</text>
+    <text x="34" y="154" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#c9c9c9">A</text>
+    <text x="216" y="154" font-family="JetBrains Mono" font-size="11" fill="#85B7EB">C</text>
+    <text x="131" y="180" font-family="JetBrains Mono" font-size="10" fill="#ece9e2">N</text>
+    <text x="125" y="199" text-anchor="middle" font-family="JetBrains Mono" font-size="9.5" fill="#1D9E75">A-N 120 · C-N 120 · L-L 240</text></svg>`,
+  delta3w:`<svg viewBox="0 0 240 190">
+    <text x="120" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">240 or 480V · 3&#216; · 3-WIRE DELTA</text>
+    <path d="M120 36 L44 150 L196 150 Z" fill="none" stroke="#EF9F27" stroke-width="2.5"/>
+    <circle cx="120" cy="36" r="5" fill="#c9c9c9"/><circle cx="44" cy="150" r="5" fill="#E24B4A"/><circle cx="196" cy="150" r="5" fill="#85B7EB"/>
+    <text x="120" y="32" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#c9c9c9">A</text>
+    <text x="34" y="154" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#E24B4A">B</text>
+    <text x="206" y="154" font-family="JetBrains Mono" font-size="11" fill="#85B7EB">C</text>
+    <text x="120" y="176" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#E24B4A">NO NEUTRAL &#8212; motors only</text></svg>`,
+  colorcode:`<svg viewBox="0 0 300 178">
+    <text x="12" y="24" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">120 / 208 / 240 V</text>
+    <rect x="12" y="32" width="30" height="20" fill="#111" stroke="#555"/><rect x="50" y="32" width="30" height="20" fill="#E24B4A"/><rect x="88" y="32" width="30" height="20" fill="#85B7EB"/><rect x="126" y="32" width="30" height="20" fill="#ece9e2"/><rect x="176" y="32" width="30" height="20" fill="#EF9F27"/>
+    <text x="27" y="66" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">A blk</text><text x="65" y="66" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">B red</text><text x="103" y="66" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">C blu</text><text x="141" y="66" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">N wht</text><text x="191" y="66" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#EF9F27">HI-LEG</text>
+    <text x="12" y="104" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">277 / 480 V</text>
+    <rect x="12" y="112" width="30" height="20" fill="#9c6b3f"/><rect x="50" y="112" width="30" height="20" fill="#EF9F27"/><rect x="88" y="112" width="30" height="20" fill="#E3D24B"/><rect x="126" y="112" width="30" height="20" fill="#B4B2A9"/>
+    <text x="27" y="146" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">A brn</text><text x="65" y="146" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">B org</text><text x="103" y="146" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">C yel</text><text x="141" y="146" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">N gry</text>
+    <text x="12" y="170" font-family="JetBrains Mono" font-size="9" fill="#1D9E75">Ground = green or bare on every system</text></svg>`,
+  ckt:`<svg viewBox="0 0 280 170"><rect x="14" y="55" width="52" height="70" rx="6" fill="none" stroke="#85B7EB" stroke-width="2"/><text x="40" y="145" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">BREAKER</text>
+    <path d="M66 70 L130 70" class="flow" stroke="#1a1a1a" stroke-width="0"/>
+    <path d="M66 70 L130 70" stroke="#E24B4A" stroke-width="3" class="flow"/>
+    <circle cx="138" cy="70" r="4" fill="#EF9F27"/><line x1="142" y1="68" x2="168" y2="52" stroke="#EF9F27" stroke-width="3.5" stroke-linecap="round"/><circle cx="172" cy="70" r="4" fill="#EF9F27"/><text x="155" y="42" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">SWITCH</text>
+    <path d="M176 70 L226 70" stroke="#E24B4A" stroke-width="3"/>
+    <circle cx="240" cy="70" r="15" fill="#2b2b2b" stroke="#EF9F27" stroke-width="2" class="glowp"/><text x="240" y="102" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">LIGHT</text>
+    <path d="M240 85 L240 120 L40 120" stroke="#ece9e2" stroke-width="3"/>
+    <text x="100" y="62" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#E24B4A">HOT</text>
+    <text x="140" y="134" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">NEUTRAL</text></svg>`,
+  cable:`<svg viewBox="0 0 240 160"><ellipse cx="120" cy="80" rx="95" ry="52" fill="none" stroke="#B4B2A9" stroke-width="3"/>
+    <circle cx="80" cy="70" r="16" fill="#1a1a1a" stroke="#E24B4A" stroke-width="5"/><text x="80" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#E24B4A">HOT</text>
+    <circle cx="160" cy="70" r="16" fill="#1a1a1a" stroke="#ece9e2" stroke-width="5"/><text x="160" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#ece9e2">NEUTRAL</text>
+    <circle cx="120" cy="95" r="12" fill="#b87333"/><text x="120" y="130" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">GROUND</text>
+    <text x="120" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">12/2 NM CABLE</text></svg>`,
+  brk:`<svg viewBox="0 0 220 180"><rect x="40" y="14" width="140" height="150" rx="8" fill="#2b2b2b" stroke="#383838" stroke-width="2"/>
+    <rect x="95" y="24" width="30" height="26" rx="3" fill="#1a1a1a" stroke="#EF9F27" stroke-width="2"/><text x="110" y="42" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">MAIN</text>
+    <g>${[0,1,2,3].map(i=>`<rect x="58" y="${62+i*24}" width="24" height="16" rx="2" fill="#1a1a1a" stroke="#85B7EB" stroke-width="1.5"/><rect x="138" y="${62+i*24}" width="24" height="16" rx="2" fill="#1a1a1a" stroke="#85B7EB" stroke-width="1.5"/>`).join("")}</g>
+    <text x="110" y="176" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">every breaker = one branch circuit</text></svg>`,
+  therm:`<svg viewBox="0 0 240 160"><line x1="30" y1="80" x2="210" y2="80" stroke="#E24B4A" stroke-width="6" stroke-linecap="round"/>
+    <g class="glowp"><path d="M60 62 q4 -12 0 -20 M120 62 q4 -12 0 -20 M180 62 q4 -12 0 -20" stroke="#EF9F27" stroke-width="2.5" fill="none"/></g>
+    <text x="120" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B4B2A9">heat is the enemy of ampacity</text>
+    <text x="120" y="132" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">hot air + bundled wires = derate</text></svg>`,
+  boxart:`<svg viewBox="0 0 220 170"><rect x="50" y="30" width="120" height="110" rx="6" fill="#2b2b2b" stroke="#B4B2A9" stroke-width="2.5"/>
+    <path d="M50 60 q-24 6 -34 0" stroke="#E24B4A" stroke-width="3.5" fill="none"/><path d="M50 80 q-24 6 -34 0" stroke="#ece9e2" stroke-width="3.5" fill="none"/><path d="M50 100 q-24 6 -34 0" stroke="#b87333" stroke-width="3.5" fill="none"/>
+    <path d="M170 60 q24 6 34 0" stroke="#E24B4A" stroke-width="3.5" fill="none"/><path d="M170 80 q24 6 34 0" stroke="#ece9e2" stroke-width="3.5" fill="none"/><path d="M170 100 q24 6 34 0" stroke="#b87333" stroke-width="3.5" fill="none"/>
+    <path d="M85 60 q25 25 50 0 q-25 45 -50 0" stroke="#EF9F27" stroke-width="2" fill="none"/>
+    <text x="110" y="128" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">every wire takes up volume</text>
+    <text x="110" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">DEVICE BOX — 314.16</text></svg>`,
+  feedtree:`<svg viewBox="0 0 260 190"><rect x="95" y="12" width="70" height="30" rx="4" fill="#2b2b2b" stroke="#EF9F27" stroke-width="2"/><text x="130" y="32" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#EF9F27">SERVICE</text>
+    <line x1="130" y1="42" x2="130" y2="70" stroke="#EF9F27" stroke-width="3" class="flow"/>
+    <rect x="95" y="70" width="70" height="30" rx="4" fill="#2b2b2b" stroke="#85B7EB" stroke-width="2"/><text x="130" y="90" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#85B7EB">MAIN PANEL</text>
+    <line x1="130" y1="100" x2="60" y2="130" stroke="#C9A0FF" stroke-width="2.5" class="flow slow"/><line x1="130" y1="100" x2="200" y2="130" stroke="#1D9E75" stroke-width="2" class="flow slow"/>
+    <rect x="25" y="130" width="70" height="28" rx="4" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/><text x="60" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#C9A0FF">SUBPANEL</text>
+    <text x="200" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1D9E75">BRANCH CKTS</text>
+    <text x="88" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#C9A0FF">FEEDER</text>
+    <text x="130" y="182" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">service → feeder → branch</text></svg>`,
+  fault:`<svg viewBox="0 0 260 180"><rect x="20" y="30" width="60" height="90" rx="6" fill="#2b2b2b" stroke="#383838"/><text x="50" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">PANEL</text>
+    <rect x="180" y="40" width="60" height="70" rx="6" fill="#2b2b2b" stroke="#B4B2A9" stroke-width="2"/><text x="210" y="128" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">MOTOR CASE</text>
+    <path d="M80 55 L180 55" stroke="#E24B4A" stroke-width="3"/>
+    <path d="M196 62 l10 12 -8 2 10 14" stroke="#EF9F27" stroke-width="2.5" fill="none" class="glowp"/>
+    <path d="M180 100 L80 100" stroke="#1D9E75" stroke-width="3" class="flow"/>
+    <text x="130" y="47" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#E24B4A">HOT</text>
+    <text x="130" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1D9E75">EGC — fault path home</text>
+    <text x="130" y="165" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">a good path = a fast trip</text></svg>`,
+  rod:`<svg viewBox="0 0 240 190"><rect x="30" y="20" width="70" height="90" rx="6" fill="#2b2b2b" stroke="#383838"/><text x="65" y="45" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">SERVICE</text>
+    <rect x="45" y="55" width="40" height="10" fill="#ece9e2"/><text x="65" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#B4B2A9">NEUTRAL BAR</text>
+    <line x1="0" y1="140" x2="240" y2="140" stroke="#1D9E75" stroke-width="2"/><text x="216" y="134" font-family="JetBrains Mono" font-size="9" fill="#1D9E75">GRADE</text>
+    <path d="M65 110 L65 125 L150 125 L150 140" stroke="#b87333" stroke-width="3" fill="none"/>
+    <line x1="150" y1="140" x2="150" y2="185" stroke="#B4B2A9" stroke-width="5"/>
+    <line x1="195" y1="140" x2="195" y2="185" stroke="#B4B2A9" stroke-width="5"/>
+    <path d="M150 128 L195 128 L195 140" stroke="#b87333" stroke-width="3" fill="none"/>
+    <text x="110" y="118" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#b87333">GEC</text>
+    <text x="172" y="178" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">8-ft RODS</text></svg>`
+};
+
+/* ===== COURSE DATA ===== */
+const COURSE = {
+  title:"Circuits & Conductors: Wire It, Size It, Ground It", hours:6, passPct:0.7,
+  modules:[
+
+    { id:"m1", kicker:"Module 1", title:"Wiring Simple Circuits", blurb:"The anatomy of a real 120 V circuit — then wire a switch leg and a receptacle yourself.",
+      steps:[ { type:"slides", slides:[
+        { title:"Where every circuit starts", art:"ckt", cap:"Breaker → hot → load → neutral → back",
+          body:["Every 120 V circuit in a building starts at a <b>breaker</b> in the panel and ends right back at that panel.",
+            "The <b>hot</b> conductor carries current out to the load; the <b>neutral</b> carries it back to the source.",
+            "If that loop is broken anywhere — an open switch, a loose wirenut — current stops and the load goes dead.",
+            "This is the same complete-circuit idea from Ground Zero, now with real building wiring."] },
+        { title:"Know your conductors", art:"cable", cap:"Hot, neutral, and ground in one cable",
+          body:["<b>Black or red</b> insulation = hot (ungrounded conductor) — it is the one that bites.",
+            "<b>White or gray</b> = neutral (grounded conductor) — it carries the return current in normal operation.",
+            "<b>Bare or green</b> = equipment grounding conductor (EGC) — it carries current <b>only during a fault</b>.",
+            "The NEC reserves white and green: never use them as hots, and never put a neutral on a breaker."],
+          note:"NM cable like “12/2” means two insulated 12 AWG conductors plus a ground." },
+        { title:"Switches go in the hot", art:null,
+          body:["A switch must interrupt the <b>hot</b> conductor — never the neutral.",
+            "Switch the neutral instead and the light turns off, but the fixture stays <b>energized</b> — a trap for the next person who touches it.",
+            "A <b>single-pole</b> switch is just an on/off break in the hot: breaker → switch → light → neutral home.",
+            "That one habit — always break the hot — is a code rule (404.2) and a life-safety rule."] },
+        { title:"Wiring a receptacle", art:null,
+          body:["On a receptacle, the <b>brass</b> screw gets the hot, the <b>silver</b> screw gets the neutral, and the <b>green</b> screw gets the EGC.",
+            "Receptacles on a circuit are wired in <b>parallel</b> — every one sees the full 120 V.",
+            "<b>Line</b> is the incoming power; <b>load</b> is what continues downstream — it matters on GFCIs.",
+            "Wrap conductors clockwise around screws so tightening pulls the wire in, not out."] },
+        { title:"The switch loop", art:null,
+          body:["Sometimes power reaches the <b>light first</b>, and a cable drops down to the switch — that's a <b>switch loop</b>.",
+            "The switch still breaks only the hot: power loops down to the switch and back up to the fixture.",
+            "Modern code (404.2(C)) requires a <b>neutral at most switch boxes</b> so smart switches have a return path.",
+            "If you find a white wire used as a hot in an old loop, it must be re-identified with tape or marker."] },
+        { title:"Habits that prevent fires", art:null,
+          body:["<b>Loose connections make heat</b> — most electrical fires start at a bad splice or terminal, not in the wire run.",
+            "Use <b>pigtails</b> to feed devices instead of relying on the device to splice the circuit through.",
+            "Keep your color code honest: hots black/red, neutrals white, grounds green or bare, every time.",
+            "Fold conductors neatly into the box — crushed, nicked wires become tomorrow's fault."],
+          note:"Wire it like the next person to open the box knows nothing — because they don't." }
+      ]},
+      { type:"test", quiz:[
+        { q:"A 120 V branch circuit's current returns to the panel on the:", choices:["EGC","Neutral","Ground rod","Conduit"], answer:1 },
+        { q:"The hot conductor's insulation color is normally:", choices:["White","Green","Black or red","Gray"], answer:2 },
+        { q:"The bare or green conductor carries current:", choices:["All the time","Only during a fault","Never","Only at night"], answer:1 },
+        { q:"A switch must interrupt the:", choices:["Neutral","EGC","Hot","Cable jacket"], answer:2 },
+        { q:"If a switch breaks the neutral instead of the hot, the fixture is:", choices:["Safe to touch","Still energized when off","Grounded","Running on DC"], answer:1 },
+        { q:"On a receptacle, the brass screw gets the:", choices:["Neutral","Ground","Hot","Nothing"], answer:2 },
+        { q:"Receptacles on a circuit are connected in:", choices:["Series","Parallel","A ring","Series-parallel"], answer:1 },
+        { q:"“12/2 NM” cable contains:", choices:["Two 12 AWG conductors plus ground","Twelve 2 AWG conductors","Two 12 AWG conductors, no ground","One 12 AWG conductor"], answer:0 },
+        { q:"Most electrical fires start at:", choices:["The middle of a wire run","Loose connections and bad splices","The utility transformer","The light bulb"], answer:1 },
+        { q:"Modern code requires most switch boxes to contain a:", choices:["Spare breaker","Neutral conductor","GFCI","Second switch"], answer:1 }
+      ]},
+      { type:"demo", demo:"circuit" },
+      { type:"wiring", task:{
+        intro:"Wire a <b>switched light</b>: <b>Panel HOT → Switch → Light hot terminal</b>, and <b>Light neutral terminal → Panel NEUTRAL</b>. Click terminal to terminal to run a wire; click a wire to remove it.",
+        hint:"3 wires: HOT → S1, S2 → LH, LN → NEU. The switch breaks the hot only.", successMsg:"Correct — the switch breaks the hot, and the neutral runs straight home.",
+        viewBox:"0 0 600 320",
+        comps:[{x:40,y:60,w:90,h:190,label:"PANEL"},{x:240,y:60,w:90,h:90,label:"SWITCH"},{x:430,y:60,w:90,h:90,label:"LIGHT"}],
+        lamp:{cx:475,cy:105,r:22},
+        nodes:[{id:"hot",label:"HOT",x:130,y:95,lx:-28,ly:0},{id:"neu",label:"NEU",x:130,y:215,lx:-28,ly:0},
+          {id:"s1",label:"S1",x:240,y:105,lx:-16,ly:0},{id:"s2",label:"S2",x:330,y:105,lx:16,ly:0},
+          {id:"lh",label:"LH",x:430,y:105,lx:-16,ly:0},{id:"ln",label:"LN",x:520,y:105,lx:18,ly:0}],
+        correct:[["hot","s1"],["s2","lh"],["ln","neu"]] }},
+      { type:"wiring", task:{
+        intro:"Now wire a <b>receptacle</b>: hot to the <b>BRASS</b> terminal, neutral to the <b>SILVER</b> terminal, and the equipment ground to the <b>GREEN</b> screw.",
+        hint:"3 wires: HOT → BR, NEU → SL, GND → GR.", successMsg:"That's it — hot to brass, neutral to silver, ground to green. Every time.",
+        viewBox:"0 0 600 320",
+        comps:[{x:40,y:40,w:90,h:230,label:"PANEL"},{x:380,y:40,w:120,h:230,label:"RECEPTACLE"}],
+        nodes:[{id:"hot",label:"HOT",x:130,y:80,lx:-28,ly:0},{id:"neu",label:"NEU",x:130,y:155,lx:-28,ly:0},{id:"gnd",label:"GND",x:130,y:230,lx:-28,ly:0},
+          {id:"br",label:"BR",x:380,y:80,lx:-16,ly:0},{id:"sl",label:"SL",x:380,y:155,lx:-16,ly:0},{id:"gr",label:"GR",x:380,y:230,lx:-16,ly:0}],
+        correct:[["hot","br"],["neu","sl"],["gnd","gr"]] }} ]},
+
+    { id:"msys", kicker:"Module 2", title:"Electrical Systems & Service Types", blurb:"Know what feeds the building — voltages, wires, the high leg, and the color code.",
+      steps:[ { type:"slides", slides:[
+        { title:"Know your system first", art:null,
+          body:["Before you land a single wire, know <b>what system feeds the building</b> — it sets your voltages, how many wires you have, and whether there's a neutral.",
+            "Grab the wrong leg and you feed a 120 V device 208 or 277 V — instant smoke, or worse.",
+            "Every system is defined by two numbers: <b>voltage to neutral</b> and <b>voltage between hots</b>.",
+            "This module walks the systems you'll actually meet, how to tell them apart, and the color code that labels every one."] },
+        { title:"120/240 V single-phase, 3-wire", art:"splitphase", cap:"Residential split-phase",
+          body:["The standard <b>home</b> service: a center-tapped transformer gives two hots (L1, L2) and a neutral.",
+            "<b>Hot to neutral = 120 V</b> for lights and receptacles; <b>hot to hot = 240 V</b> for the range, dryer, water heater, and AC.",
+            "It's called <b>split-phase</b> because the 240 V winding is split at the neutral into two 120 V halves.",
+            "Colors: hots <b>black and red</b>, neutral <b>white</b>, ground green or bare."] },
+        { title:"120 V single-phase, 2-wire", art:null,
+          body:["The simplest supply of all: <b>one hot and one neutral</b> — a single 120 V circuit.",
+            "It's really just one half of the split-phase system tapped off for a small load.",
+            "You'll see it as a single branch circuit, not usually as a whole service.",
+            "Hot <b>black</b>, neutral <b>white</b>, ground green or bare."] },
+        { title:"208Y/120 V three-phase, 4-wire (wye)", art:"wye208", cap:"The commercial workhorse",
+          body:["The <b>most common commercial system</b> in the country — stores, offices, and schools run on it.",
+            "Three hots (A, B, C) plus a neutral come from a <b>wye (Y)</b> transformer.",
+            "<b>Each hot to neutral = 120 V</b>; <b>hot to hot = 208 V</b> — not 240, because three-phase math multiplies by 1.732 (120 &#215; &#8730;3 = 208).",
+            "Colors: hots <b>black, red, blue</b>, neutral <b>white</b>, ground green."],
+          note:"Two hots of a wye give 208 V, not 240 — a classic mistake when moving equipment between systems." },
+        { title:"120/240 V three-phase, 4-wire — high-leg delta", art:"highleg", cap:"Delta with one center-tapped winding",
+          body:["A <b>delta</b> service with one winding center-tapped for a neutral — found on older shops that need both 240 V three-phase motors and 120 V circuits.",
+            "Two legs (A and C) sit next to the center tap: <b>A-N and C-N = 120 V</b>. Every hot to every other hot = <b>240 V</b> for motors.",
+            "The <b>B phase sits at the top of the triangle</b>, far from the neutral tap — so <b>B to neutral = ~208 V</b>. That's the <b>high leg</b> (also called the wild leg or stinger).",
+            "One service gives you 120 V, 240 V single-phase, and 240 V three-phase — but only two of the three legs are safe for 120 V loads."] },
+        { title:"Spotting — and respecting — the high leg", art:null,
+          body:["<b>Meter each hot to neutral:</b> two read ~120 V, one reads ~208 V. That 208 V leg is the high leg.",
+            "It must be identified <b>orange</b> (or otherwise durably marked) — NEC 110.15.",
+            "By NEC 408.3(E) it's <b>B phase</b>, landed on the <b>center (B) lug</b> of the panel.",
+            "<b>Never put a 120 V load on the high leg</b> — it'll see 208 V and die. Single-pole 120 V breakers go on A or C only."],
+          note:"Orange conductor + 208 V to neutral + center bus = high leg. Treat it like it bites, because it burns equipment." },
+        { title:"277/480 V three-phase, 4-wire (wye)", art:"wye480", cap:"Big commercial & industrial",
+          body:["The workhorse of <b>large commercial and industrial</b> buildings.",
+            "<b>Hot to neutral = 277 V</b> — it drives commercial and parking-lot lighting directly, no transformer needed.",
+            "<b>Hot to hot = 480 V</b> for motors, HVAC, and heavy equipment.",
+            "Colors: hots <b>brown, orange, yellow</b>, neutral <b>gray</b>, ground green."],
+          note:"Here orange is just B phase — NOT a high leg. On a 480 wye every leg to neutral is 277 V. Context decides what orange means." },
+        { title:"240 & 480 V three-phase, 3-wire delta", art:"delta3w", cap:"No neutral — motors only",
+          body:["A <b>3-wire delta</b> has three hots and <b>no neutral</b> — pure line-to-line power for motors and equipment.",
+            "240 V or 480 V between every pair of hots; there's no 120 V or 277 V available without a separate transformer.",
+            "It may be <b>ungrounded</b>, or <b>corner-grounded</b> (one phase bonded to ground) to give the system a reference.",
+            "If a job has only three hots and no white or gray wire, you're on a 3-wire delta."] },
+        { title:"277/480 V single-phase, 3-wire", art:null,
+          body:["Take <b>two legs of a 480 wye plus the neutral</b> and you have a single-phase 3-wire feed.",
+            "<b>Each hot to neutral = 277 V</b>; <b>hot to hot = 480 V</b>.",
+            "It's used to feed a remote <b>277/480 single-phase panel</b> — often a lighting panel far from the main gear.",
+            "Colors follow the 480 system: hots <b>brown and orange (or yellow)</b>, neutral <b>gray</b>, ground green."] },
+        { title:"The color code — burn it in", art:"colorcode", cap:"The neutral color tells you the system",
+          body:["<b>120 / 208 / 240 V systems:</b> A = <b>black</b>, B = <b>red</b>, C = <b>blue</b>, neutral = <b>white</b>, high-leg B = <b>orange</b>.",
+            "<b>277 / 480 V systems:</b> A = <b>brown</b>, B = <b>orange</b>, C = <b>yellow</b>, neutral = <b>gray</b>.",
+            "<b>Ground is always green, green/yellow, or bare</b> — on every system.",
+            "The neutral is your giveaway: <b>white neutral = the 120/240 family; gray neutral = the 277/480 family</b>."],
+          note:"NEC only *requires* white/gray for the neutral (200.6), green/bare for the ground (250.119), and orange for a high leg (110.15). The hot colors are industry convention — but they're standard, and most local codes and job specs enforce them, so follow them." }
+      ]},
+      { type:"test", quiz:[
+        { q:"The standard US residential service is:", choices:["120/240 V single-phase, 3-wire","208Y/120 V three-phase","277/480 V three-phase","240 V three-phase delta"], answer:0 },
+        { q:"In the 120/240 V family, the ungrounded (hot) conductors are typically:", choices:["Brown, orange, yellow","Black, red, blue","All white","Green and gray"], answer:1 },
+        { q:"The most common commercial system in the US is:", choices:["120/240 V split-phase","208Y/120 V three-phase wye","480 V three-wire delta","120 V two-wire"], answer:1 },
+        { q:"In a 208Y/120 V system, two hots measured together read:", choices:["120 V","208 V","240 V","277 V"], answer:1 },
+        { q:"In a 208Y/120 V system, a hot to neutral reads:", choices:["120 V","208 V","240 V","277 V"], answer:0 },
+        { q:"In a 120/240 V high-leg delta, the high leg to neutral is about:", choices:["120 V","208 V","240 V","277 V"], answer:1 },
+        { q:"A high (wild) leg must be identified with the color:", choices:["Green","White","Orange","Blue"], answer:2 },
+        { q:"The high leg is which phase, and where does it land?", choices:["A phase, left bus","B phase, center bus","C phase, right bus","On the neutral bus"], answer:1 },
+        { q:"In a 277/480 V wye, a hot to neutral reads:", choices:["120 V","208 V","277 V","480 V"], answer:2 },
+        { q:"On a 277/480 V system, the neutral color is:", choices:["White","Gray","Orange","Green"], answer:1 }
+      ]} ]},
+    { id:"m2", kicker:"Module 3", title:"Branch Circuits", blurb:"What a branch circuit really is, how it's rated, and the small-conductor rules that protect it.",
+      steps:[ { type:"slides", slides:[
+        { title:"What a branch circuit is", art:"brk", cap:"Final breaker → outlets = branch circuit",
+          body:["A <b>branch circuit</b> is everything between the <b>final overcurrent device</b> (the breaker) and the outlets it serves.",
+            "Every breaker in a panel is the start of one branch circuit.",
+            "“Outlet” in code language means any point where power is taken — receptacles, lights, or hard-wired equipment.",
+            "Branch circuits are the last leg of the system: service → feeder → <b>branch</b>."] },
+        { title:"The circuit rating is the breaker", art:null,
+          body:["A branch circuit is <b>rated by its breaker</b>, not its wire: a 20 A breaker makes it a 20 A circuit.",
+            "Standard ratings you'll wire daily: <b>15, 20, 30, 40, and 50 A</b>.",
+            "The wire must always be <b>at least</b> big enough for the breaker protecting it.",
+            "A big wire on a small breaker is fine; a small wire on a big breaker is a fire."] },
+        { title:"The small-conductor rule", art:null,
+          body:["<b>240.4(D)</b> caps the breaker for small copper conductors, no matter what the ampacity table says:",
+            "<b>14 AWG → 15 A</b> max. <b>12 AWG → 20 A</b> max. <b>10 AWG → 30 A</b> max.",
+            "Memorize those three pairs — they are the backbone of residential wiring.",
+            "They exist because small wires can't survive short overloads the way big ones can."],
+          note:"14→15, 12→20, 10→30. Say it until it's automatic." },
+        { title:"Types of branch circuits", art:null,
+          body:["<b>General-purpose</b> circuits serve lighting and receptacles for everyday use.",
+            "An <b>individual</b> (dedicated) branch circuit serves exactly <b>one</b> piece of equipment — next module.",
+            "A <b>multiwire branch circuit (MWBC)</b> shares one neutral between two hots on opposite phases.",
+            "Each type has its own rules; know which one you're wiring before you land the first wire."] },
+        { title:"Continuous loads and the 80% idea", art:null,
+          body:["A <b>continuous load</b> runs 3 hours or more — think lighting, EV chargers, heat.",
+            "Breakers and conductors must be sized at <b>125% of continuous load</b> — same as loading a circuit to only 80%.",
+            "Example: 16 A of continuous load is the most you should put on a 20 A circuit (16 × 1.25 = 20).",
+            "Non-continuous loads may use the full rating — but the 80% habit keeps you out of trouble."] },
+        { title:"MWBC — respect the shared neutral", art:null,
+          body:["An MWBC runs <b>two hots</b> (opposite legs) and <b>one shared neutral</b> — it saves copper.",
+            "The two breakers must be <b>handle-tied</b> so both hots shut off together (210.4).",
+            "If the shared neutral opens while loads are on, the two circuits go in <b>series across 240 V</b> — electronics die instantly.",
+            "Always land an MWBC on opposite phases; two hots on the same leg overload the neutral."],
+          note:"The lost neutral is one of the most destructive faults in residential work — treat MWBC neutrals like gold." }
+      ]},
+      { type:"test", quiz:[
+        { q:"A branch circuit is the wiring between:", choices:["The meter and the panel","The final breaker and the outlets","Two panels","The utility and the meter"], answer:1 },
+        { q:"A branch circuit's rating comes from:", choices:["The wire size","The load","The breaker (OCPD)","The voltage"], answer:2 },
+        { q:"Max breaker on 14 AWG copper:", choices:["15 A","20 A","30 A","25 A"], answer:0 },
+        { q:"Max breaker on 12 AWG copper:", choices:["15 A","20 A","30 A","40 A"], answer:1 },
+        { q:"Max breaker on 10 AWG copper:", choices:["20 A","25 A","30 A","40 A"], answer:2 },
+        { q:"A continuous load is one that runs:", choices:["1 hour or more","2 hours or more","3 hours or more","Overnight"], answer:2 },
+        { q:"Continuous loads are sized at:", choices:["80% of the load","100% of the load","125% of the load","150% of the load"], answer:2 },
+        { q:"The most continuous load allowed on a 20 A circuit:", choices:["20 A","16 A","12 A","25 A"], answer:1 },
+        { q:"An MWBC shares one ____ between two hots:", choices:["Breaker","Neutral","EGC","Conduit"], answer:1 },
+        { q:"MWBC breakers must be:", choices:["GFCI type","On the same phase","Handle-tied together","Rated 15 A"], answer:2 }
+      ]} ]},
+
+    { id:"m3", kicker:"Module 4", title:"Dedicated Circuits", blurb:"The circuits code makes you run, and how to size a circuit for one appliance.",
+      steps:[ { type:"slides", slides:[
+        { title:"One circuit, one job", art:null,
+          body:["A <b>dedicated</b> (individual) branch circuit serves <b>one</b> appliance or piece of equipment — nothing else rides along.",
+            "It keeps a motor start or heating element from dimming lights and nuisance-tripping shared circuits.",
+            "It also lets you match the breaker and wire exactly to that appliance's needs.",
+            "When an appliance has a nameplate and a plug of its own, think dedicated circuit."] },
+        { title:"Circuits the code requires", art:null,
+          body:["<b>210.11(C)</b> makes you run these in every dwelling, minimum:",
+            "<b>Two 20 A small-appliance</b> circuits for kitchen countertop receptacles.",
+            "<b>One 20 A laundry</b> circuit and <b>one 20 A bathroom</b> receptacle circuit.",
+            "<b>One 20 A garage</b> receptacle circuit — added in recent code cycles."],
+          note:"2 kitchen + 1 laundry + 1 bath + 1 garage — the five you can't skip." },
+        { title:"Kitchen rules", art:null,
+          body:["The two small-appliance circuits serve <b>countertop and wall receptacles</b> in the kitchen, dining, and pantry — <b>no lighting</b> allowed on them.",
+            "The <b>dishwasher, disposal, and microwave</b> each typically get their own dedicated circuit.",
+            "The refrigerator may share the small-appliance circuits, but a dedicated 15 or 20 A circuit is common practice.",
+            "Kitchens pull more power per square foot than any other room in the house — wire them generously."] },
+        { title:"The big 240 V loads", art:null,
+          body:["<b>Ranges, dryers, water heaters, and HVAC</b> each get a dedicated circuit at 240 V.",
+            "Typical pairs: dryer — <b>30 A on 10 AWG</b>; range — <b>40–50 A on 8–6 AWG</b>; water heater — <b>30 A on 10 AWG</b>.",
+            "Modern dryers and ranges use a <b>4-wire</b> circuit: two hots, a neutral, and a ground.",
+            "HVAC is sized from its nameplate — “minimum circuit ampacity” and “max fuse/breaker” are printed right on it."],
+          note:"On HVAC, the nameplate outranks the tables — wire to MCA, protect at max OCPD." },
+        { title:"Sizing a dedicated circuit", art:null,
+          body:["Start at the appliance <b>nameplate</b>: volts and amps (or watts — divide by volts to get amps).",
+            "If the load is <b>continuous</b> (like a water heater), multiply by <b>125%</b> before picking the breaker.",
+            "Example: 4500 W water heater at 240 V = 18.75 A × 1.25 = 23.4 A → <b>25 or 30 A breaker, 10 AWG</b>.",
+            "Then check the wire: it must be rated for the breaker you chose — 240.4(D) still applies."] },
+        { title:"Why it matters for you", art:null,
+          body:["Dedicated circuits are a huge share of service-call work: adding a microwave circuit, an EV charger, a mini-split.",
+            "The pattern is always the same: <b>nameplate → amps → 125% if continuous → breaker → wire → EGC</b>.",
+            "You'll do the wire-sizing math in the next modules — this module is about knowing <b>when</b> a load deserves its own circuit.",
+            "When in doubt, dedicate. Nobody ever complained a circuit was too reliable."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"An individual (dedicated) branch circuit serves:", choices:["A whole room","One piece of equipment","Two appliances","Only lighting"], answer:1 },
+        { q:"How many 20 A small-appliance circuits does a kitchen need, minimum?", choices:["One","Two","Three","Four"], answer:1 },
+        { q:"The required laundry circuit is rated:", choices:["15 A","20 A","30 A","50 A"], answer:1 },
+        { q:"Lighting on the kitchen small-appliance circuits is:", choices:["Required","Optional","Not allowed","Only LED"], answer:2 },
+        { q:"A typical electric dryer circuit is:", choices:["20 A on 12 AWG","30 A on 10 AWG","50 A on 8 AWG","15 A on 14 AWG"], answer:1 },
+        { q:"Modern dryer and range circuits use how many circuit conductors plus ground?", choices:["Two hots only","Two hots + neutral","One hot + neutral","Three hots"], answer:1 },
+        { q:"A 4500 W water heater at 240 V draws about:", choices:["10.5 A","18.75 A","23.4 A","45 A"], answer:1 },
+        { q:"Sizing that water heater as a continuous load requires a circuit of at least:", choices:["18.75 A","20 A","23.4 A","60 A"], answer:2 },
+        { q:"For HVAC equipment, circuit sizing comes from:", choices:["The house square footage","The nameplate MCA and max OCPD","Always 30 A","The thermostat"], answer:1 },
+        { q:"The required bathroom receptacle circuit is:", choices:["15 A","20 A","30 A","Shared with lighting anywhere"], answer:1 }
+      ]} ]},
+
+    { id:"m4", kicker:"Module 5", title:"Sizing Conductors", blurb:"Ampacity, insulation ratings, and Table 310.16 — pick the right wire every time.",
+      steps:[ { type:"slides", slides:[
+        { title:"What ampacity is", art:"therm", cap:"Ampacity is a heat limit, not a speed limit",
+          body:["<b>Ampacity</b> is the maximum current a conductor can carry <b>continuously</b> without overheating its insulation.",
+            "Current makes heat; too much heat cooks insulation, and cooked insulation causes faults and fires.",
+            "In <b>AWG</b> sizes, a <b>smaller number means a bigger wire</b> — 10 AWG is bigger than 14 AWG.",
+            "Above 4/0 AWG, sizes switch to <b>kcmil</b> and the numbers grow with the wire."] },
+        { title:"Insulation temperature ratings", art:null,
+          body:["Table 310.16 has three columns: <b>60°C, 75°C, and 90°C</b> — the insulation's temperature rating.",
+            "<b>TW</b> is 60°C, <b>THWN</b> is 75°C wet, and <b>THHN</b> is 90°C dry — most modern wire is dual-rated THHN/THWN-2.",
+            "A hotter-rated insulation can carry more current — the 90°C column shows the biggest numbers.",
+            "But you can't always <b>use</b> the 90°C numbers — the terminations decide that."] },
+        { title:"The termination rule", art:null,
+          body:["<b>110.14(C)</b>: your ampacity is limited by the <b>coolest-rated connection point</b>, usually the breaker or lug.",
+            "Circuits <b>100 A and under</b> generally use the <b>60°C or 75°C</b> column; most modern gear is rated 75°C.",
+            "So even with 90°C wire, you usually size from the <b>75°C column</b>.",
+            "The 90°C column's real job is giving you headroom for <b>derating</b> — next module."],
+          note:"Buy 90°C wire, size at 75°C, keep the 90°C column in your back pocket for derating." },
+        { title:"The numbers to know (75°C copper)", art:null,
+          body:["<b>14 → 20 A</b>, <b>12 → 25 A</b>, <b>10 → 35 A</b> — but 240.4(D) caps them at <b>15 / 20 / 30 A</b>.",
+            "<b>8 → 50 A</b> · <b>6 → 65 A</b> · <b>4 → 85 A</b> · <b>3 → 100 A</b> · <b>2 → 115 A</b> · <b>1 → 130 A</b>.",
+            "<b>1/0 → 150 A</b> · <b>2/0 → 175 A</b> · <b>3/0 → 200 A</b> · <b>4/0 → 230 A</b>.",
+            "Aluminum runs about one-to-two sizes behind copper — 6 AL is 50 A where 6 Cu is 65 A."] },
+        { title:"The sizing procedure", art:null,
+          body:["1. Find the <b>load current</b> — from the nameplate or by calculation.",
+            "2. If the load is <b>continuous</b>, multiply by <b>125%</b>.",
+            "3. Pick a conductor from the correct temperature column with ampacity <b>≥ that number</b>.",
+            "4. Check <b>240.4(D)</b> small-conductor caps and the termination ratings. Done."] },
+        { title:"Voltage drop — the long-run tax", art:null,
+          body:["Ampacity keeps wire from burning; <b>voltage drop</b> keeps equipment happy on long runs.",
+            "The NEC <b>recommends</b> no more than 3% drop on a branch circuit, 5% total to the load.",
+            "Long runs to sheds, gates, and well pumps often need wire <b>one or two sizes bigger</b> than ampacity alone requires.",
+            "Rule of thumb: past 100 feet, do the voltage-drop math before you buy wire."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"Ampacity is the max current a conductor can carry without:", choices:["Sparking","Overheating its insulation","Making noise","Losing voltage"], answer:1 },
+        { q:"Which is the bigger wire?", choices:["14 AWG","12 AWG","10 AWG","They're equal"], answer:2 },
+        { q:"THHN insulation is rated:", choices:["60°C","75°C","90°C","105°C"], answer:2 },
+        { q:"With 90°C wire on 75°C breaker lugs, you size from:", choices:["The 90°C column","The 75°C column","The 60°C column","Either one"], answer:1 },
+        { q:"75°C ampacity of 8 AWG copper:", choices:["40 A","50 A","65 A","30 A"], answer:1 },
+        { q:"75°C ampacity of 6 AWG copper:", choices:["50 A","55 A","65 A","85 A"], answer:2 },
+        { q:"75°C ampacity of 3/0 copper:", choices:["150 A","175 A","200 A","230 A"], answer:2 },
+        { q:"A 24 A continuous load requires a conductor sized for at least:", choices:["24 A","30 A","20 A","48 A"], answer:1 },
+        { q:"Compared to copper, aluminum of the same size carries:", choices:["More current","The same current","Less current","No current"], answer:2 },
+        { q:"Recommended max voltage drop on a branch circuit:", choices:["1%","3%","10%","25%"], answer:1 }
+      ]},
+      { type:"calc",
+        refTitle:"Table 310.16 — 75°C copper (after 240.4(D) caps)",
+        ref:'<table class="rtab"><tr><th>AWG</th><th>Ampacity</th><th>Max OCPD</th></tr><tr><td>14</td><td>20 A</td><td>15 A cap</td></tr><tr><td>12</td><td>25 A</td><td>20 A cap</td></tr><tr><td>10</td><td>35 A</td><td>30 A cap</td></tr><tr><td>8</td><td>50 A</td><td>50 A</td></tr><tr><td>6</td><td>65 A</td><td>65 A</td></tr><tr><td>4</td><td>85 A</td><td>85 A</td></tr><tr><td>3</td><td>100 A</td><td>100 A</td></tr><tr><td>2</td><td>115 A</td><td>115 A</td></tr><tr><td>1/0</td><td>150 A</td><td>150 A</td></tr><tr><td>3/0</td><td>200 A</td><td>200 A</td></tr></table>',
+        heading:"Size these conductors",
+        hintx:"Use the table. Answer with the AWG number (for 1/0 enter 0). Get at least 3 of 4.",
+        probs:[
+          {q:"Minimum copper conductor for a 20 A branch circuit?",unit:"AWG",ans:12,sol:"20 A breaker → 12 AWG copper (240.4(D))"},
+          {q:"A 40 A load at 75°C — minimum copper size?",unit:"AWG",ans:8,sol:"8 AWG = 50 A ≥ 40 A (6 AWG would be oversize, 10 is capped at 30 A)"},
+          {q:"A 24 A continuous load: 24 × 1.25 = 30 A. Minimum copper size?",unit:"AWG",ans:10,sol:"30 A → 10 AWG (35 A, capped at 30 A OCPD — exactly right)"},
+          {q:"A 60 A feeder — minimum copper size at 75°C?",unit:"AWG",ans:6,sol:"6 AWG = 65 A ≥ 60 A"}
+        ] } ]},
+
+    { id:"m5", kicker:"Module 6", title:"Derating — Heat & Conduit Fill", blurb:"When the table numbers shrink: hot locations and bundled conductors.",
+      steps:[ { type:"slides", slides:[
+        { title:"Why the table lies sometimes", art:"therm", cap:"The table assumes 30°C and ≤3 wires",
+          body:["Table 310.16 assumes two things: <b>30°C (86°F) ambient</b> air and <b>no more than 3 current-carrying conductors</b> together.",
+            "Break either assumption and the wire can't shed heat as designed — its real ampacity <b>drops</b>.",
+            "<b>Derating</b> is the math that corrects the table for real-world conditions.",
+            "Attics, rooftops, and packed conduits are where derating earns its keep."] },
+        { title:"Correction for temperature", art:null,
+          body:["Hotter air = less cooling. Table 310.15(B)(1) gives a <b>correction factor</b> by ambient temperature.",
+            "Using the 75°C column: <b>87–95°F → ×0.94</b>, <b>96–104°F → ×0.88</b>, <b>105–113°F → ×0.82</b>, <b>114–122°F → ×0.75</b>.",
+            "A 120°F attic takes a quarter of your ampacity off the top.",
+            "Rooftop conduit in sunlight gets an extra temperature adder on top of ambient."] },
+        { title:"Adjustment for bundling", art:null,
+          body:["More than 3 current-carrying conductors (CCC) in one conduit or bundle must be <b>adjusted</b> (310.15(C)(1)):",
+            "<b>4–6 CCC → 80%</b> · <b>7–9 CCC → 70%</b> · <b>10–20 CCC → 50%</b>.",
+            "Count only <b>current-carrying</b> conductors: EGCs never count; a true neutral of a balanced MWBC doesn't count.",
+            "Both factors apply <b>together</b>: ampacity × temp factor × fill factor."] },
+        { title:"The 90°C column trick", art:null,
+          body:["Here's why THHN's 90°C rating matters: you may <b>start derating from the 90°C value</b>.",
+            "12 AWG THHN: 90°C ampacity is <b>30 A</b>. Nine CCC in a conduit: 30 × 0.70 = <b>21 A</b> — still fine for a 20 A circuit.",
+            "Start from the 75°C value (25 A) instead and you'd get 17.5 A — a failed circuit on paper.",
+            "The final answer can never exceed the <b>termination</b> (75°C) rating — the trick only buys back derating losses."],
+          note:"Derate from 90°C, cap at 75°C. This one habit saves you a wire size constantly." },
+        { title:"Worked example", art:null,
+          body:["Eight 12 AWG THHN current-carrying conductors in one EMT run through a 100°F attic.",
+            "Start: 90°C value = 30 A. Fill (7–9 CCC): × 0.70 = 21 A. Temperature (96–104°F): × 0.91 (90°C col) ≈ <b>19.1 A</b>.",
+            "19.1 A is below 20 A — these circuits <b>can't</b> be 20 A anymore. Options: fewer CCC per conduit or bigger wire.",
+            "This is exactly the math inspectors check on multi-circuit home runs."] },
+        { title:"When to think “derate”", art:null,
+          body:["<b>Multiple circuits sharing one conduit</b> — the most common trigger in real work.",
+            "<b>Attics and rooftops</b> in summer — ambient correction territory.",
+            "<b>Bundled NM cables</b> through the same hole or stapled together for more than 24 inches.",
+            "If wire is hot to the touch under load, the derating was wrong — heat is the tell."] }
+      ]},
+      { type:"demo", demo:"derate" },
+      { type:"test", quiz:[
+        { q:"Table 310.16 assumes an ambient temperature of:", choices:["20°C","30°C","40°C","75°C"], answer:1 },
+        { q:"Table 310.16 assumes no more than how many current-carrying conductors together?", choices:["2","3","4","6"], answer:1 },
+        { q:"The adjustment factor for 4–6 current-carrying conductors:", choices:["100%","80%","70%","50%"], answer:1 },
+        { q:"The adjustment factor for 7–9 current-carrying conductors:", choices:["80%","70%","60%","50%"], answer:1 },
+        { q:"The adjustment factor for 10–20 current-carrying conductors:", choices:["70%","60%","50%","40%"], answer:2 },
+        { q:"Which conductor never counts as current-carrying?", choices:["The hot","The neutral","The EGC","The red wire"], answer:2 },
+        { q:"With THHN wire, derating may start from the:", choices:["60°C value","75°C value","90°C value","Breaker rating"], answer:2 },
+        { q:"After derating, the result may never exceed:", choices:["The 90°C value","The termination (75°C) rating","400 A","The utility limit"], answer:1 },
+        { q:"12 AWG THHN (30 A at 90°C) with 9 CCC in a conduit gives:", choices:["30 A","25 A","21 A","15 A"], answer:2 },
+        { q:"Bundled NM cables must be derated when bundled longer than:", choices:["6 inches","12 inches","24 inches","10 feet"], answer:2 }
+      ]},
+      { type:"calc",
+        refTitle:"Derating factors",
+        ref:'<table class="rtab"><tr><th colspan="2">Fill — 310.15(C)(1)</th></tr><tr><td>4–6 CCC</td><td>× 0.80</td></tr><tr><td>7–9 CCC</td><td>× 0.70</td></tr><tr><td>10–20 CCC</td><td>× 0.50</td></tr><tr><th colspan="2">Ambient (90°C col) — 310.15(B)(1)</th></tr><tr><td>87–95°F</td><td>× 0.96</td></tr><tr><td>96–104°F</td><td>× 0.91</td></tr><tr><td>105–113°F</td><td>× 0.87</td></tr><tr><td>114–122°F</td><td>× 0.82</td></tr><tr><th colspan="2">90°C copper ampacity</th></tr><tr><td>14 / 12 / 10</td><td>25 / 30 / 40 A</td></tr><tr><td>8 / 6</td><td>55 / 75 A</td></tr></table>',
+        heading:"Run the derating math",
+        hintx:"Multiply the 90°C ampacity by every factor that applies. Round to one decimal. Get at least 3 of 4.",
+        probs:[
+          {q:"Six 12 AWG THHN CCC in one conduit, normal temperature. Derated ampacity?",unit:"A",ans:24,sol:"30 A × 0.80 = 24 A"},
+          {q:"Nine 12 AWG THHN CCC in one conduit, normal temperature. Derated ampacity?",unit:"A",ans:21,sol:"30 A × 0.70 = 21 A"},
+          {q:"Three 10 AWG THHN CCC in a 100°F attic. Derated ampacity?",unit:"A",ans:36.4,sol:"40 A × 0.91 = 36.4 A (no fill adjustment at 3 CCC)"},
+          {q:"Eight 10 AWG THHN CCC in a 110°F space. Derated ampacity?",unit:"A",ans:24.4,sol:"40 A × 0.70 × 0.87 = 24.4 A"}
+        ] } ]},
+
+    { id:"m6", kicker:"Module 7", title:"Box Fill Deductions", blurb:"Count every conductor, clamp, and device — and never stuff a box again.",
+      steps:[ { type:"slides", slides:[
+        { title:"Why box fill matters", art:"boxart", cap:"Crowded boxes overheat and damage wire",
+          body:["Every box has a <b>volume in cubic inches</b>, and everything inside it takes up a share.",
+            "Overstuffed boxes trap heat, crush splices, and nick insulation when the device folds in.",
+            "<b>314.16</b> is the code section — inspectors check it, and exams love it.",
+            "The method: count the <b>volume allowances</b>, multiply by the conductor size, compare to the box volume."] },
+        { title:"The counting rules", art:null,
+          body:["Each insulated conductor <b>entering the box</b> and spliced or terminated = <b>1 allowance</b>.",
+            "A conductor <b>passing through unbroken</b> = 1 allowance. Pigtails made <b>inside</b> the box = <b>0</b>.",
+            "All the <b>EGCs together</b> = 1 allowance (based on the largest EGC in the box).",
+            "One or more <b>internal cable clamps</b> = 1 allowance. Each <b>device</b> (switch/receptacle) = <b>2 allowances</b>."],
+          note:"Wires 1 each · grounds 1 total · clamps 1 total · each device 2. That's the whole system." },
+        { title:"Volume per allowance", art:null,
+          body:["Each allowance costs volume based on conductor size — 314.16(B):",
+            "<b>14 AWG → 2.00 in³</b> · <b>12 AWG → 2.25 in³</b> · <b>10 AWG → 2.50 in³</b>.",
+            "<b>8 AWG → 3.00 in³</b> · <b>6 AWG → 5.00 in³</b>.",
+            "Device and ground allowances use the <b>largest conductor</b> connected to them."] },
+        { title:"Worked example", art:null,
+          body:["Two 12/2 NM cables into one box, feeding one receptacle, box has internal clamps.",
+            "Conductors: 4 insulated × 1 = <b>4</b>. Grounds: <b>1</b>. Clamps: <b>1</b>. Device: <b>2</b>. Total = <b>8 allowances</b>.",
+            "8 × 2.25 in³ = <b>18 in³ minimum box</b>.",
+            "A standard 18 in³ single-gang plastic box just makes it — a 20.3 in³ box gives breathing room."] },
+        { title:"Reading real boxes", art:null,
+          body:["Plastic boxes have their volume <b>stamped inside</b> — look before you fill.",
+            "Metal box volumes come from the table in 314.16(A) — a 4×1½ square is 21 in³.",
+            "<b>Plaster rings and extension rings add</b> their marked volume to the total.",
+            "When a box is too small, the fix is a bigger or deeper box — not a harder push."] },
+        { title:"The habits", art:null,
+          body:["Count fill <b>before</b> you nail the box up, not after the drywall's on.",
+            "When a box will host splices for multiple circuits, jump straight to a deep box.",
+            "Every conductor you pull into a box costs volume — don't hairpin extra cables through a device box.",
+            "Neat boxes aren't just pretty: folded, uncrushed conductors are what pass inspection and survive decades."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"Box fill rules live in code section:", choices:["310.16","314.16","240.4","250.66"], answer:1 },
+        { q:"Each insulated conductor entering and terminating in the box counts as:", choices:["Nothing","1 allowance","2 allowances","Half an allowance"], answer:1 },
+        { q:"All EGCs in a box together count as:", choices:["1 allowance","1 each","2 allowances","Nothing"], answer:0 },
+        { q:"Each device (switch or receptacle) counts as:", choices:["1 allowance","2 allowances","3 allowances","Nothing"], answer:1 },
+        { q:"Internal cable clamps count as:", choices:["Nothing","1 allowance total","1 per cable","2 allowances"], answer:1 },
+        { q:"A pigtail made up entirely inside the box counts as:", choices:["1 allowance","2 allowances","Zero","Depends on color"], answer:2 },
+        { q:"Volume allowance for a 14 AWG conductor:", choices:["1.75 in³","2.00 in³","2.25 in³","2.50 in³"], answer:1 },
+        { q:"Volume allowance for a 12 AWG conductor:", choices:["2.00 in³","2.25 in³","2.50 in³","3.00 in³"], answer:1 },
+        { q:"Two 12/2 NM cables + clamps + one device = how many allowances?", choices:["6","7","8","10"], answer:2 },
+        { q:"A plastic box's volume is usually found:", choices:["Stamped inside the box","On the breaker","In Table 310.16","By measuring with tape"], answer:0 }
+      ]},
+      { type:"calc",
+        refTitle:"Box fill cheat sheet — 314.16",
+        ref:'<table class="rtab"><tr><th>Item</th><th>Allowances</th></tr><tr><td>Insulated conductor in/terminated</td><td>1 each</td></tr><tr><td>All EGCs together</td><td>1</td></tr><tr><td>Internal clamps</td><td>1</td></tr><tr><td>Each device (yoke)</td><td>2</td></tr><tr><th>Size</th><th>Volume each</th></tr><tr><td>14 AWG</td><td>2.00 in³</td></tr><tr><td>12 AWG</td><td>2.25 in³</td></tr><tr><td>10 AWG</td><td>2.50 in³</td></tr></table>',
+        heading:"Calculate the fill",
+        hintx:"Count allowances, then multiply by the conductor volume. Get at least 3 of 4.",
+        probs:[
+          {q:"One 14/2 NM cable spliced in a box with no clamps or device. Total allowances?",unit:"count",ans:3,sol:"2 insulated conductors + 1 for the ground = 3"},
+          {q:"Minimum box volume for those three 14 AWG allowances?",unit:"in³",ans:6,sol:"3 × 2.00 = 6.00 in³"},
+          {q:"Two 12/2 cables, internal clamps, one receptacle. Total allowances?",unit:"count",ans:8,sol:"4 conductors + 1 grounds + 1 clamps + 2 device = 8"},
+          {q:"Minimum box volume for those eight 12 AWG allowances?",unit:"in³",ans:18,sol:"8 × 2.25 = 18.0 in³"}
+        ] } ]},
+
+    { id:"m7", kicker:"Module 8", title:"Panels & Feeders", blurb:"Service, feeder, branch — and the load calculation that sizes a panel.",
+      steps:[ { type:"slides", slides:[
+        { title:"The three levels", art:"feedtree", cap:"Service → feeder → branch",
+          body:["<b>Service conductors</b> bring utility power to the main disconnect — the first level.",
+            "A <b>feeder</b> carries power from that service equipment to another panel (a subpanel).",
+            "<b>Branch circuits</b> leave the final breaker for the outlets — the last level.",
+            "Name the level first: the rules for sizing and grounding change at each one."] },
+        { title:"Sizing starts with a load calc", art:null,
+          body:["You size a panel by adding up its <b>calculated load</b> — Article 220, not guesswork.",
+            "Dwelling standard method: <b>3 VA per ft²</b> of floor area for general lighting and receptacles.",
+            "Add <b>1500 VA</b> for each small-appliance circuit (two minimum) and <b>1500 VA</b> for laundry.",
+            "Then add fixed appliances, range, dryer, HVAC — each with its own rules."] },
+        { title:"Demand factors", art:null,
+          body:["Not everything runs at once, so code lets you <b>discount</b> the general load:",
+            "First <b>3000 VA at 100%</b>, the remainder at <b>35%</b> (Table 220.42 for lighting loads).",
+            "Ranges use <b>Table 220.55</b> — a typical home range counts as <b>8 kW</b>, not its full nameplate.",
+            "Dryers count at nameplate but never less than <b>5000 VA</b>."] },
+        { title:"Worked example — 2000 ft² house", art:null,
+          body:["General: 2000 × 3 = 6000 VA. Small appliance: 3000. Laundry: 1500. Subtotal = <b>10,500 VA</b>.",
+            "Demand: 3000 + (7500 × 0.35) = <b>5625 VA</b>.",
+            "Add range 8000 + dryer 5000 = <b>18,625 VA</b> total.",
+            "18,625 ÷ 240 V ≈ <b>78 A</b> → a <b>100 A service</b> covers it; 200 A gives room to grow."],
+          note:"The flow: square footage → VA → demand factors → add big loads → divide by 240 → next standard size up." },
+        { title:"Sizing the feeder conductors", art:null,
+          body:["Feeder conductors must carry the calculated load and be protected by their breaker.",
+            "A <b>60 A subpanel</b> feeder: 6 AWG copper (65 A at 75°C). A <b>100 A</b> feeder: <b>3 AWG copper</b>.",
+            "For <b>dwelling services</b>, 310.12 allows 83% sizing: a 100 A service may use <b>4 AWG copper</b>.",
+            "A feeder to a subpanel is <b>4 wires</b>: two hots, a neutral, and an EGC."] },
+        { title:"Subpanel rules", art:null,
+          body:["In a subpanel, the <b>neutral bar floats</b> — it must be isolated from the enclosure.",
+            "Grounds and neutrals bond together at <b>one point only</b>: the main service disconnect.",
+            "Bond them again downstream and normal neutral current flows on the EGC and metal parts — a shock hazard.",
+            "Remove the green bonding screw in every subpanel. It's a 10-second check that inspectors always make."],
+          note:"One bond, at the service, ever. Everything downstream keeps neutral and ground apart." },
+        { title:"Inside the panel — the busbars", art:null,
+          body:["Open any panel and you'll find the same parts: a <b>main breaker</b> up top, two vertical <b>hot busbars</b> (L1 and L2), a <b>neutral bar</b>, and a <b>ground bar</b>.",
+            "The hot buses run down the center; each branch breaker <b>clips onto a bus stab</b> to tap its power.",
+            "A <b>single-pole</b> breaker grabs one bus (120 V); a <b>two-pole</b> breaker grabs both at once (240 V).",
+            "The neutral and ground bars line the sides — and remember, they're only bonded together at the <b>main service</b>."] },
+        { title:"Numbering the breakers", art:"panelnum", cap:"Odd left, even right — the leg alternates every row",
+          body:["Breakers are numbered <b>across in rows</b>: 1 and 2 across the top, 3 and 4 next, then 5 and 6, and on down.",
+            "That drops all the <b>odd numbers (1, 3, 5, 7…) down the left column</b> and all the <b>even numbers (2, 4, 6, 8…) down the right</b>.",
+            "The bus is built so the <b>leg alternates as you move down</b> a column: position 1 sits on L1 (black), position 3 on L2 (red), 5 back on L1, 7 on L2 — same pattern on the even side.",
+            "That alternation is the whole point: a <b>two-pole breaker</b> spans two stacked positions (like 1 and 3) and automatically lands on <b>opposite legs</b> (black + red) to make 240 V."],
+          note:"Three-phase panels work the same with three buses — the stabs run A-B-C-A-B-C down each column, so a three-pole breaker catches all three phases (and the high leg always lands on the fixed B-phase position). Spreading circuits down the panel also balances the load evenly across the legs." },
+      ]},
+      { type:"test", quiz:[
+        { q:"Conductors from the service equipment to a subpanel are called:", choices:["Service conductors","Branch circuits","A feeder","Taps"], answer:2 },
+        { q:"Dwelling general lighting load is calculated at:", choices:["1 VA/ft²","3 VA/ft²","5 VA/ft²","10 VA/ft²"], answer:1 },
+        { q:"Each small-appliance circuit adds:", choices:["1000 VA","1500 VA","2000 VA","3000 VA"], answer:1 },
+        { q:"The general load demand factor: first 3000 VA at 100%, remainder at:", choices:["25%","35%","50%","80%"], answer:1 },
+        { q:"A dryer counts at nameplate but never less than:", choices:["3000 VA","4000 VA","5000 VA","8000 VA"], answer:2 },
+        { q:"A typical home range counts (per Table 220.55) as about:", choices:["4 kW","8 kW","12 kW","Its full nameplate always"], answer:1 },
+        { q:"A 100 A feeder needs what copper conductor at 75°C?", choices:["6 AWG","4 AWG","3 AWG","1 AWG"], answer:2 },
+        { q:"A feeder to a subpanel contains how many conductors?", choices:["2","3","4","5"], answer:2 },
+        { q:"In a subpanel, the neutral bar must be:", choices:["Bonded to the enclosure","Isolated from the enclosure","Connected to the ground bar","Removed"], answer:1 },
+        { q:"Neutrals and grounds bond together:", choices:["In every panel","Only at the main service disconnect","At every receptacle","Never"], answer:1 },
+        { q:"Panel breakers are numbered odd down the left column and even down the:", choices:["Right column","Same left column","Neutral bar","Top row only"], answer:0 },
+        { q:"Moving down one column of a panel, each breaker position taps:", choices:["The same leg every time","The alternating (opposite) leg","The neutral","The ground bar"], answer:1 },
+        { q:"A two-pole 240 V breaker makes 240 V because its two stabs land on:", choices:["The same leg","Opposite legs (phases)","A hot and the neutral","Two grounds"], answer:1 },
+      ]},
+      { type:"calc",
+        refTitle:"Dwelling load calc — standard method",
+        ref:'<table class="rtab"><tr><td>General lighting</td><td>3 VA / ft²</td></tr><tr><td>Small-appliance ckts</td><td>1500 VA each (×2 min)</td></tr><tr><td>Laundry</td><td>1500 VA</td></tr><tr><td>Demand</td><td>1st 3000 @ 100%, rest @ 35%</td></tr><tr><td>Range (typical)</td><td>8000 VA</td></tr><tr><td>Dryer</td><td>5000 VA min</td></tr><tr><td>Amps</td><td>total VA ÷ 240</td></tr></table>',
+        heading:"Size this service",
+        hintx:"A 1500 ft² house with two small-appliance circuits, laundry, an 8 kW range and a 5 kW dryer. Get at least 3 of 4.",
+        probs:[
+          {q:"General + small appliance + laundry VA before demand? (1500 ft²)",unit:"VA",ans:9000,sol:"1500×3 + 3000 + 1500 = 9000 VA"},
+          {q:"After demand factors, that general load becomes?",unit:"VA",ans:5100,sol:"3000 + (6000 × 0.35) = 5100 VA"},
+          {q:"Total calculated load with range (8000) and dryer (5000)?",unit:"VA",ans:18100,sol:"5100 + 8000 + 5000 = 18,100 VA"},
+          {q:"Calculated amps at 240 V? (round to whole)",unit:"A",ans:75,sol:"18,100 ÷ 240 ≈ 75 A → 100 A service"}
+        ] } ]},
+
+    { id:"m8", kicker:"Module 9", title:"Equipment Grounding Conductor", blurb:"The fault path that trips the breaker — what the EGC really does and how to size it.",
+      steps:[ { type:"slides", slides:[
+        { title:"What the EGC actually does", art:"fault", cap:"The fault's highway back to the source",
+          body:["The <b>EGC</b> connects every metal box, case, and frame back to the panel.",
+            "In normal operation it carries <b>nothing</b> — it sits and waits.",
+            "When a hot touches metal, the EGC gives that fault a <b>low-resistance highway</b> back to the source.",
+            "Huge current flows for a moment — and that huge current is what <b>trips the breaker fast</b>."] },
+        { title:"Clearing a fault, step by step", art:null,
+          body:["Hot touches a motor case → current floods: case → <b>EGC</b> → panel ground bar → <b>main bonding jumper</b> → neutral → transformer.",
+            "The loop is so low-resistance that hundreds of amps flow instantly.",
+            "The breaker sees a massive overcurrent and opens in a fraction of a second.",
+            "No EGC path? The case just sits there <b>energized</b>, waiting for a hand to become the path."],
+          note:"Electricity isn't trying to get “into the earth” — it's trying to get back to its source. The EGC is that road." },
+        { title:"Dirt is not a fault path", art:null,
+          body:["A ground rod alone <b>cannot</b> trip a breaker: earth resistance is far too high.",
+            "25 Ω of earth on a 120 V fault gives less than 5 A — a 20 A breaker never notices.",
+            "That's why every circuit carries its own EGC — wire, not dirt, clears faults.",
+            "The rods and earth connection have a different job — that's Module 9."] },
+        { title:"What can serve as the EGC", art:null,
+          body:["A <b>copper wire</b>, green or bare, run with the circuit conductors — the everyday answer.",
+            "<b>Metal conduit</b> (EMT, IMC, RMC) is a legal EGC when properly installed and continuous (250.118).",
+            "Flexible cords use the green wire; NM cable carries a bare one.",
+            "Whatever form it takes, it must run <b>with</b> the circuit — never as a separate shortcut."] },
+        { title:"Sizing by the breaker — 250.122", art:null,
+          body:["The EGC is sized from the <b>breaker rating</b>, not the load:",
+            "<b>15 A → 14</b> · <b>20 A → 12</b> · <b>30–60 A → 10</b> · <b>100 A → 8</b> · <b>200 A → 6</b> copper.",
+            "It can be smaller than the circuit conductors because it only works for seconds at a time.",
+            "If you upsize circuit conductors for voltage drop, upsize the EGC <b>proportionally</b> (250.122(B))."] },
+        { title:"Bonding — making everything one", art:null,
+          body:["<b>Bonding</b> means connecting metal parts together so no dangerous voltage can exist between them.",
+            "Metal boxes, enclosures, and equipment likely to be energized all get bonded to the EGC system.",
+            "A bonded system means a fault anywhere finds the path home from everywhere.",
+            "Green screw, green wire, tight connection — bonding is cheap insurance that saves lives."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"In normal operation, the EGC carries:", choices:["Full load current","Half the neutral current","No current","DC only"], answer:2 },
+        { q:"The EGC's job during a fault is to:", choices:["Absorb the electricity","Give fault current a path back to the source","Send current into the earth","Reduce the voltage"], answer:1 },
+        { q:"A breaker trips on a ground fault because:", choices:["It senses dirt","The EGC path lets huge current flow","The voltage rises","The neutral opens"], answer:1 },
+        { q:"Can a ground rod alone trip a breaker?", choices:["Yes, instantly","Yes, within an hour","No — earth resistance is too high","Only in wet soil"], answer:2 },
+        { q:"Which can legally serve as an EGC?", choices:["Properly installed metal conduit","A water pipe alone","The dirt","A phone line"], answer:0 },
+        { q:"The EGC is sized from the:", choices:["Load amps","Wire length","Breaker (OCPD) rating","Voltage"], answer:2 },
+        { q:"EGC for a 20 A circuit:", choices:["14 AWG","12 AWG","10 AWG","8 AWG"], answer:1 },
+        { q:"EGC for a 100 A feeder:", choices:["10 AWG","8 AWG","6 AWG","4 AWG"], answer:1 },
+        { q:"If circuit conductors are upsized for voltage drop, the EGC:", choices:["Stays the same","Is removed","Is upsized proportionally","Becomes the neutral"], answer:2 },
+        { q:"Connecting metal parts so no voltage can exist between them is called:", choices:["Splicing","Bonding","Phasing","Derating"], answer:1 }
+      ]},
+      { type:"calc",
+        refTitle:"Table 250.122 — copper EGC by breaker",
+        ref:'<table class="rtab"><tr><th>OCPD</th><th>Copper EGC</th></tr><tr><td>15 A</td><td>14 AWG</td></tr><tr><td>20 A</td><td>12 AWG</td></tr><tr><td>30–60 A</td><td>10 AWG</td></tr><tr><td>100 A</td><td>8 AWG</td></tr><tr><td>200 A</td><td>6 AWG</td></tr><tr><td>300 A</td><td>4 AWG</td></tr><tr><td>400 A</td><td>3 AWG</td></tr></table>',
+        heading:"Size these EGCs",
+        hintx:"Use the breaker rating, not the load. Answer with the AWG number. Get at least 3 of 4.",
+        probs:[
+          {q:"EGC for a 20 A branch circuit?",unit:"AWG",ans:12,sol:"20 A → 12 AWG copper"},
+          {q:"EGC for a 40 A dedicated range circuit?",unit:"AWG",ans:10,sol:"30–60 A → 10 AWG copper"},
+          {q:"EGC for a 100 A subpanel feeder?",unit:"AWG",ans:8,sol:"100 A → 8 AWG copper"},
+          {q:"EGC for a 200 A feeder?",unit:"AWG",ans:6,sol:"200 A → 6 AWG copper"}
+        ] } ]},
+
+    { id:"m9", kicker:"Module 10", title:"Grounding the System", blurb:"Electrodes, the GEC, and the main bonding jumper — ground a service the right way.",
+      steps:[ { type:"slides", slides:[
+        { title:"Two systems, two jobs", art:null,
+          body:["<b>Equipment grounding</b> (last module) clears faults by tripping breakers — that's the EGC's world.",
+            "<b>System grounding</b> connects the electrical system to the <b>earth itself</b>.",
+            "Earth connection handles <b>lightning, utility surges, and voltage stabilization</b> — not breaker tripping.",
+            "Confusing these two jobs is the most common grounding mistake in the trade. Keep them separate in your head."] },
+        { title:"The grounding electrode system", art:"rod", cap:"Rods, GEC, and the service — one system",
+          body:["The earth connection happens through <b>electrodes</b> (250.52): ground rods, the metal water pipe, building steel, or a concrete-encased electrode (<b>Ufer</b>).",
+            "All electrodes present at a building must be <b>bonded together</b> into one grounding electrode <b>system</b>.",
+            "The Ufer — rebar in the footing — is the best electrode most buildings will ever have.",
+            "A metal water pipe electrode must be joined within <b>5 feet</b> of where the pipe enters the building."] },
+        { title:"Ground rods, done right", art:null,
+          body:["Standard rods are <b>8 feet</b> long, driven their full length into the earth.",
+            "One rod is enough only if it measures <b>25 Ω or less</b> to earth — hard to prove without a test.",
+            "The everyday answer: <b>drive two rods</b>, at least <b>6 feet apart</b>, and skip the argument.",
+            "Rod tops can be flush or below grade; connections must be listed clamps, one conductor per clamp unless rated."] },
+        { title:"The GEC — sizing by 250.66", art:null,
+          body:["The <b>grounding electrode conductor</b> (GEC) ties the service neutral to the electrode system.",
+            "It's sized from the <b>service conductors</b>: 2 AWG or smaller service → <b>8 AWG</b> GEC; 1/0–1 → <b>6</b>; 2/0–3/0 → <b>4</b> copper.",
+            "Connections to <b>rods</b> never require larger than <b>6 AWG</b> copper; to a Ufer, never larger than <b>4 AWG</b>.",
+            "Run the GEC <b>unbroken</b> where possible — splices only by irreversible or listed means."],
+          note:"A 200 A residential service: 2/0–3/0 copper service conductors → 4 AWG GEC, but 6 AWG satisfies the rod connection." },
+        { title:"The main bonding jumper", art:null,
+          body:["The <b>MBJ</b> is the green screw or strap that joins the <b>neutral bar to the enclosure</b> at the main service.",
+            "It's the single most important connection in the building: it completes the <b>fault-clearing loop</b> from every EGC back to the neutral.",
+            "Without it, ground faults can't get back to the transformer — breakers won't trip, and metal stays hot.",
+            "It's installed <b>only</b> at the service disconnect — never in a subpanel."] },
+        { title:"How to ground a service — the sequence", art:null,
+          body:["1. <b>Drive the electrodes</b> — two 8-ft rods, 6+ ft apart (plus Ufer/water pipe if present).",
+            "2. <b>Run the GEC</b> — properly sized, continuous, clamped with listed fittings.",
+            "3. <b>Land the GEC</b> on the neutral bar at the service disconnect.",
+            "4. <b>Install the MBJ</b>, then <b>bond the water piping</b> and other metal systems. Now do it in the interactive."] }
+      ]},
+      { type:"test", quiz:[
+        { q:"Tripping breakers during a fault is the job of the:", choices:["Ground rod","EGC system","Utility","Earth"], answer:1 },
+        { q:"The earth connection mainly handles:", choices:["Ground faults","Overloads","Lightning and surges","Voltage drop"], answer:2 },
+        { q:"A concrete-encased electrode is also called:", choices:["A Ufer","A rod","A ring","A plate"], answer:0 },
+        { q:"A standard ground rod is:", choices:["4 feet","6 feet","8 feet","12 feet"], answer:2 },
+        { q:"A single rod is sufficient only if its resistance is:", choices:["100 Ω or less","50 Ω or less","25 Ω or less","Any value"], answer:2 },
+        { q:"Two ground rods must be at least how far apart?", choices:["2 feet","6 feet","10 feet","25 feet"], answer:1 },
+        { q:"The GEC connection to ground rods never needs to be larger than:", choices:["8 AWG","6 AWG","4 AWG","2 AWG"], answer:1 },
+        { q:"The GEC is sized from the:", choices:["Breaker rating","Service conductor size","Load calculation","Rod length"], answer:1 },
+        { q:"The main bonding jumper connects:", choices:["Two rods","The neutral bar to the enclosure at the service","The panel to the meter","Hot to neutral"], answer:1 },
+        { q:"The MBJ is installed:", choices:["In every panel","Only at the service disconnect","At each receptacle","At the transformer"], answer:1 }
+      ]},
+      { type:"demo", demo:"ges" } ]},
+
+    { id:"final", kicker:"Final", title:"Final Exam", blurb:"A cumulative 20-question exam pulled from every module. Pass it to earn your certificate.",
+      steps:[ { type:"final" } ] }
+  ]
+};
+/* ===== ENGINE ===== */
+const REVIEW_MODE=false;  /* set to false before launch — gates lessons normally */
+const LS="wirenerd_circuits_conductors_progress_v1";
+const $=s=>document.querySelector(s);
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const NS="http://www.w3.org/2000/svg";
+
+let state=loadState();
+let view={idx:0,step:0};
+let slideN=0, quizSel=[], armed=null, userWires=[];
+let lab={mode:"series",V:120,R1:20,R2:30};
+let demoRAF=null, demoCleanup=null;
+function cancelDemo(){if(demoRAF){cancelAnimationFrame(demoRAF);demoRAF=null;}if(demoCleanup){demoCleanup();demoCleanup=null;}}
+
+function loadState(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.mods)return s;}catch(e){}return{name:"",mods:{},completedAt:null};}
+function save(){try{
+  var total=COURSE.modules.length, done=0;
+  COURSE.modules.forEach(function(m){var a=(state.mods[m.id]&&state.mods[m.id].done)||[];if(a.length>=m.steps.length&&a.slice(0,m.steps.length).every(Boolean))done++;});
+  state.total=total;state.done=done;state.pct=Math.round(done/total*100);
+  if(state.pct===100&&!state.completedAt)state.completedAt=Date.now();
+  localStorage.setItem(LS,JSON.stringify(state));
+}catch(e){}}
+function steps(i){return COURSE.modules[i].steps;}
+function md(id,len){if(!state.mods[id])state.mods[id]={done:Array(len).fill(false)};while(state.mods[id].done.length<len)state.mods[id].done.push(false);return state.mods[id];}
+function modComplete(i){const mo=COURSE.modules[i];return md(mo.id,mo.steps.length).done.every(Boolean);}
+function moduleUnlocked(i){return REVIEW_MODE||i===0||modComplete(i-1);}
+function courseComplete(){return COURSE.modules.every((m,i)=>modComplete(i));}
+function firstIncompleteStep(i){const mo=COURSE.modules[i];const d=md(mo.id,mo.steps.length).done;const ix=d.findIndex(x=>!x);return ix<0?mo.steps.length-1:ix;}
+function pairKey(a,b){return [a,b].sort().join("|");}
+function stepLabel(t){return t==="slides"?"Lesson":t==="test"?"Test":t==="calc"?"Calculator":t==="lab"?"Circuit Lab":t==="demo"?"Interactive":t==="final"?"Exam":"Wiring";}
+
+function renderHome(){
+  cancelDemo();stopSpeech();
+  const total=COURSE.modules.length, done=COURSE.modules.filter((m,i)=>modComplete(i)).length;
+  $("#pbarFill").style.width=Math.round(done/total*100)+"%";
+  $("#progLabel").textContent=done===0?"":(courseComplete()?"Course complete ✓":done+" of "+total+" modules done");
+  $("#startBtn").textContent=done===0?"Start the course":(courseComplete()?"Review course":"Resume course");
+  const list=$("#modList");list.innerHTML="";
+  COURSE.modules.forEach((mo,i)=>{
+    const unlocked=moduleUnlocked(i),complete=modComplete(i);
+    const tags=mo.steps.map(s=>s.type==="wiring"?'<span class="mtag sb">Sandbox</span>':s.type==="lab"?'<span class="mtag sb">Circuit Lab</span>':s.type==="demo"?'<span class="mtag sb">Interactive</span>':s.type==="final"?'<span class="mtag cl">Exam</span>':s.type==="calc"?'<span class="mtag cl">Calculator</span>':s.type==="test"?'<span class="mtag">Test</span>':'<span class="mtag">Lesson</span>');
+    const uniq=[...new Set(tags)].join("");
+    const row=el("div","mod "+(unlocked?"unlocked":"locked"));
+    row.innerHTML='<div class="idx">'+(complete?"✓":(i+1))+'</div><div class="info"><div class="k">'+mo.kicker+'</div><h3>'+mo.title+'</h3><p>'+mo.blurb+'</p><div class="tags">'+uniq+'</div></div><div class="badge '+(complete?"done":(unlocked?"go":""))+'">'+(complete?"Completed":(unlocked?"Start ›":"Locked"))+'</div>';
+    if(unlocked)row.addEventListener("click",()=>openModule(i));
+    list.appendChild(row);
+  });
+  let hc=$("#homeCert");
+  if(courseComplete()||REVIEW_MODE){if(!hc){hc=el("div");hc.id="homeCert";hc.style.marginTop="22px";hc.innerHTML='<button class="btn primary" id="goCert">View / download certificate ›</button>';$("#modList").after(hc);$("#goCert").addEventListener("click",showCertificate);}}
+  else if(hc){hc.remove();}
+  showOnly("home");
+}
+function showOnly(w){$("#homeWrap").style.display=w==="home"?"block":"none";$("#playerWrap").classList.toggle("on",w==="player");$("#certWrap").classList.toggle("on",w==="cert");window.scrollTo({top:0,behavior:"smooth"});}
+
+function enterModule(i){view.idx=i;view.step=firstIncompleteStep(i);slideN=0;renderPlayer();showOnly("player");}
+window.enterModule=enterModule;
+function openModule(i){
+  if(window.WN_GATE && window.WN_GATE.paid!==true && window.WN_GATE.tryEnter){ window.WN_GATE.tryEnter(i); return; }
+  enterModule(i);
+}
+function renderPlayer(){const mo=COURSE.modules[view.idx];$("#modKicker").textContent=mo.kicker;$("#modTitle").textContent=mo.title;renderChips();renderStage();}
+function renderChips(){
+  const mo=COURSE.modules[view.idx];const d=md(mo.id,mo.steps.length).done;const reach=firstIncompleteStep(view.idx);
+  $("#stepChips").innerHTML=mo.steps.map((s,i)=>{const isDone=d[i],active=view.step===i,clickable=(REVIEW_MODE||i<=reach);return '<div class="stepchip '+(active?"active":(isDone?"done":""))+(clickable?" clickable":" locked")+'" data-step="'+i+'">'+(isDone?"✓ ":"")+stepLabel(s.type)+'</div>';}).join("");
+  $("#stepChips").querySelectorAll(".stepchip.clickable").forEach(ch=>ch.addEventListener("click",()=>{stopSpeech();view.step=+ch.dataset.step;if(steps(view.idx)[view.step].type==="slides")slideN=0;renderStage();renderChips();}));
+}
+function renderStage(){stopSpeech();cancelDemo();const t=steps(view.idx)[view.step].type;if(t==="slides")renderSlides();else if(t==="test")renderTest();else if(t==="calc")renderCalc();else if(t==="lab")renderLab();else if(t==="demo")renderDemo();else if(t==="final")renderFinal();else renderWiring();}
+function completeStep(){const mo=COURSE.modules[view.idx];md(mo.id,mo.steps.length).done[view.step]=true;save();}
+function advance(){const mo=COURSE.modules[view.idx];if(view.step<mo.steps.length-1){view.step++;if(steps(view.idx)[view.step].type==="slides")slideN=0;renderPlayer();}else moduleFinished();}
+
+function renderSlides(){
+  const mo=COURSE.modules[view.idx];const sl=steps(view.idx)[view.step].slides;const s=sl[slideN];
+  const art=s.art?('<div><div class="art">'+ART[s.art]+'</div>'+(s.cap?'<div class="artcap">'+s.cap+'</div>':'')+'</div>'):'';
+  $("#stage").innerHTML='<div class="card"><div class="slide '+(s.art?"has-art":"")+'"><div><div class="stitle">'+s.title+'</div><ul>'+s.body.map(b=>'<li><span>'+b+'</span></li>').join("")+'</ul>'+(s.note?'<div class="snote">'+s.note+'</div>':'')+'</div>'+art+
+    '</div><div class="slidebar"><button class="btn ghost sm readbtn" id="readBtn"><span class="ic"></span> Read aloud</button><span class="count">Slide '+(slideN+1)+' / '+sl.length+'</span><span class="spacer"></span><button class="btn ghost sm" id="prevS" '+(slideN===0?"disabled":"")+'>‹ Back</button>'+(slideN<sl.length-1?'<button class="btn primary sm" id="nextS">Next ›</button>':'<button class="btn primary sm" id="doneS">'+(view.step<mo.steps.length-1?"Continue ›":"Finish module ›")+'</button>')+'</div></div>';
+  $("#readBtn").addEventListener("click",()=>toggleSpeech(s));
+  const p=$("#prevS");if(p)p.addEventListener("click",()=>{slideN--;renderSlides();});
+  const n=$("#nextS");if(n)n.addEventListener("click",()=>{slideN++;renderSlides();});
+  const dn=$("#doneS");if(dn)dn.addEventListener("click",()=>{completeStep();stopSpeech();advance();});
+}
+
+let speaking=false;
+function plain(h){return h.replace(/<[^>]+>/g,"").replace(/&nbsp;/g," ");}
+function speechText(s){return plain(s.title)+". "+s.body.map(plain).join(". ")+(s.note?". Note: "+plain(s.note):"");}
+function toggleSpeech(s){if(!("speechSynthesis" in window)){alert("Your browser doesn't support read-aloud.");return;}if(speaking){stopSpeech();return;}const u=new SpeechSynthesisUtterance(speechText(s));u.rate=.98;u.onend=()=>{speaking=false;const b=$("#readBtn");if(b){b.classList.remove("playing");b.innerHTML='<span class="ic"></span> Read aloud';}};speechSynthesis.cancel();speechSynthesis.speak(u);speaking=true;const b=$("#readBtn");if(b){b.classList.add("playing");b.innerHTML='<span class="ic"></span> Stop';}}
+function stopSpeech(){if("speechSynthesis" in window)speechSynthesis.cancel();speaking=false;const b=$("#readBtn");if(b){b.classList.remove("playing");b.innerHTML='<span class="ic"></span> Read aloud';}}
+
+function renderTest(){quizSel=steps(view.idx)[view.step].quiz.map(()=>null);drawTest(false);}
+function drawTest(showResult){
+  const mo=COURSE.modules[view.idx];const q=steps(view.idx)[view.step].quiz;const need=Math.ceil(q.length*COURSE.passPct);
+  let score=0;q.forEach((qq,i)=>{if(quizSel[i]===qq.answer)score++;});const passed=score>=need;
+  $("#stage").innerHTML='<div class="card"><div class="quiz">'+q.map((qq,i)=>'<div class="q"><div class="qt"><b>'+(i+1)+'</b>'+qq.q+'</div>'+qq.choices.map((c,j)=>{let cls="opt";if(showResult){if(quizSel[i]===j&&j!==qq.answer)cls+=" wrong";}else if(quizSel[i]===j)cls+=" sel";return '<div class="'+cls+'" data-q="'+i+'" data-c="'+j+'"><span class="mk">'+"ABCD"[j]+'</span><span>'+c+'</span></div>';}).join("")+'</div>').join("")+'</div><div class="barbtm">'+(showResult?'<span class="result '+(passed?"pass":"fail")+'">Scored '+score+'/'+q.length+' — need '+need+' to pass. '+(passed?"Passed ✓":"Not yet — review and try again.")+'</span><span class="spacer"></span>'+(passed?'<button class="btn primary sm" id="contQ">'+(view.step<mo.steps.length-1?"Continue ›":"Finish module ›")+'</button>':'<button class="btn sm" id="revLesson">Read the lesson again</button> <button class="btn primary sm" id="retryQ">Try again</button>'):'<span class="result" style="color:var(--text-dim)">Pick an answer for each.</span><span class="spacer"></span><button class="btn primary sm" id="subQ">Submit test</button>')+'</div></div>';
+  if(!showResult){
+    $("#stage").querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{quizSel[+o.dataset.q]=+o.dataset.c;drawTest(false);}));
+    const sb=$("#subQ");if(sb)sb.addEventListener("click",()=>{if(quizSel.some(x=>x===null)){alert("Answer every question first.");return;}let sc=0;q.forEach((qq,i)=>{if(quizSel[i]===qq.answer)sc++;});drawTest(true);if(sc>=need){completeStep();renderChips();}});
+  }else{
+    const r=$("#retryQ");if(r)r.addEventListener("click",()=>renderTest());
+    const c=$("#contQ");if(c)c.addEventListener("click",()=>advance());
+    const rl=$("#revLesson");if(rl)rl.addEventListener("click",()=>{const si=steps(view.idx).findIndex(s=>s.type==="slides");if(si>=0){stopSpeech();view.step=si;slideN=0;renderPlayer();}});
+  }
+}
+
+/* data-driven code calculators */
+function renderCalc(){
+  const st=steps(view.idx)[view.step];
+  const probs=st.probs, need=st.need||3;
+  $("#stage").innerHTML='<div class="card"><div class="calc"><div class="calcgrid">'+
+    '<div><h4 style="margin:6px 0 4px;font-size:17px">'+(st.heading||"Now you try")+'</h4><p class="hintx" style="font-size:14px;margin:0 0 14px">'+(st.hintx||("Get at least "+need+" of "+probs.length+" right."))+'</p><div id="probWrap">'+
+    probs.map((p,i)=>'<div class="prob" id="prob'+i+'"><p><b style="color:var(--accent);font-family:var(--mono)">'+(i+1)+'.</b> '+p.q+'</p><div class="pin"><input type="number" step="any" id="pa'+i+'"> <span class="unit">'+p.unit+'</span></div><div class="ans" id="ar'+i+'" style="display:none"></div></div>').join("")+
+    '</div><div class="barbtm" style="border-radius:10px;border:1px solid var(--line);margin-top:6px"><button class="btn primary sm" id="checkP">Check answers</button><span class="spacer"></span><span class="result" id="pMsg"></span></div></div>'+
+    '<div class="calcpanel"><h4>'+(st.refTitle||"Reference")+'</h4>'+(st.ref||"")+'</div>'+
+  '</div></div></div>';
+  $("#checkP").addEventListener("click",()=>checkProblems(probs,need));
+}
+function checkProblems(probs,need){
+  let right=0;
+  probs.forEach((p,i)=>{const v=parseFloat($("#pa"+i).value);const box=$("#prob"+i);const ar=$("#ar"+i);const ok=!isNaN(v)&&Math.abs(v-p.ans)<=Math.max(0.5,p.ans*0.01);box.className="prob "+(ok?"right":"wrong");ar.style.display="block";ar.className="ans "+(ok?"ok":"no");ar.textContent=(ok?"Correct — ":"Not quite — ")+p.sol;if(ok)right++;});
+  const msg=$("#pMsg");const mo=COURSE.modules[view.idx];
+  if(right>=need){msg.className="result pass";msg.textContent=right+"/"+probs.length+" correct — step complete ✓";completeStep();renderChips();if(!$("#contP")){const b=el("button","btn primary sm");b.id="contP";b.textContent=(view.step<mo.steps.length-1?"Continue ›":"Finish module ›");b.addEventListener("click",()=>advance());$("#checkP").after(b);}}
+  else{msg.className="result fail";msg.textContent=right+"/"+probs.length+" — need "+need+". Fix the red ones and check again.";}
+}
+/* Circuit Lab (module 7) */
+const LAB_PROBLEMS=[
+  {q:"SERIES, 120 V source, R1 = 10 Ω, R2 = 20 Ω. Total resistance?",unit:"Ω",ans:30,sol:"R_total = 10 + 20 = 30 Ω"},
+  {q:"Same series circuit — total current?",unit:"A",ans:4,sol:"I = 120 ÷ 30 = 4 A"},
+  {q:"Same series circuit — voltage drop across R2?",unit:"V",ans:80,sol:"V2 = I × R2 = 4 × 20 = 80 V"},
+  {q:"PARALLEL, 120 V source, two 60 Ω resistors. Total current?",unit:"A",ans:4,sol:"I1 = I2 = 120 ÷ 60 = 2 A → total = 4 A"}
+];
+function labCalc(){
+  const V=lab.V,R1=lab.R1,R2=lab.R2;let Rt,It,I1,I2,V1,V2;
+  if(lab.mode==="series"){Rt=R1+R2;It=Rt>0?V/Rt:0;I1=I2=It;V1=It*R1;V2=It*R2;}
+  else{I1=R1>0?V/R1:0;I2=R2>0?V/R2:0;It=I1+I2;Rt=It>0?V/It:0;V1=V2=V;}
+  return {V,R1,R2,Rt,It,I1,I2,V1,V2,P:V*It};
+}
+function labSVG(){
+  const c=labCalc();const f=x=>(Math.round(x*100)/100);
+  if(lab.mode==="series"){
+    return `<svg viewBox="0 0 460 220">
+      <path d="M40 170 L40 60 L120 60" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+      <rect x="120" y="45" width="60" height="30" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+      <path d="M180 60 L250 60" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+      <rect x="250" y="45" width="60" height="30" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+      <path d="M310 60 L410 60 L410 170 L40 170" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+      <line x1="30" y1="150" x2="30" y2="190" stroke="#fff" stroke-width="3"/><line x1="36" y1="158" x2="36" y2="182" stroke="#fff" stroke-width="2"/>
+      <text x="25" y="205" font-family="JetBrains Mono" font-size="11" fill="#85B7EB">${f(c.V)} V</text>
+      <text x="150" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R1 ${f(c.R1)}\u03A9</text>
+      <text x="280" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R2 ${f(c.R2)}\u03A9</text>
+      <text x="150" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">${f(c.V1)} V</text>
+      <text x="280" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#EF9F27">${f(c.V2)} V</text>
+      <text x="225" y="165" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1D9E75">I = ${f(c.It)} A (same everywhere)</text></svg>`;
+  }
+  return `<svg viewBox="0 0 460 240">
+    <path d="M40 190 L40 50 L420 50 L420 190 L40 190" class="flow" stroke="#EF9F27" stroke-width="3" fill="none"/>
+    <path d="M170 50 L170 190" class="flow fast" stroke="#1D9E75" stroke-width="3" fill="none"/>
+    <path d="M290 50 L290 190" class="flow" stroke="#1D9E75" stroke-width="3" fill="none"/>
+    <rect x="150" y="100" width="40" height="40" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <rect x="270" y="100" width="40" height="40" fill="#2b2b2b" stroke="#C9A0FF" stroke-width="2"/>
+    <line x1="30" y1="100" x2="30" y2="140" stroke="#fff" stroke-width="3"/><line x1="36" y1="108" x2="36" y2="132" stroke="#fff" stroke-width="2"/>
+    <text x="25" y="225" font-family="JetBrains Mono" font-size="11" fill="#85B7EB">${f(c.V)} V</text>
+    <text x="170" y="95" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R1 ${f(c.R1)}\u03A9</text>
+    <text x="290" y="95" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#C9A0FF">R2 ${f(c.R2)}\u03A9</text>
+    <text x="170" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">I1 ${f(c.I1)}A</text>
+    <text x="290" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">I2 ${f(c.I2)}A</text>
+    <text x="230" y="215" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#EF9F27">V = ${f(c.V)} V on every branch</text></svg>`;
+}
+function renderLab(){
+  const mo=COURSE.modules[view.idx];
+  $("#stage").innerHTML='<div class="card"><div class="lab">'+
+    '<div><h4 style="margin:0 0 4px;font-size:18px">Circuit Lab</h4><p class="hintx" style="color:var(--text-dim);font-size:14px;margin:0">Flip between series and parallel, set the source voltage and two resistors, and watch every value update live.</p></div>'+
+    '<div class="labtop"><div class="labctrl"><div class="modetog"><button class="btn tog sm" id="mSer">Series</button><button class="btn tog sm" id="mPar">Parallel</button></div>'+
+      '<div class="labfield"><label>Source (V)</label><input type="number" id="lV" step="any"></div>'+
+      '<div class="labfield"><label>R1 (\u03A9)</label><input type="number" id="lR1" step="any"></div>'+
+      '<div class="labfield"><label>R2 (\u03A9)</label><input type="number" id="lR2" step="any"></div>'+
+      '<div class="readout"><table id="labOut"></table></div></div>'+
+      '<div class="labart" id="labArt"></div></div>'+
+    '<div><h4 style="margin:6px 0 4px;font-size:17px">Finish the course — solve these</h4><p class="hintx" style="font-size:14px;margin:0 0 14px">Use the rules and the lab above. Get at least 3 of 4 right. Round to whole numbers.</p><div id="probWrap">'+LAB_PROBLEMS.map((p,i)=>'<div class="prob" id="prob'+i+'"><p><b style="color:var(--accent);font-family:var(--mono)">'+(i+1)+'.</b> '+p.q+'</p><div class="pin"><input type="number" step="any" id="pa'+i+'"> <span class="unit">'+p.unit+'</span></div><div class="ans" id="ar'+i+'" style="display:none"></div></div>').join("")+'</div><div class="barbtm" style="border-radius:10px;border:1px solid var(--line);margin-top:6px"><button class="btn primary sm" id="checkP">Check answers</button><span class="spacer"></span><span class="result" id="pMsg"></span></div></div>'+
+  '</div></div>';
+  $("#lV").value=lab.V;$("#lR1").value=lab.R1;$("#lR2").value=lab.R2;
+  const upd=()=>{lab.V=parseFloat($("#lV").value)||0;lab.R1=parseFloat($("#lR1").value)||0;lab.R2=parseFloat($("#lR2").value)||0;drawLab();};
+  ["lV","lR1","lR2"].forEach(id=>$("#"+id).addEventListener("input",upd));
+  $("#mSer").addEventListener("click",()=>{lab.mode="series";drawLab();});
+  $("#mPar").addEventListener("click",()=>{lab.mode="parallel";drawLab();});
+  $("#checkP").addEventListener("click",()=>checkProblems(LAB_PROBLEMS,3));
+  drawLab();
+}
+function drawLab(){
+  $("#mSer").classList.toggle("on",lab.mode==="series");$("#mPar").classList.toggle("on",lab.mode==="parallel");
+  $("#labArt").innerHTML=labSVG();
+  const c=labCalc();const f=x=>(Math.round(x*100)/100);
+  $("#labOut").innerHTML=
+    '<tr><td class="k">Total resistance</td><td class="v"><b>'+f(c.Rt)+' \u03A9</b></td></tr>'+
+    '<tr><td class="k">Total current</td><td class="v"><b>'+f(c.It)+' A</b></td></tr>'+
+    '<tr><td class="k">Current through R1 / R2</td><td class="v">'+f(c.I1)+' / '+f(c.I2)+' A</td></tr>'+
+    '<tr><td class="k">Voltage across R1 / R2</td><td class="v">'+f(c.V1)+' / '+f(c.V2)+' V</td></tr>'+
+    '<tr><td class="k">Total power</td><td class="v"><b>'+f(c.P)+' W</b></td></tr>';
+}
+
+/* interactive demos */
+function demoContBtn(mo,msg,id){if(document.getElementById(id))return;const b=el("button","btn primary sm");b.id=id;b.textContent=(view.step<mo.steps.length-1?"Continue ›":"Finish module ›");b.addEventListener("click",()=>{cancelDemo();advance();});msg.parentElement.insertBefore(b,msg);}
+function renderDemo(){
+  const key=steps(view.idx)[view.step].demo;
+  if(key==="circuit")demoCircuit();
+  else if(key==="derate")demoDerate();
+  else if(key==="ges")demoGes();
+}
+/* M1 — close the circuit to light the bulb */
+function demoCircuit(){
+  const mo=COURSE.modules[view.idx];
+  const dotPath="M95 60 L470 60 L470 240 L95 240 L95 60";
+  let dots=""; for(let i=0;i<6;i++)dots+='<circle r="5" fill="#85B7EB"><animateMotion dur="3s" begin="'+(i*0.5)+'s" repeatCount="indefinite" path="'+dotPath+'"/></circle>';
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> the loop is broken at the switch, so no current flows and the light is dark. <b>Tap the switch</b> to close the circuit — watch the current start moving and the light come on. A working circuit needs a source, a complete path through the load, and a return home.</div>'+
+    '<div class="svgwrap"><svg class="board" id="cBoard" viewBox="0 0 560 300">'+
+      '<circle id="cGlow" cx="470" cy="150" r="42" fill="#EF9F27" opacity="0"/>'+
+      '<rect x="70" y="120" width="50" height="60" fill="none" stroke="#85B7EB" stroke-width="2"/><text x="95" y="200" text-anchor="middle" class="complabel">SOURCE</text>'+
+      '<path d="M95 120 L95 60 L240 60" stroke="#E24B4A" stroke-width="2.5" fill="none"/>'+
+      '<path d="M320 60 L470 60 L470 124" stroke="#E24B4A" stroke-width="2.5" fill="none"/>'+
+      '<path d="M470 176 L470 240 L95 240 L95 180" stroke="#ece9e2" stroke-width="2.5" fill="none"/>'+
+      '<circle cx="470" cy="150" r="26" fill="#2b2b2b" stroke="#85B7EB" stroke-width="2"/><text x="470" y="205" text-anchor="middle" class="complabel">LIGHT</text>'+
+      '<text x="160" y="52" text-anchor="middle" class="complabel" fill="#E24B4A">HOT</text><text x="250" y="255" text-anchor="middle" class="complabel">NEUTRAL</text>'+
+      '<g id="cDots" opacity="0">'+dots+'</g>'+
+      '<circle cx="240" cy="60" r="4" fill="#EF9F27"/><circle cx="320" cy="60" r="4" fill="#EF9F27"/>'+
+      '<line id="cLever" x1="240" y1="60" x2="312" y2="28" stroke="#EF9F27" stroke-width="4" stroke-linecap="round"/>'+
+      '<g id="cSwitch" style="cursor:pointer"><rect x="226" y="10" width="110" height="64" fill="transparent"/><text x="282" y="100" text-anchor="middle" class="complabel">tap switch</text></g>'+
+    '</svg></div>'+
+    '<div class="barbtm"><span class="hint">Tap the switch to complete the circuit.</span><span class="spacer"></span><span class="result" id="cMsg"></span></div></div>';
+  let closed=false, done=false;
+  const sw=$("#cSwitch"), lever=$("#cLever"), dotsG=$("#cDots"), glow=$("#cGlow"), msg=$("#cMsg");
+  sw.addEventListener("click",()=>{
+    closed=!closed;
+    lever.setAttribute("x2",closed?"320":"312"); lever.setAttribute("y2",closed?"60":"28");
+    dotsG.setAttribute("opacity",closed?"1":"0"); glow.setAttribute("opacity",closed?"0.85":"0");
+    if(closed){msg.className="result pass";msg.textContent="Circuit complete — current flows and the light comes on! 💡";if(!done){done=true;completeStep();renderChips();demoContBtn(mo,msg,"cCont");}}
+    else{msg.className="result";msg.style.color="var(--text-dim)";msg.textContent="Open circuit — the switch breaks the hot, so no current flows.";}
+  });
+}
+
+/* M5 — derating explorer: bundle conductors and heat the space, watch ampacity fall */
+function demoDerate(){
+  const mo=COURSE.modules[view.idx];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> this is a 20 A circuit wired with <b>12 AWG THHN (30 A at 90°C)</b>. Add current-carrying conductors to the conduit and raise the ambient temperature — watch the real ampacity fall. <b>Find a combination that breaks the 20 A circuit</b> (derated ampacity below 20 A) to finish.</div>'+
+    '<div class="svgwrap"><svg class="board" viewBox="0 0 560 190">'+
+      '<ellipse cx="150" cy="95" rx="90" ry="58" fill="none" stroke="#B4B2A9" stroke-width="3"/>'+
+      '<text x="150" y="176" text-anchor="middle" class="complabel">CONDUIT CROSS-SECTION</text>'+
+      '<g id="drWires"></g>'+
+      '<g id="drHeat" opacity="0"><path d="M300 130 q6 -18 0 -30 M330 135 q6 -18 0 -30 M360 130 q6 -18 0 -30" stroke="#E24B4A" stroke-width="3" fill="none" class="glowp"/></g>'+
+      '<rect x="400" y="48" width="140" height="88" rx="9" fill="#0d0d0d" stroke="#383838"/>'+
+      '<text id="drAmp" x="470" y="90" text-anchor="middle" font-family="JetBrains Mono" font-size="26" fill="#1D9E75">30.0 A</text>'+
+      '<text id="drVerdict" x="470" y="118" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1D9E75">OK FOR 20 A ✓</text>'+
+    '</svg></div>'+
+    '<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:4px 22px 10px">'+
+      '<span class="hint">Conductors (CCC): <b id="drCCCv" style="color:var(--accent)">3</b></span><input type="range" id="drCCC" min="1" max="12" value="3" style="flex:1;min-width:120px">'+
+      '<span class="hint">Ambient: <b id="drTv" style="color:var(--accent)">86°F</b></span><input type="range" id="drT" min="86" max="122" value="86" style="flex:1;min-width:120px"></div>'+
+    '<div class="barbtm"><span class="hint" id="drWhy">30 A × 1.00 (fill) × 1.00 (temp) = 30.0 A</span><span class="spacer"></span><span class="result" id="drMsg"></span></div></div>';
+  const wiresG=$("#drWires"), amp=$("#drAmp"), verdict=$("#drVerdict"), why=$("#drWhy"), msg=$("#drMsg");
+  let done=false;
+  function fillFactor(n){return n<=3?1:(n<=6?0.8:(n<=9?0.7:0.5));}
+  function tempFactor(f){return f<=86?1:(f<=95?0.96:(f<=104?0.91:(f<=113?0.87:0.82)));}
+  function draw(){
+    const n=+$("#drCCC").value, t=+$("#drT").value;
+    $("#drCCCv").textContent=n; $("#drTv").textContent=t+"°F";
+    let w=""; for(let i=0;i<n;i++){const a=i/n*Math.PI*2, r=n>1?32:0;w+='<circle cx="'+(150+r*Math.cos(a)).toFixed(1)+'" cy="'+(95+r*Math.sin(a)).toFixed(1)+'" r="11" fill="#1a1a1a" stroke="'+(i%3===0?"#E24B4A":(i%3===1?"#ece9e2":"#EF9F27"))+'" stroke-width="4"/>';}
+    wiresG.innerHTML=w;
+    $("#drHeat").setAttribute("opacity",t>86?"1":"0");
+    const ff=fillFactor(n), tf=tempFactor(t), res=30*ff*tf;
+    amp.textContent=res.toFixed(1)+" A";
+    why.innerHTML="30 A × "+ff.toFixed(2)+" (fill) × "+tf.toFixed(2)+" (temp) = <b>"+res.toFixed(1)+" A</b>";
+    const ok=res>=20;
+    amp.setAttribute("fill",ok?"#1D9E75":"#E24B4A");
+    verdict.setAttribute("fill",ok?"#1D9E75":"#E24B4A");
+    verdict.textContent=ok?"OK FOR 20 A ✓":"FAILS THE 20 A CIRCUIT ✗";
+    if(!ok&&!done){done=true;msg.className="result pass";msg.textContent="You broke it — now you know why derating matters. ⚡";completeStep();renderChips();demoContBtn(mo,msg,"drCont");}
+  }
+  $("#drCCC").addEventListener("input",draw);
+  $("#drT").addEventListener("input",draw);
+  draw();
+}
+
+/* M9 — ground a service in the correct order */
+function demoGes(){
+  const mo=COURSE.modules[view.idx];
+  const list=[{b:"1 · Drive two 8-ft ground rods",ok:"Rods driven, 6 ft apart."},
+              {b:"2 · Run the GEC to the rods",ok:"GEC run — continuous, listed clamps."},
+              {b:"3 · Land the GEC on the neutral bar",ok:"GEC landed at the service."},
+              {b:"4 · Install the main bonding jumper",ok:"MBJ in — the fault path is complete."},
+              {b:"5 · Bond the water piping",ok:"Piping bonded. System grounded."}];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro"><b>Try it:</b> this new service is <b>ungrounded</b>. Build the grounding electrode system <b>in order</b> to make it safe and code-compliant.</div>'+
+    '<div class="svgwrap"><svg class="board" viewBox="0 0 560 250">'+
+      '<rect id="gesBanner" x="20" y="14" width="520" height="32" rx="6" fill="rgba(226,75,74,.15)" stroke="#E24B4A"/><text id="gesBannerT" x="280" y="35" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#E24B4A">⚠ SERVICE NOT GROUNDED</text>'+
+      '<rect x="60" y="64" width="120" height="120" rx="8" fill="#2b2b2b" stroke="#383838"/><text x="120" y="84" text-anchor="middle" class="complabel">SERVICE PANEL</text>'+
+      '<rect x="85" y="100" width="70" height="12" fill="#ece9e2"/><text x="120" y="128" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B4B2A9">NEUTRAL BAR</text>'+
+      '<text id="gesMBJ" x="120" y="152" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1D9E75" opacity="0">● MBJ INSTALLED</text>'+
+      '<line x1="0" y1="200" x2="560" y2="200" stroke="#1D9E75" stroke-width="2"/><text x="530" y="194" font-family="JetBrains Mono" font-size="10" fill="#1D9E75">GRADE</text>'+
+      '<g id="gesRods" opacity="0"><line x1="300" y1="200" x2="300" y2="245" stroke="#B4B2A9" stroke-width="6"/><line x1="390" y1="200" x2="390" y2="245" stroke="#B4B2A9" stroke-width="6"/><text x="345" y="238" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#B4B2A9">8-ft RODS · 6 ft apart</text></g>'+
+      '<g id="gesGEC" opacity="0"><path d="M120 112 L120 176 L300 176 L300 200" stroke="#b87333" stroke-width="4" fill="none"/><path d="M300 182 L390 182 L390 200" stroke="#b87333" stroke-width="4" fill="none"/><text x="215" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#b87333">GEC</text></g>'+
+      '<g id="gesPipe" opacity="0"><line x1="470" y1="120" x2="470" y2="200" stroke="#85B7EB" stroke-width="7"/><path d="M180 130 L470 130" stroke="#b87333" stroke-width="3.5"/><text x="470" y="110" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#85B7EB">WATER PIPE</text></g>'+
+    '</svg></div>'+
+    '<div class="chips" id="gesSteps">'+list.map((s,i)=>'<button class="btn sm" data-i="'+i+'">'+s.b+'</button>').join("")+'</div>'+
+    '<div class="barbtm"><span class="hint" id="gesHint">Start with step 1.</span><span class="spacer"></span><span class="result" id="gesMsg"></span></div></div>';
+  let cur=0, done=false; const msg=$("#gesMsg"), hint=$("#gesHint");
+  $("#gesSteps").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    const i=+b.dataset.i;
+    if(i!==cur){msg.className="result fail";msg.textContent="Do it in order — next is step "+(cur+1)+".";return;}
+    b.disabled=true; b.style.opacity=".45";
+    if(i===0)$("#gesRods").setAttribute("opacity","1");
+    if(i===1)$("#gesGEC").setAttribute("opacity","1");
+    if(i===3)$("#gesMBJ").setAttribute("opacity","1");
+    if(i===4)$("#gesPipe").setAttribute("opacity","1");
+    msg.className="result pass"; msg.textContent=list[i].ok;
+    cur++; hint.textContent=cur<list.length?("Next: step "+(cur+1)+"."):"";
+    if(cur>=list.length&&!done){done=true;$("#gesBanner").setAttribute("fill","rgba(29,158,117,.15)");$("#gesBanner").setAttribute("stroke","#1D9E75");$("#gesBannerT").setAttribute("fill","#1D9E75");$("#gesBannerT").textContent="✓ GROUNDED · BONDED · CODE-COMPLIANT";completeStep();renderChips();demoContBtn(mo,msg,"gesCont");}
+  }));
+}
+/* Final exam — cumulative, shuffled, gates the certificate */
+let finalQ=[], finalSel=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function buildFinalExam(){
+  const pool=[]; COURSE.modules.forEach(mo=>mo.steps.forEach(s=>{if(s.type==="test")s.quiz.forEach(q=>pool.push(q));}));
+  const pick=shuffle(pool.slice()).slice(0,Math.min(20,pool.length));
+  finalQ=pick.map(q=>{const idx=shuffle(q.choices.map((c,i)=>i));return {q:q.q,choices:idx.map(i=>q.choices[i]),answer:idx.indexOf(q.answer)};});
+  finalSel=finalQ.map(()=>null);
+}
+function renderFinal(){ if(finalQ.length!==Math.min(20,countPool())||finalSel.length!==finalQ.length) buildFinalExam(); drawFinal(false); }
+function countPool(){let n=0;COURSE.modules.forEach(mo=>mo.steps.forEach(s=>{if(s.type==="test")n+=s.quiz.length;}));return n;}
+function drawFinal(showResult){
+  const need=Math.ceil(finalQ.length*0.7);
+  let score=0; finalQ.forEach((qq,i)=>{if(finalSel[i]===qq.answer)score++;}); const passed=score>=need;
+  $("#stage").innerHTML='<div class="card"><div class="quiz"><p class="lead" style="margin:0 0 16px">'+finalQ.length+' questions from across the whole course. You need '+need+' to pass and earn your certificate. Answers are not shown — review a module if you miss it.</p>'+
+    finalQ.map((qq,i)=>'<div class="q"><div class="qt"><b>'+(i+1)+'</b>'+qq.q+'</div>'+qq.choices.map((c,j)=>{let cls="opt";if(showResult){if(finalSel[i]===j&&j!==qq.answer)cls+=" wrong";}else if(finalSel[i]===j)cls+=" sel";return '<div class="'+cls+'" data-q="'+i+'" data-c="'+j+'"><span class="mk">'+"ABCD"[j]+'</span><span>'+c+'</span></div>';}).join("")+'</div>').join("")+
+    '</div><div class="barbtm">'+(showResult?'<span class="result '+(passed?"pass":"fail")+'">Scored '+score+'/'+finalQ.length+' — need '+need+'. '+(passed?"Passed ✓":"Not yet — review and retake.")+'</span><span class="spacer"></span>'+(passed?'<button class="btn primary sm" id="finDone">Finish & get certificate ›</button>':'<button class="btn ghost sm" id="finBack">Back to modules</button> <button class="btn primary sm" id="finRetry">Retake exam</button>'):'<span class="result" style="color:var(--text-dim)">Answer all '+finalQ.length+' questions.</span><span class="spacer"></span><button class="btn primary sm" id="finSub">Submit exam</button>')+'</div></div>';
+  if(!showResult){
+    $("#stage").querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{finalSel[+o.dataset.q]=+o.dataset.c;drawFinal(false);}));
+    const sb=$("#finSub");if(sb)sb.addEventListener("click",()=>{if(finalSel.some(x=>x===null)){alert("Answer every question first.");return;}let sc=0;finalQ.forEach((qq,i)=>{if(finalSel[i]===qq.answer)sc++;});drawFinal(true);if(sc>=need){completeStep();renderChips();}});
+  }else{
+    const rt=$("#finRetry");if(rt)rt.addEventListener("click",()=>{buildFinalExam();drawFinal(false);});
+    const bk=$("#finBack");if(bk)bk.addEventListener("click",renderHome);
+    const dn=$("#finDone");if(dn)dn.addEventListener("click",showCertificate);
+  }
+}
+
+/* wiring */
+
+function renderWiring(){
+  const w=steps(view.idx)[view.step].task;armed=null;userWires=[];
+  $("#stage").innerHTML='<div class="card"><div class="wireintro">'+w.intro+'</div><div class="svgwrap"><svg class="board" viewBox="'+w.viewBox+'" id="board"></svg></div><div class="barbtm"><button class="btn primary sm" id="checkW">Check wiring</button><button class="btn ghost sm" id="resetW">Reset</button><span class="hint">'+w.hint+'</span><span class="spacer"></span><span class="result" id="wMsg"></span></div></div>';
+  drawBoard();
+  $("#checkW").addEventListener("click",checkWiring);
+  $("#resetW").addEventListener("click",()=>{userWires=[];armed=null;drawBoard();$("#wMsg").textContent="";});
+}
+function wtask(){return steps(view.idx)[view.step].task;}
+function wnode(id){return wtask().nodes.find(n=>n.id===id);}
+function drawBoard(){
+  const w=wtask();const svg=$("#board");svg.innerHTML="";
+  w.comps.forEach(c=>{const r=document.createElementNS(NS,"rect");r.setAttribute("x",c.x);r.setAttribute("y",c.y);r.setAttribute("width",c.w);r.setAttribute("height",c.h);r.setAttribute("rx","8");r.setAttribute("class","compbox");svg.appendChild(r);const t=document.createElementNS(NS,"text");t.setAttribute("x",c.x+c.w/2);t.setAttribute("y",c.y+c.h+18);t.setAttribute("text-anchor","middle");t.setAttribute("class","complabel");t.textContent=c.label;svg.appendChild(t);});
+  [w.lamp,w.lamp2].forEach((lp,i)=>{if(!lp)return;const g=document.createElementNS(NS,"circle");g.setAttribute("cx",lp.cx);g.setAttribute("cy",lp.cy);g.setAttribute("r",lp.r);g.setAttribute("fill","var(--accent)");g.setAttribute("class","lamp-glow");g.id="lampGlow"+i;svg.appendChild(g);const o=document.createElementNS(NS,"circle");o.setAttribute("cx",lp.cx);o.setAttribute("cy",lp.cy);o.setAttribute("r",lp.r);o.setAttribute("fill","none");o.setAttribute("stroke","var(--line)");o.setAttribute("stroke-width","1.5");svg.appendChild(o);});
+  userWires.forEach(key=>{const[a,b]=key.split("|");const na=wnode(a),nb=wnode(b);const l=document.createElementNS(NS,"line");l.setAttribute("x1",na.x);l.setAttribute("y1",na.y);l.setAttribute("x2",nb.x);l.setAttribute("y2",nb.y);l.setAttribute("class","wireline");l.addEventListener("click",e=>{e.stopPropagation();userWires=userWires.filter(k=>k!==key);drawBoard();});svg.appendChild(l);});
+  w.nodes.forEach(n=>{const g=document.createElementNS(NS,"g");g.setAttribute("class","term"+(armed===n.id?" armed":""));const c=document.createElementNS(NS,"circle");c.setAttribute("cx",n.x);c.setAttribute("cy",n.y);c.setAttribute("r","8");c.setAttribute("fill","var(--panel)");c.setAttribute("stroke","var(--muted)");c.setAttribute("stroke-width","2");g.appendChild(c);const t=document.createElementNS(NS,"text");t.setAttribute("x",n.x+(n.lx||0));t.setAttribute("y",n.y+(n.ly||0)+4);t.setAttribute("text-anchor","middle");t.textContent=n.label;g.appendChild(t);g.addEventListener("click",()=>termClick(n.id));svg.appendChild(g);});
+}
+function termClick(id){if(armed===null)armed=id;else if(armed===id)armed=null;else{const k=pairKey(armed,id);if(!userWires.includes(k))userWires.push(k);armed=null;}drawBoard();}
+function checkWiring(){
+  const w=wtask();const need=w.correct.map(p=>pairKey(p[0],p[1])).sort().join(",");const have=userWires.slice().sort().join(",");const msg=$("#wMsg");
+  if(need===have){msg.className="result pass";msg.textContent=w.successMsg;const g0=$("#lampGlow0"),g1=$("#lampGlow1");if(g0)g0.classList.add("on");if(g1)g1.classList.add("on");completeStep();setTimeout(()=>{const mo=COURSE.modules[view.idx];if(view.step<mo.steps.length-1){view.step++;renderPlayer();}else moduleFinished();},950);}
+  else{msg.className="result fail";const cc=userWires.filter(k=>w.correct.map(p=>pairKey(p[0],p[1])).includes(k)).length;msg.textContent="Not quite — "+cc+" of "+w.correct.length+" right. "+w.hint;}
+}
+
+function moduleFinished(){
+  const mo=COURSE.modules[view.idx];const last=view.idx===COURSE.modules.length-1;
+  $("#stage").innerHTML='<div class="card"><div class="donecard"><div class="big">Module complete ✓</div><p class="lead" style="margin:0 auto 22px">You finished <b>'+mo.title+'</b>.</p>'+((last&&courseComplete())?'<button class="btn primary" id="finCert">Finish & get certificate ›</button>':'<button class="btn primary" id="nextMod">Next module ›</button>')+' <button class="btn ghost" id="homeDone">All modules</button></div></div>';
+  renderChips();
+  const nm=$("#nextMod");if(nm)nm.addEventListener("click",()=>{const ni=view.idx+1;if(ni<COURSE.modules.length)openModule(ni);else renderHome();});
+  const fc=$("#finCert");if(fc)fc.addEventListener("click",showCertificate);
+  $("#homeDone").addEventListener("click",renderHome);
+}
+
+function makeVID(name){const base=(name+"|"+COURSE.title).toUpperCase();let h=0;for(let i=0;i<base.length;i++)h=((h<<5)-h+base.charCodeAt(i))|0;return "WN-"+new Date().getFullYear()+"-"+(Math.abs(h)%100000).toString().padStart(5,"0");}
+function currentUserName(){
+  if(window.WN_USER&&window.WN_USER.name)return window.WN_USER.name;
+  if(state.name&&state.name.trim())return state.name.trim();
+  const n=(prompt("Enter your full name for the certificate:")||"").trim();
+  if(n){state.name=n;save();}
+  return n;
+}
+function showCertificate(){
+  const name=currentUserName();
+  if(!name){alert("A name is required for the certificate.");return;}
+  if(!state.completedAt)state.completedAt=Date.now();save();
+  const d=new Date(state.completedAt);const ds=d.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  $("#certName").textContent=name;$("#certCourse").textContent=COURSE.title;$("#certMeta").textContent=COURSE.hours+" Contact Hours · Completed "+ds;$("#certDate2").textContent=ds;$("#certVid").textContent="Verification ID: "+makeVID(name);
+  if(window.WN_saveCert)window.WN_saveCert({title:COURSE.title,name:name,code:makeVID(name)});
+  showOnly("cert");
+}
+function downloadPDF(){
+  const name=state.name||"Student";const d=new Date(state.completedAt||Date.now());const ds=d.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  try{
+    const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"pt",format:"letter"});
+    const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+    doc.setFillColor(250,248,242);doc.rect(0,0,W,H,"F");
+    doc.setDrawColor(239,159,39);doc.setLineWidth(10);doc.rect(18,18,W-36,H-36);
+    doc.setDrawColor(180,170,140);doc.setLineWidth(1);doc.rect(34,34,W-68,H-68);
+    doc.setTextColor(28,28,28);doc.setFont("helvetica","bold");doc.setFontSize(22);doc.text("wirenerd",W/2,90,{align:"center"});
+    doc.setTextColor(122,106,60);doc.setFont("courier","normal");doc.setFontSize(12);doc.text("CERTIFICATE OF COMPLETION",W/2,118,{align:"center"});
+    doc.setTextColor(28,28,28);doc.setFont("helvetica","bold");doc.setFontSize(34);doc.text("Certificate of Completion",W/2,165,{align:"center"});
+    doc.setFont("helvetica","normal");doc.setFontSize(13);doc.setTextColor(70,70,70);doc.text("This certifies that",W/2,205,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(30);doc.setTextColor(28,28,28);doc.text(name,W/2,245,{align:"center"});
+    doc.setDrawColor(239,159,39);doc.setLineWidth(2);const nw=Math.min(doc.getTextWidth(name)+60,W-160);doc.line(W/2-nw/2,255,W/2+nw/2,255);
+    doc.setFont("helvetica","normal");doc.setFontSize(13);doc.setTextColor(70,70,70);doc.text("has successfully completed",W/2,288,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(17);doc.setTextColor(28,28,28);doc.text(COURSE.title,W/2,314,{align:"center"});
+    doc.setFont("courier","normal");doc.setFontSize(12);doc.setTextColor(90,90,90);doc.text(COURSE.hours+" Contact Hours  -  Completed "+ds,W/2,338,{align:"center"});
+    doc.setDrawColor(28,28,28);doc.setLineWidth(1.2);doc.line(110,430,300,430);doc.line(W-300,430,W-110,430);
+    doc.setFont("helvetica","bold");doc.setFontSize(15);doc.setTextColor(28,28,28);doc.text("Bryan Barrios",205,424,{align:"center"});doc.text(ds,W-205,424,{align:"center"});
+    doc.setFont("courier","normal");doc.setFontSize(10);doc.setTextColor(100,100,100);doc.text("Instructor - WireNerd",205,446,{align:"center"});doc.text("Date",W-205,446,{align:"center"});
+    doc.setFontSize(10);doc.setTextColor(140,140,140);doc.text("Verification ID: "+makeVID(name),W/2,H-40,{align:"center"});
+    doc.save("WireNerd-Certificate-"+name.replace(/[^a-z0-9]+/gi,"-")+".pdf");
+  }catch(e){alert("PDF tool didn't load (check your connection). Use Print and choose 'Save as PDF'.");}
+}
+
+$("#startBtn").addEventListener("click",()=>{if(courseComplete()){renderHome();return;}const i=COURSE.modules.findIndex((m,ix)=>moduleUnlocked(ix)&&!modComplete(ix));openModule(i<0?0:i);});
+$("#backBtn").addEventListener("click",()=>{stopSpeech();renderHome();});
+$("#dlBtn").addEventListener("click",downloadPDF);
+$("#printBtn").addEventListener("click",()=>window.print());
+$("#reviewBtn").addEventListener("click",renderHome);
+window.addEventListener("beforeunload",stopSpeech);
+renderHome();
+</script>
+<script>
+(function(){
+  var SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
+  var SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
+  var PAY=""; /* ← PASTE YOUR STRIPE PAYMENT LINK FOR THIS COURSE HERE (create a new $29 payment link in Stripe) */
+  var COURSE_ID="circuits-conductors";
+  var gate=document.getElementById("wn-gate"), body=document.getElementById("wn-gate-body");
+  gate.style.display="none";                 // never block the landing page
+  var state={paid:false,user:null,tryEnter:null};
+  window.WN_GATE=state;
+  if(!window.supabase){
+    state.tryEnter=function(){ gate.style.display="flex"; body.innerHTML='<p>Couldn\'t load the login system. Please refresh the page.</p>'; };
+    return;
+  }
+  var sbc=window.supabase.createClient(SB_URL,SB_KEY);
+  function setupUser(user){
+    window.WN_USER={id:user.id,email:user.email,name:(user.user_metadata&&user.user_metadata.full_name)||user.email};
+    window.WN_saveCert=async function(cert){
+      try{
+        var ex=await sbc.from("certificates").select("id").eq("course_id",COURSE_ID).limit(1);
+        if(ex.data&&ex.data.length)return;
+        await sbc.from("certificates").insert({user_id:user.id,course_id:COURSE_ID,course_title:cert.title,recipient_name:cert.name,cert_code:cert.code});
+      }catch(e){}
+    };
+  }
+  async function runCheck(){
+    try{
+      var s=await sbc.auth.getSession(); var session=s.data.session;
+      if(!session){ state.user=null; state.paid=false; return; }
+      state.user=session.user;
+      var r=await sbc.from("purchases").select("id").eq("course_id",COURSE_ID).limit(1);
+      state.paid=!!(r.data && r.data.length);
+      if(state.paid) setupUser(session.user);
+    }catch(e){}
+  }
+  var checkPromise=runCheck();          // runs quietly in the background; no overlay
+  function show(html){ gate.style.display="flex"; body.innerHTML=html; }
+  function close(){ gate.style.display="none"; }
+  var wantIdx=0;
+  function wireClose(){ var x=document.getElementById("wn-x"),c=document.getElementById("wn-close2"); if(x)x.onclick=close; if(c)c.onclick=function(e){e.preventDefault();close();}; }
+  function loginState(){
+    show('<button class="gx" id="wn-x">&times;</button><h2>Ready to start?</h2><p>Create a free account or log in to enroll in <b>Circuits &amp; Conductors: Wire It, Size It, Ground It</b> \u2014 your progress and certificate save to your profile.</p><a class="gbtn" href="account.html">Log in / Create account</a><a class="glink" id="wn-close2">Keep looking around</a>');
+    wireClose();
+  }
+  function buyState(user){
+    show('<button class="gx" id="wn-x">&times;</button><h2>Circuits &amp; Conductors</h2><div class="price">$29</div><p>One-time \u2014 lifetime access.</p><div class="feat">\u2713 10 modules + code-book calculators<br>\u2713 Hands-on wiring &amp; grounding interactives<br>\u2713 Final exam<br>\u2713 Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now \u2014 $29</button><div style="font-size:11.5px;color:#9a978d;margin:10px 0 2px;line-height:1.4">By purchasing, you agree to our <a href="/terms.html" style="color:#9a978d;text-decoration:underline">Terms</a> &amp; <a href="/refunds.html" style="color:#9a978d;text-decoration:underline">Refund Policy</a>.</div><a class="glink" id="wn-refresh">Already purchased? Refresh</a><a class="glink" id="wn-close2">Maybe later</a>');
+    document.getElementById("wn-buy").onclick=function(){ if(!PAY){alert("Checkout opens soon — this course is almost live. Check back shortly!");return;} location.href=PAY+"?client_reference_id="+encodeURIComponent(user.id)+"&prefilled_email="+encodeURIComponent(user.email||""); };
+    document.getElementById("wn-refresh").onclick=function(e){e.preventDefault(); checkPromise=runCheck(); tryEnter(wantIdx);};
+    wireClose();
+  }
+  async function tryEnter(i){
+    wantIdx=i;
+    show('<p>Checking your access\u2026</p>');
+    await checkPromise;
+    if(state.paid){ close(); if(window.enterModule) window.enterModule(i); return; }
+    if(state.user){ buyState(state.user); } else { loginState(); }
+  }
+  state.tryEnter=tryEnter;
+})();
+</script>
+<script defer src="/wn-notify.js"></script>
+</body>
+</html>

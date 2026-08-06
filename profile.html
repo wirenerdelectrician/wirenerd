@@ -96,7 +96,7 @@ footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);fon
     <a href="/classes.html">Classes</a>
     <a href="/forum.html">Forum</a>
     <a href="/profile.html">Profile</a>
-    <a href="/course-ground-zero.html" class="wn-courses">Courses</a>
+    <a href="/courses.html" class="wn-courses">Courses</a>
     <button class="logout" id="logout">Log out</button>
   </nav>
 </div></header>
@@ -180,10 +180,14 @@ function setAvatar(url,letter){const a=$("avatar");if(url){a.innerHTML='<img src
 
 function fmtShort(s){try{return new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});}catch(e){return "";}}
 function fmtLong(s){try{return new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});}catch(e){return "";}}
-function readProgress(){try{var st=JSON.parse(localStorage.getItem("wirenerd_groundzero_progress_v2"));if(st&&typeof st.pct==="number")return st;}catch(e){}return null;}
+function readProgress(key){try{var st=JSON.parse(localStorage.getItem(key));if(st&&typeof st.pct==="number")return st;}catch(e){}return null;}
+var WN_COURSES=[
+  {id:"ground-zero",title:"Ground Zero: Intro to Electrical",href:"course-ground-zero.html",ls:"wirenerd_groundzero_progress_v2",blurb:"Your foundation in electrical — 9 lessons, hands-on demos, final exam, and a certificate."},
+  {id:"circuits-conductors",title:"Circuits & Conductors: Wire It, Size It, Ground It",href:"course-circuits-conductors.html",ls:"wirenerd_circuits_conductors_progress_v1",blurb:"Wire circuits, size conductors, feeders and panels, master derating and box fill, and ground a system right."}
+];
 
 function downloadCert(c){
-  var name=c.recipient_name||"Student", title=c.course_title||"Course", ds=fmtLong(c.issued_at||Date.now()), code=c.cert_code||"", hours=4;
+  var name=c.recipient_name||"Student", title=c.course_title||"Course", ds=fmtLong(c.issued_at||Date.now()), code=c.cert_code||"", hours=(title.indexOf("Circuits")===0?6:4);
   try{
     var jsPDF=window.jspdf.jsPDF, doc=new jsPDF({orientation:"landscape",unit:"pt",format:"letter"});
     var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
@@ -221,33 +225,38 @@ async function load(user){
   $("bioInput").value=(prof&&prof.bio)||"";
   if(prof&&prof.avatar_url){$("avPrev").innerHTML='<img src="'+prof.avatar_url+'" alt="">';}else{$("avPrev").textContent=letter;}
 
-  let owns=false, certs=[], joined=new Set();
+  let owned=new Set(), certs=[], joined=new Set();
   try{
     const [p,c,w]=await Promise.all([
       sb.from("purchases").select("course_id"),
       sb.from("certificates").select("*").order("issued_at",{ascending:false}),
       sb.from("waitlist").select("course_key")
     ]);
-    owns=(p.data||[]).some(x=>x.course_id==="ground-zero");
+    (p.data||[]).forEach(x=>owned.add(x.course_id));
     certs=c.data||[];
     (w.data||[]).forEach(x=>joined.add(x.course_key));
   }catch(e){}
 
-  $("statCourses").textContent=owns?"1":"0";
+  $("statCourses").textContent=WN_COURSES.filter(co=>owned.has(co.id)).length;
   $("statCerts").textContent=certs.length;
 
   // My courses (with progress)
   const mc=$("myCourses");
-  if(owns){
-    const prog=readProgress();
-    const pct=prog?prog.pct:null;
-    const bar = pct!=null ? '<div class="pbar"><i id="pbarFill"></i></div><div class="pct">'+pct+'% complete'+(pct>=100?' · finished 🎉':'')+'</div>' : '';
-    const cta = pct>=100?'Review →':(pct>0?'Continue →':'Start →');
-    mc.innerHTML='<div class="ccard"><span class="pill on">Enrolled</span><div class="ic">⚡</div><h3>Ground Zero: Intro to Electrical</h3>'+bar+'<a class="cbtn" href="course-ground-zero.html">'+cta+'</a></div>';
-    if(pct!=null){const f=$("pbarFill");if(f)setTimeout(()=>{f.style.width=pct+"%";},60);}
-  }else{
-    mc.innerHTML='<div class="ccard"><div class="ic">⚡</div><h3>Ground Zero: Intro to Electrical</h3><p>Your foundation in electrical — 9 lessons, hands-on demos, final exam, and a certificate.</p><a class="cbtn" href="course-ground-zero.html">Enroll — $29 →</a></div>';
-  }
+  mc.innerHTML="";
+  WN_COURSES.forEach(function(co,ci){
+    const card=document.createElement("div");card.className="ccard";
+    if(owned.has(co.id)){
+      const prog=readProgress(co.ls);
+      const pct=prog?prog.pct:null;
+      const bar = pct!=null ? '<div class="pbar"><i id="pbarFill'+ci+'"></i></div><div class="pct">'+pct+'% complete'+(pct>=100?' · finished 🎉':'')+'</div>' : '';
+      const cta = pct>=100?'Review →':(pct>0?'Continue →':'Start →');
+      card.innerHTML='<span class="pill on">Enrolled</span><div class="ic">⚡</div><h3>'+co.title+'</h3>'+bar+'<a class="cbtn" href="'+co.href+'">'+cta+'</a>';
+      if(pct!=null){setTimeout(()=>{const f=$("pbarFill"+ci);if(f)f.style.width=pct+"%";},60);}
+    }else{
+      card.innerHTML='<div class="ic">⚡</div><h3>'+co.title+'</h3><p>'+co.blurb+'</p><a class="cbtn" href="'+co.href+'">Enroll — $29 →</a>';
+    }
+    mc.appendChild(card);
+  });
 
   // Certificates
   const cd=$("certs");
