@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Circuits & Conductors: Wire It, Size It, Ground It · WireNerd</title>
-<meta name="description" content="Circuits & Conductors — WireNerd's course 2. Wire real circuits, size branch circuits, feeders and panels, master ampacity, derating and box fill, and ground a system the right way — with calculators, animated lessons and hands-on practice.">
+<title>Phase One: Wire It, Size It, Ground It · WireNerd</title>
+<meta name="description" content="Phase One — WireNerd's course 2. Wire real circuits, know your voltage systems and color code, size branch circuits, feeders and panels, master ampacity, derating and box fill, and ground a system the right way.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -272,7 +272,7 @@ footer .social{display:flex;gap:16px;margin-top:2px}
 
 <header class="hero"><div class="wrap">
   <div class="kicker">Course 2 · Self-Paced</div>
-  <h1>Circuits &amp; Conductors: <span class="alt">Wire It, Size It, Ground It</span></h1>
+  <h1>Phase One: <span class="alt">Wire It, Size It, Ground It</span></h1>
   <p class="sub">The course that makes you dangerous on a real job — wire simple circuits, size conductors, feeders and panels, run the derating and box-fill math, and ground a system the right way. Picks up where Ground Zero ends.</p>
   <div class="metarow"><span><b>10</b> modules</span><span><b>Final</b> exam</span><span><b>~6</b> hours</span><span><b>Code-book</b> calculators</span><span><b>Certificate</b> at completion</span></div>
   <div class="cta-row">
@@ -315,7 +315,7 @@ footer .social{display:flex;gap:16px;margin-top:2px}
     <div class="cawarded">This certifies that</div>
     <div class="cnamewrap"><span class="cname" id="certName">Student Name</span></div>
     <div class="cawarded">has successfully completed</div>
-    <div class="ccourse" id="certCourse">Circuits &amp; Conductors: Wire It, Size It, Ground It</div>
+    <div class="ccourse" id="certCourse">Phase One: Wire It, Size It, Ground It</div>
     <div class="cmeta" id="certMeta">6 Contact Hours · Completed —</div>
     <div class="crow">
       <div class="csig"><div class="sig">Bryan Barrios</div><div class="line"></div><small>Instructor · WireNerd</small></div>
@@ -493,7 +493,7 @@ const ART = {
 
 /* ===== COURSE DATA ===== */
 const COURSE = {
-  title:"Circuits & Conductors: Wire It, Size It, Ground It", hours:6, passPct:0.7,
+  title:"Phase One: Wire It, Size It, Ground It", hours:6, passPct:0.7,
   modules:[
 
     { id:"m1", kicker:"Module 1", title:"Wiring Simple Circuits", blurb:"The anatomy of a real 120 V circuit — then wire a switch leg and a receptacle yourself.",
@@ -1088,7 +1088,7 @@ const COURSE = {
 };
 /* ===== ENGINE ===== */
 const REVIEW_MODE=false;  /* set to false before launch — gates lessons normally */
-const LS="wirenerd_circuits_conductors_progress_v1";
+const LS="wirenerd_phase_one_progress_v1";
 const $=s=>document.querySelector(s);
 const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
 const NS="http://www.w3.org/2000/svg";
@@ -1514,7 +1514,7 @@ renderHome();
   var SB_URL="https://ntlfuexiilxydnpuqhhv.supabase.co";
   var SB_KEY="sb_publishable_OWZrMSaAkonwYjfTrYpuyg_xn_Gy-eG";
   var PAY=""; /* ← PASTE YOUR STRIPE PAYMENT LINK FOR THIS COURSE HERE (create a new $29 payment link in Stripe) */
-  var COURSE_ID="circuits-conductors";
+  var COURSE_ID="phase-one";
   var gate=document.getElementById("wn-gate"), body=document.getElementById("wn-gate-body");
   gate.style.display="none";                 // never block the landing page
   var state={paid:false,user:null,tryEnter:null};
@@ -1550,11 +1550,11 @@ renderHome();
   var wantIdx=0;
   function wireClose(){ var x=document.getElementById("wn-x"),c=document.getElementById("wn-close2"); if(x)x.onclick=close; if(c)c.onclick=function(e){e.preventDefault();close();}; }
   function loginState(){
-    show('<button class="gx" id="wn-x">&times;</button><h2>Ready to start?</h2><p>Create a free account or log in to enroll in <b>Circuits &amp; Conductors: Wire It, Size It, Ground It</b> \u2014 your progress and certificate save to your profile.</p><a class="gbtn" href="account.html">Log in / Create account</a><a class="glink" id="wn-close2">Keep looking around</a>');
+    show('<button class="gx" id="wn-x">&times;</button><h2>Ready to start?</h2><p>Create a free account or log in to enroll in <b>Phase One: Wire It, Size It, Ground It</b> \u2014 your progress and certificate save to your profile.</p><a class="gbtn" href="account.html">Log in / Create account</a><a class="glink" id="wn-close2">Keep looking around</a>');
     wireClose();
   }
   function buyState(user){
-    show('<button class="gx" id="wn-x">&times;</button><h2>Circuits &amp; Conductors</h2><div class="price">$29</div><p>One-time \u2014 lifetime access.</p><div class="feat">\u2713 10 modules + code-book calculators<br>\u2713 Hands-on wiring &amp; grounding interactives<br>\u2713 Final exam<br>\u2713 Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now \u2014 $29</button><div style="font-size:11.5px;color:#9a978d;margin:10px 0 2px;line-height:1.4">By purchasing, you agree to our <a href="/terms.html" style="color:#9a978d;text-decoration:underline">Terms</a> &amp; <a href="/refunds.html" style="color:#9a978d;text-decoration:underline">Refund Policy</a>.</div><a class="glink" id="wn-refresh">Already purchased? Refresh</a><a class="glink" id="wn-close2">Maybe later</a>');
+    show('<button class="gx" id="wn-x">&times;</button><h2>Phase One</h2><div class="price">$29</div><p>One-time \u2014 lifetime access.</p><div class="feat">\u2713 10 modules + code-book calculators<br>\u2713 Hands-on wiring &amp; grounding interactives<br>\u2713 Final exam<br>\u2713 Certificate of completion, saved to your account</div><br><button class="gbtn" id="wn-buy">Buy now \u2014 $29</button><div style="font-size:11.5px;color:#9a978d;margin:10px 0 2px;line-height:1.4">By purchasing, you agree to our <a href="/terms.html" style="color:#9a978d;text-decoration:underline">Terms</a> &amp; <a href="/refunds.html" style="color:#9a978d;text-decoration:underline">Refund Policy</a>.</div><a class="glink" id="wn-refresh">Already purchased? Refresh</a><a class="glink" id="wn-close2">Maybe later</a>');
     document.getElementById("wn-buy").onclick=function(){ if(!PAY){alert("Checkout opens soon — this course is almost live. Check back shortly!");return;} location.href=PAY+"?client_reference_id="+encodeURIComponent(user.id)+"&prefilled_email="+encodeURIComponent(user.email||""); };
     document.getElementById("wn-refresh").onclick=function(e){e.preventDefault(); checkPromise=runCheck(); tryEnter(wantIdx);};
     wireClose();

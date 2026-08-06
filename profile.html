@@ -183,11 +183,11 @@ function fmtLong(s){try{return new Date(s).toLocaleDateString(undefined,{year:"n
 function readProgress(key){try{var st=JSON.parse(localStorage.getItem(key));if(st&&typeof st.pct==="number")return st;}catch(e){}return null;}
 var WN_COURSES=[
   {id:"ground-zero",title:"Ground Zero: Intro to Electrical",href:"course-ground-zero.html",ls:"wirenerd_groundzero_progress_v2",blurb:"Your foundation in electrical — 9 lessons, hands-on demos, final exam, and a certificate."},
-  {id:"circuits-conductors",title:"Circuits & Conductors: Wire It, Size It, Ground It",href:"course-circuits-conductors.html",ls:"wirenerd_circuits_conductors_progress_v1",blurb:"Wire circuits, size conductors, feeders and panels, master derating and box fill, and ground a system right."}
+  {id:"phase-one",title:"Phase One: Wire It, Size It, Ground It",href:"course-phase-one.html",ls:"wirenerd_phase_one_progress_v1",blurb:"Wire circuits, size conductors, feeders and panels, master derating and box fill, and ground a system right."}
 ];
 
 function downloadCert(c){
-  var name=c.recipient_name||"Student", title=c.course_title||"Course", ds=fmtLong(c.issued_at||Date.now()), code=c.cert_code||"", hours=(title.indexOf("Circuits")===0?6:4);
+  var name=c.recipient_name||"Student", title=c.course_title||"Course", ds=fmtLong(c.issued_at||Date.now()), code=c.cert_code||"", hours=(title.indexOf("Phase One")===0?6:4);
   try{
     var jsPDF=window.jspdf.jsPDF, doc=new jsPDF({orientation:"landscape",unit:"pt",format:"letter"});
     var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
