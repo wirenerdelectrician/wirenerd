@@ -26,6 +26,8 @@
   .panel-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:11px;overflow:auto;box-shadow:0 1px 2px rgba(20,30,40,.04);}
   .panel-title{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;padding:3px 6px 6px;}
   svg.canvas{display:block;}
+  svg#process{touch-action:none;}
+  .panel-box{-webkit-overflow-scrolling:touch;}
   #procWrap{background:#fff;border:1px solid var(--line-2);border-radius:7px;}
   #traceWrap{background:#fff;border:1px solid var(--line-2);border-radius:7px;}
   .iostrip{display:flex;gap:8px;flex-wrap:wrap;padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:12px;margin-bottom:11px;}
@@ -49,8 +51,44 @@
   .legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:8px;}
   .legend span b{color:var(--text);font-family:'SF Mono',Menlo,monospace;}
 </style>
+<link rel="stylesheet" href="/wn-mobile.css">
+<script src="/wn-mobile.js" defer></script>
+<style id="wn-plc-mobile">
+  /* --- phone layout for the PLC sandbox --- */
+  .wn-backbar{display:flex;align-items:center;gap:10px;margin:0 0 12px;}
+  .wn-backbar a{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 13px;
+    border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);
+    font-size:13px;font-weight:600;text-decoration:none;}
+  .wn-backbar a:hover{border-color:var(--accent);color:var(--accent);}
+  .wn-scrollnote{display:none;font-size:11px;color:var(--dim);letter-spacing:.5px;
+    text-transform:uppercase;padding:0 6px 6px;}
+  @media (max-width:700px){
+    body{padding:12px 12px 30px;}
+    h1{font-size:19px;}
+    .subtitle{font-size:12.5px;}
+    .wn-scrollnote{display:block;}
+    .toolbar{gap:6px;padding:9px;}
+    button.tbtn,select.tbtn{min-height:42px;padding:8px 12px;}
+    .panel-box{padding:6px;}
+    /* the config popup becomes a bottom sheet — a pointer-anchored
+       252px card is unusable on a phone */
+    #picker{
+      left:12px !important;right:12px !important;
+      top:auto !important;bottom:12px !important;
+      width:auto !important;max-height:72vh;overflow-y:auto;
+    }
+    #picker select,#picker input{font-size:16px;min-height:42px;}
+    #picker button{min-height:44px;font-size:13px;}
+    .legend{font-size:10.5px;gap:9px;}
+  }
+</style>
 </head>
 <body>
+  <div class="wn-backbar">
+    <a href="/">&#8592; wirenerd</a>
+    <a href="/trainer.html">Wiring Sandbox</a>
+    <a href="/lessons.html">Lessons</a>
+  </div>
   <h1>PLC <b>Sandbox</b> <span style="font-size:13px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--accent);padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px">BETA</span></h1>
   <div style="display:flex;align-items:center;gap:8px;background:#fff7ec;border:1px solid var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:9px 13px;margin:2px 0 12px;font-size:13px;color:#7a4e10">
     <span style="font-size:15px">🛠️</span><span><b>Beta — under active development.</b> This trainer is still being built out, so you may hit rough edges and features can change. Found a bug or have a request? I'd love to hear it.</span>
@@ -112,15 +150,15 @@
     <span id="lesGoal" style="font-size:12px;color:var(--muted)"></span>
   </div>
 
-  <div class="panel-box"><div class="panel-title">Process &amp; wiring</div>
+  <div class="panel-box"><div class="panel-title">Process &amp; wiring</div><div class="wn-scrollnote">Swipe sideways to pan the process view</div>
     <div id="procWrap"><svg id="process" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
 
   <div class="iostrip" id="iostrip"></div>
 
-  <div class="panel-box"><div class="panel-title">I/O chassis — live module points</div>
+  <div class="panel-box"><div class="panel-title">I/O chassis — live module points</div><div class="wn-scrollnote">Swipe sideways for all modules</div>
     <div id="chassisWrap"><svg id="chassis" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
 
-  <div class="panel-box"><div class="panel-title">Ladder logic</div>
+  <div class="panel-box"><div class="panel-title">Ladder logic</div><div class="wn-scrollnote">Swipe sideways to see the full rung</div>
     <svg id="ladder" class="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
 
   <div class="panel-box"><div class="panel-title">Timing chart — live I/O trace</div>
@@ -290,7 +328,7 @@ function drawProcess(){
   devices.forEach(d=>{ s+=drawDevice(d); });
   parts.forEach(p=>{ const cv=devices.find(d=>d.id===p.conv); if(!cv)return; const px=cv.x+p.pos,py=cv.y-23; s+=`<rect x="${px-9}" y="${py}" width="18" height="14" rx="2" fill="var(--accent-soft)" stroke="#b5740c" stroke-width="1.2"/>`; });
   if(!devices.length) s+=`<text x="40" y="52" fill="var(--dim)" font-size="14" font-style="italic">Drop equipment to begin — or pick an Example above.</text>`;
-  pSVG.setAttribute('viewBox',`0 0 ${PW} ${PH}`); pSVG.style.height=PH+'px'; pSVG.style.width='100%'; pSVG.innerHTML=s;
+  pSVG.setAttribute('viewBox',`0 0 ${PW} ${PH}`); pSVG.style.height=PH+'px'; pSVG.style.width=PW+'px'; pSVG.style.maxWidth='none'; pSVG.innerHTML=s;
 }
 
 function drawDevice(d){
@@ -560,7 +598,7 @@ function tracedTags(){const set=new Set();M.rungs.forEach(r=>{r.cells.forEach(c=
 function recordTrace(){const snap={};const tt=tracedTags();tt.forEach(t=>snap[t]=M.bits[t]?1:0);traceBuf.push(snap);if(traceBuf.length>TRACE_MAX)traceBuf.shift();}
 function drawTrace(){
   const tags=tracedTags(); const padL=104,padR=14,rowH=26,top=10;
-  const W=Math.max(640, tSVG.clientWidth||760), H=top+tags.length*rowH+14;
+  const W=Math.max(640, tSVG.parentElement?tSVG.parentElement.clientWidth:0, tSVG.clientWidth||760), H=top+tags.length*rowH+14;
   if(!tags.length){tSVG.setAttribute('viewBox',`0 0 ${W} 60`);tSVG.style.height='60px';tSVG.innerHTML=`<text x="20" y="34" fill="var(--dim)" font-size="13" font-style="italic">Run or Step the program — input/output states will trace here over time.</text>`;return;}
   const plotW=W-padL-padR, n=Math.max(2,TRACE_MAX), dx=plotW/(n-1);
   let s='';
@@ -570,7 +608,7 @@ function drawTrace(){
     if(traceBuf.length>1){ let pts=''; for(let i=0;i<traceBuf.length;i++){ const x=padL+ (n-traceBuf.length+i)*dx; const yv=traceBuf[i][tag]?hi:lo; if(i>0){const yp=traceBuf[i-1][tag]?hi:lo; pts+=`${x},${yp} `;} pts+=`${x},${yv} `; }
       s+=`<polyline points="${pts.trim()}" fill="none" stroke="var(--green)" stroke-width="2"/>`; }
   });
-  tSVG.setAttribute('viewBox',`0 0 ${W} ${H}`);tSVG.style.height=H+'px';tSVG.style.width='100%';tSVG.innerHTML=s;
+  tSVG.setAttribute('viewBox',`0 0 ${W} ${H}`);tSVG.style.height=H+'px';tSVG.style.width=W+'px';tSVG.style.maxWidth='none';tSVG.innerHTML=s;
 }
 
 /* ======================================================================
@@ -579,7 +617,7 @@ function drawTrace(){
 const picker=document.getElementById('picker');
 function openPicker(html,x,y){picker.innerHTML=html;picker.style.display='block';const w=picker.offsetWidth,h=picker.offsetHeight;picker.style.left=Math.min(x,window.innerWidth-w-12)+'px';picker.style.top=Math.min(y,window.innerHeight-h-12)+'px';}
 function closePicker(){picker.style.display='none';}
-document.addEventListener('mousedown',e=>{if(picker.style.display==='block'&&!picker.contains(e.target)&&!e.target.closest('#ladder')&&!e.target.closest('#process'))closePicker();});
+document.addEventListener('pointerdown',e=>{if(picker.style.display==='block'&&!picker.contains(e.target)&&!e.target.closest('#ladder')&&!e.target.closest('#process'))closePicker();});
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function renderIO(){
   const used=new Set();M.rungs.forEach(r=>{r.cells.forEach(c=>c.contacts.forEach(k=>used.add(k.tag)));if(r.output)used.add(r.output.tag);});devices.forEach(d=>{if(d.tag)used.add(d.tag);if(d.params.extTag)used.add(d.params.extTag);if(d.params.retTag)used.add(d.params.retTag);});
@@ -632,7 +670,7 @@ function drawChassis(){
   for(let i=0;i<NA;i++){const tag='A'+i,live=used.has(tag),v=Math.round(M.analogs[tag]||0),ly=top+34+i*16;
     s+=`<text x="${mx+12}" y="${ly}" fill="${live?'var(--blue)':'#c3c8cd'}" font-size="10" font-family="monospace">${tag}</text>`;
     s+=`<rect x="${mx+40}" y="${ly-8}" width="80" height="9" rx="2" fill="#eef1f3"/><rect x="${mx+40}" y="${ly-8}" width="${live?80*v/100:0}" height="9" rx="2" fill="var(--blue)"/><text x="${mx+128}" y="${ly}" fill="var(--muted)" font-size="9" font-family="monospace">${live?v:'–'}</text>`;}
-  cSVG.setAttribute('viewBox',`0 0 ${W} ${H}`);cSVG.style.height=H+'px';cSVG.style.width='100%';cSVG.innerHTML=s;
+  cSVG.setAttribute('viewBox',`0 0 ${W} ${H}`);cSVG.style.height=H+'px';cSVG.style.width=W+'px';cSVG.style.maxWidth='none';cSVG.innerHTML=s;
 }
 
 /* ======================================================================

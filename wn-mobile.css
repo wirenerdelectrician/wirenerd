@@ -1,0 +1,159 @@
+/* ===========================================================
+   WireNerd — shared mobile layer
+   Loaded last on every page. Provides the hamburger nav,
+   phone-sized spacing, tap targets, and diagram zoom.
+   =========================================================== */
+
+/* --- hamburger button (hidden on desktop) --- */
+.wn-mnav-btn{
+  display:none;
+  width:44px;height:44px;flex:0 0 44px;
+  align-items:center;justify-content:center;
+  background:transparent;border:1px solid #3a3a3a;border-radius:9px;
+  cursor:pointer;padding:0;margin-left:auto;
+  -webkit-tap-highlight-color:transparent;
+}
+.wn-mnav-btn:active{background:#232323}
+.wn-mnav-btn .wn-bars{position:relative;width:20px;height:14px;display:block}
+.wn-mnav-btn .wn-bars i{
+  position:absolute;left:0;right:0;height:2px;border-radius:2px;
+  background:#ece9e2;transition:transform .22s ease, opacity .18s ease, top .22s ease;
+}
+.wn-mnav-btn .wn-bars i:nth-child(1){top:0}
+.wn-mnav-btn .wn-bars i:nth-child(2){top:6px}
+.wn-mnav-btn .wn-bars i:nth-child(3){top:12px}
+.wn-open > .wn-mnav-bar .wn-mnav-btn .wn-bars i:nth-child(1),
+.wn-open .wn-mnav-btn .wn-bars i:nth-child(1){top:6px;transform:rotate(45deg)}
+.wn-open .wn-mnav-btn .wn-bars i:nth-child(2){opacity:0}
+.wn-open .wn-mnav-btn .wn-bars i:nth-child(3){top:6px;transform:rotate(-45deg)}
+.wn-open .wn-mnav-btn{border-color:#EF9F27}
+.wn-open .wn-mnav-btn .wn-bars i{background:#EF9F27}
+
+@media (max-width:860px){
+
+  /* --- nav bar collapses to one row: brand + hamburger --- */
+  .wn-mnav{position:relative}
+  .wn-mnav .wn-mnav-bar{
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+    min-height:58px;
+    padding-left:16px;padding-right:16px;
+  }
+  .wn-mnav-btn{display:flex}
+
+  /* --- the links become a drop-down panel --- */
+  .wn-mnav .wn-mnav-links{
+    display:none !important;
+    position:absolute;left:0;right:0;top:100%;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    justify-content:flex-start !important;
+    flex-wrap:nowrap !important;
+    background:#1a1a1a;
+    border-top:1px solid #383838;
+    border-bottom:1px solid #383838;
+    padding:4px 0 10px;
+    margin:0;
+    max-height:calc(100vh - 58px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    box-shadow:0 16px 34px rgba(0,0,0,.5);
+    z-index:200;
+  }
+  .wn-mnav.wn-open .wn-mnav-links{display:flex !important}
+
+  .wn-mnav .wn-mnav-links > a,
+  .wn-mnav .wn-mnav-links > .logout,
+  .wn-mnav .wn-mnav-links > button{
+    display:flex;align-items:center;
+    min-height:48px;
+    margin:0 !important;
+    padding:0 20px !important;
+    font-size:16px !important;
+    border-bottom:1px solid #262626;
+    white-space:nowrap;
+    width:100%;
+  }
+  .wn-mnav .wn-mnav-links > a:last-child{border-bottom:none}
+  .wn-mnav .wn-mnav-links > a:active{background:#232323}
+
+  /* keep the brand from shrinking away */
+  .wn-mnav .brand,.wn-mnav .wn-brand{flex:0 0 auto;font-size:22px}
+
+  /* --- general phone spacing --- */
+  body{padding-left:0;padding-right:0}
+  .wrap,.wn-wrap{padding-left:16px;padding-right:16px}
+  img,svg,video,iframe{max-width:100%}
+  pre,code{white-space:pre-wrap;word-break:break-word}
+}
+
+@media (max-width:600px){
+  h1{font-size:clamp(26px,7.2vw,34px) !important;line-height:1.15}
+  h2{font-size:clamp(21px,5.6vw,26px) !important}
+  h3{font-size:clamp(18px,4.8vw,21px) !important}
+  p,li{font-size:16px;line-height:1.62}
+
+  /* tap targets: nothing interactive smaller than a fingertip */
+  button,.btn,.device-btn,.action,input[type=submit],input[type=button],select{
+    min-height:44px;
+  }
+  input[type=text],input[type=email],input[type=password],input[type=number],
+  input[type=search],textarea,select{
+    font-size:16px; /* stops iOS from zooming the page on focus */
+    min-height:44px;
+  }
+}
+
+/* --- wide diagrams: tap to open full-screen, legible --- */
+.wn-zoomable{cursor:zoom-in}
+.wn-zoomhint{
+  display:none;
+  font-size:11px;letter-spacing:.6px;text-transform:uppercase;
+  color:#B4B2A9;opacity:.75;margin:6px 0 2px;
+}
+@media (max-width:700px){ .wn-zoomhint{display:block} }
+
+.wn-lightbox{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(12,12,12,.97);
+  display:none;
+  flex-direction:column;
+}
+.wn-lightbox.wn-lb-open{display:flex}
+.wn-lb-bar{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:10px 14px;border-bottom:1px solid #333;
+}
+.wn-lb-bar span{color:#B4B2A9;font-size:12px;letter-spacing:.6px;text-transform:uppercase}
+.wn-lb-close{
+  width:44px;height:44px;border-radius:9px;border:1px solid #444;
+  background:#232323;color:#ece9e2;font-size:22px;line-height:1;cursor:pointer;
+}
+.wn-lb-scroll{
+  flex:1 1 auto;overflow:auto;-webkit-overflow-scrolling:touch;
+  display:flex;align-items:center;padding:14px;
+}
+.wn-lb-scroll > svg{
+  width:760px;max-width:none;height:auto;flex:0 0 auto;
+  background:#1f1f1f;border:1px solid #383838;border-radius:8px;padding:10px;
+}
+
+/* --- footer + inline navigation links need a fingertip's worth of height --- */
+@media (max-width:600px){
+  footer .wn-legal a,
+  footer .socials a,
+  .wn-legal a,
+  .socials a{
+    display:inline-flex;align-items:center;
+    min-height:40px;padding:0 10px;
+  }
+  footer .wn-legal,
+  footer .socials,
+  .wn-legal,.socials{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:2px 4px;
+  }
+}

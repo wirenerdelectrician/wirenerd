@@ -56,10 +56,67 @@
       .layout { display: block; }
       #panel { border: 1px solid #000; background: #fff; }
     }
+
+    /* ===== touch + phone layout ===== */
+    #panel{ touch-action:none; }          /* the canvas owns the gesture, not the page */
+
+    .wn-sheet{
+      position:fixed;z-index:400;display:flex;flex-direction:column;min-width:186px;
+      background:#232323;border:1px solid #4a4a4a;border-radius:11px;overflow:hidden;
+      box-shadow:0 14px 36px rgba(0,0,0,.6);
+    }
+    .wn-sheet button{
+      appearance:none;background:transparent;border:0;border-bottom:1px solid #333;
+      color:#ece9e2;font-size:15px;text-align:left;padding:14px 18px;min-height:48px;cursor:pointer;
+    }
+    .wn-sheet button:last-child{border-bottom:0}
+    .wn-sheet button:active{background:#2f2f2f}
+    .wn-sheet button.danger{color:#ff8a88}
+
+    .wn-palrow{display:flex;gap:8px;flex-wrap:wrap;width:100%;}
+    .wn-backbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;}
+    .wn-backbar a{display:inline-flex;align-items:center;min-height:38px;padding:0 13px;
+      border:1px solid #3a3a3a;border-radius:8px;background:#232323;color:#B4B2A9;
+      font-size:13px;font-weight:600;text-decoration:none;}
+    .wn-backbar a:hover{border-color:#EF9F27;color:#EF9F27;}
+
+    #sidebarToggle{display:none;width:100%;margin-top:14px;min-height:48px;
+      background:#232323;border:1px solid #444;border-radius:9px;color:#ece9e2;
+      font-size:15px;font-weight:600;cursor:pointer;}
+    #sidebarToggle:active{background:#2b2b2b}
+
+    @media (max-width:900px){
+      body{padding:12px 12px 30px;}
+      h1{font-size:19px}
+      .layout{flex-direction:column;gap:10px;}
+      .canvas-wrap{order:1;width:100%}
+      .zoom-rail{order:2;flex-direction:row;justify-content:center;gap:10px;width:100%;padding-top:0}
+      .zoom-rail button{width:56px;height:46px}
+      .zoom-rail .zreset{margin-top:0;width:66px}
+      #sidebarToggle{order:3}
+      .sidebar{order:4;width:100%;max-height:none;display:none}
+      .sidebar.wn-shown{display:block}
+      #sidebarToggle{display:block}
+      /* 24 palette buttons stacked would bury the canvas — scroll them sideways instead */
+      .palette{gap:6px;padding:9px 9px 7px}
+      .wn-palrow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+                 scrollbar-width:thin;padding-bottom:5px;}
+      .device-btn{min-height:44px;font-size:13px;padding:9px 12px;flex:0 0 auto;white-space:nowrap}
+      .controls button.action{flex:1 1 auto;min-width:calc(50% - 4px);min-height:46px}
+      .meter-display .mvalue{font-size:30px}
+      .hint{font-size:12.5px}
+    }
   </style>
 <style id="wn-navfix">header .wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}header .brand{flex:none}header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;row-gap:8px}header nav a{margin-left:22px;white-space:nowrap}@media(max-width:780px){header .wrap{flex-direction:column;align-items:flex-start;gap:10px}header nav{justify-content:flex-start}header nav a{margin-left:0;margin-right:16px}}</style>
+<link rel="stylesheet" href="/wn-mobile.css">
+<script src="/wn-mobile.js" defer></script>
 </head>
 <body>
+  <div class="wn-backbar">
+    <a href="/">&#8592; wirenerd</a>
+    <a href="/plc-sandbox.html">PLC Sandbox</a>
+    <a href="/lessons.html">Lessons</a>
+  </div>
   <h1>Wiring Sandbox</h1>
   <div class="subtitle">A load runs only when current completes a full loop at the right voltage. Conductors are color-coded by leg.</div>
 
@@ -101,6 +158,7 @@
     <div class="canvas-wrap">
       <svg id="panel" viewBox="0 0 720 640"></svg>
     </div>
+    <button type="button" id="sidebarToggle" aria-expanded="false">Reference &amp; Quick Guide</button>
     <div class="sidebar" id="sidebar">
       <div class="meter-display" id="meterDisplay">
         <div class="mlabel">DC/AC Volts</div>
@@ -151,7 +209,7 @@
   </div>
 
   <div class="status" id="status">Add a Power Source, then loads and switches. Complete the loop to run a load.</div>
-  <div class="hint">Click a device body to configure. Click a terminal then another to wire. Drag a wire's handle to route it; click the wire to delete. Then Energize.</div>
+  <div class="hint" id="hintLine">Click a device body to configure. Click a terminal then another to wire. Drag a wire's handle to route it; click the wire to delete. Then Energize.</div>
 
   <script>
     const svg = document.getElementById('panel');
@@ -175,21 +233,22 @@
     // (scroll-wheel zoom removed — zoom is via the on-screen + / − buttons only)
     // Pan by dragging empty canvas (background), middle-button, or space — only when not on a device/terminal/wire
     let panning=false, panSX, panSY, panOX, panOY;
-    svg.addEventListener('mousedown', function(e){
+    svg.addEventListener('pointerdown', function(e){
       // only start a pan if the click is on the bare svg background (not a child element)
       if(e.target===svg && e.button===0 && !meterMode){
+        if(e.pointerType!=='mouse') e.preventDefault();
         panning=true; const r=svg.getBoundingClientRect();
         panSX=e.clientX; panSY=e.clientY; panOX=vb.x; panOY=vb.y;
         svg.style.cursor='grabbing';
       }
     });
-    window.addEventListener('mousemove', function(e){
+    window.addEventListener('pointermove', function(e){
       if(!panning) return; const r=svg.getBoundingClientRect();
       vb.x = panOX - (e.clientX-panSX)/r.width*vb.w;
       vb.y = panOY - (e.clientY-panSY)/r.height*vb.h;
       applyVB();
     });
-    window.addEventListener('mouseup', function(){ if(panning){ panning=false; svg.style.cursor='default'; } });
+    window.addEventListener('pointerup', function(){ if(panning){ panning=false; svg.style.cursor='default'; } });
 
     let deviceCount = 0;
     const devices = {};
@@ -317,14 +376,14 @@
         const release=()=>{ if(!d.pressed) return; d.pressed=false; d.state=d.normally; updateDeviceInfo(d); setStatus('Button released'); if(energized) runSimulation(); };
         box.dataset.momentary='1';
         box._press=press; box._release=release;
-        window.addEventListener('mouseup', release);
+        window.addEventListener('pointerup', release);
       }
       if (d.role==='dualbtn'){
         const press=()=>{ d.pressed=true; updateDeviceInfo(d); setStatus('Button PRESSED — NO closed, NC open'); if(energized) runSimulation(); };
         const release=()=>{ if(!d.pressed) return; d.pressed=false; updateDeviceInfo(d); setStatus('Button released — NO open, NC closed'); if(energized) runSimulation(); };
         box.dataset.momentary='1';
         box._press=press; box._release=release;
-        window.addEventListener('mouseup', release);
+        window.addEventListener('pointerup', release);
       }
       updateDeviceInfo(d);
     }
@@ -494,10 +553,14 @@
       hit.addEventListener('dblclick',function(e){ e.stopPropagation(); e.preventDefault(); const p=svgPoint(e); w.waypoints.push({x:p.x,y:p.y}); rebuildHandles(w); refreshWire(w); setStatus('Bend added. Drag the orange handle to route it.'); });
       // right-click deletes the wire
       hit.addEventListener('contextmenu',function(e){ e.preventDefault(); e.stopPropagation(); removeWire(w); });
-      hit.addEventListener('click',function(e){ if(activeFault&&diagnosing){ e.stopPropagation(); tryRepair({wireId:w.id}); } });
+      hit.addEventListener('click',function(e){
+        if(activeFault&&diagnosing){ e.stopPropagation(); tryRepair({wireId:w.id}); return; }
+        if(wnIsTouch()){ e.stopPropagation(); e.preventDefault(); wnWireMenu(w,e); }
+      });
       refreshWire(w);
       recolorWiresStatic();
-      setStatus('Wired. Double-click the wire to add a bend; right-click to delete.');
+      setStatus(wnIsTouch() ? 'Wired. Tap the wire for bend / delete options.'
+                            : 'Wired. Double-click the wire to add a bend; right-click to delete.');
     }
     function removeWire(w){ pushUndo(); w.lineEl.remove(); if(w.hitEl)w.hitEl.remove(); (w.handles||[]).forEach(h=>h.remove()); const i=wires.indexOf(w); if(i>-1)wires.splice(i,1); recolorWiresStatic(); setStatus('Removed wire. Total: '+wires.length); }
 
@@ -518,10 +581,16 @@
     function refreshWire(w){ const d=wirePathStr(w); w.lineEl.setAttribute('d', d); if(w.hitEl)w.hitEl.setAttribute('d', d); positionHandles(w); }
 
     function makeWaypointDraggable(w, idx, handle){
-      let dragging=false;
-      handle.addEventListener('mousedown',function(e){ e.stopPropagation(); e.preventDefault(); dragging=true; });
-      window.addEventListener('mousemove',function(e){ if(!dragging)return; const p=svgPoint(e); if(w.waypoints[idx]){ w.waypoints[idx].x=p.x; w.waypoints[idx].y=p.y; refreshWire(w); } });
-      window.addEventListener('mouseup',function(){ dragging=false; });
+      let dragging=false, moved=false;
+      handle.addEventListener('pointerdown',function(e){ e.stopPropagation(); e.preventDefault(); dragging=true; moved=false; });
+      window.addEventListener('pointermove',function(e){ if(!dragging)return; moved=true; const p=svgPoint(e); if(w.waypoints[idx]){ w.waypoints[idx].x=p.x; w.waypoints[idx].y=p.y; refreshWire(w); } });
+      window.addEventListener('pointerup',function(){ dragging=false; });
+      // touch has no right-click, so a tap (without a drag) removes the bend
+      handle.addEventListener('click',function(e){
+        if(!wnIsTouch() || moved) return;
+        e.stopPropagation(); e.preventDefault();
+        w.waypoints.splice(idx,1); rebuildHandles(w); refreshWire(w); setStatus('Bend removed.');
+      });
     }
 
     // Color wires by the source leg they connect to, the moment they are wired (not just on energize).
@@ -553,7 +622,7 @@
 
     function makeDraggable(g,device){
       let dragging=false,sx,sy,ox,oy;
-      g.addEventListener('mousedown',function(e){
+      g.addEventListener('pointerdown',function(e){
         if(e.target.dataset.termId)return;
         // momentary button: fire press, but still allow drag if user moves
         if(e.target.dataset.momentary==='1' && e.target._press){ e.target._press(); }
@@ -561,9 +630,60 @@
         _preDragSnap = (typeof snapshot==='function')?snapshot():null;
         const p=svgPoint(e); sx=p.x; sy=p.y; ox=device.x; oy=device.y; e.preventDefault();
       });
-      window.addEventListener('mousemove',function(e){ if(!dragging)return; const p=svgPoint(e); const dx=p.x-sx,dy=p.y-sy; if(Math.abs(dx)>3||Math.abs(dy)>3)dragMoved=true; device.x=ox+dx; device.y=oy+dy; g.setAttribute('transform','translate('+device.x+','+device.y+')'); device.terminals.forEach(termId=>{ const tt=terminals[termId]; tt.x=device.x+tt.lx; tt.y=device.y+tt.ly; }); updateAllWiresFor(device.id); });
-      window.addEventListener('mouseup',function(){ if(dragging){ dragging=false; g.style.cursor='grab'; if(dragMoved && _preDragSnap){ undoStack.push(_preDragSnap); if(undoStack.length>50)undoStack.shift(); redoStack.length=0; updateUndoButtons(); } _preDragSnap=null; setTimeout(()=>{dragMoved=false;},50); } });
+      window.addEventListener('pointermove',function(e){ if(!dragging)return; const p=svgPoint(e); const dx=p.x-sx,dy=p.y-sy; if(Math.abs(dx)>3||Math.abs(dy)>3)dragMoved=true; device.x=ox+dx; device.y=oy+dy; g.setAttribute('transform','translate('+device.x+','+device.y+')'); device.terminals.forEach(termId=>{ const tt=terminals[termId]; tt.x=device.x+tt.lx; tt.y=device.y+tt.ly; }); updateAllWiresFor(device.id); });
+      window.addEventListener('pointerup',function(){ if(dragging){ dragging=false; g.style.cursor='grab'; if(dragMoved && _preDragSnap){ undoStack.push(_preDragSnap); if(undoStack.length>50)undoStack.shift(); redoStack.length=0; updateUndoButtons(); } _preDragSnap=null; setTimeout(()=>{dragMoved=false;},50); } });
     }
+
+    // ===== touch support =====
+    // On a phone there is no right-click and no reliable double-click, so a tap
+    // on a wire opens a small action sheet with the same two options.
+    // Media queries alone are unreliable (desktop Chrome with a touchscreen,
+    // emulators, hybrids), so also remember how the last interaction arrived.
+    let wnLastPointerType = '';
+    document.addEventListener('pointerdown', function(e){
+      if (e.pointerType) wnLastPointerType = e.pointerType;
+    }, true);
+    function wnIsTouch(){
+      if (wnLastPointerType) return wnLastPointerType !== 'mouse';
+      return window.matchMedia('(hover:none), (pointer:coarse)').matches
+             || navigator.maxTouchPoints > 0;
+    }
+
+    let wnSheet=null;
+    function wnCloseSheet(){ if(wnSheet){ wnSheet.remove(); wnSheet=null; } }
+    document.addEventListener('pointerdown',function(e){
+      if(wnSheet && !wnSheet.contains(e.target)) wnCloseSheet();
+    },true);
+
+    function wnActionSheet(clientX, clientY, actions){
+      wnCloseSheet();
+      const box=document.createElement('div');
+      box.className='wn-sheet';
+      actions.forEach(a=>{
+        const b=document.createElement('button');
+        b.type='button'; b.textContent=a.label;
+        if(a.danger) b.className='danger';
+        b.addEventListener('click',function(ev){ ev.stopPropagation(); wnCloseSheet(); a.run(); });
+        box.appendChild(b);
+      });
+      document.body.appendChild(box);
+      const w=box.offsetWidth, h=box.offsetHeight;
+      box.style.left=Math.max(8, Math.min(clientX-w/2, window.innerWidth-w-8))+'px';
+      box.style.top =Math.max(8, Math.min(clientY+12, window.innerHeight-h-8))+'px';
+      wnSheet=box;
+    }
+
+    function wnWireMenu(w, e){
+      const p=svgPoint(e);
+      wnActionSheet(e.clientX, e.clientY, [
+        { label:'Add bend here', run:function(){
+            w.waypoints.push({x:p.x,y:p.y}); rebuildHandles(w); refreshWire(w);
+            setStatus('Bend added. Drag the orange handle to route it.');
+          }},
+        { label:'Delete wire', danger:true, run:function(){ removeWire(w); }}
+      ]);
+    }
+
     function svgPoint(e){ const r=svg.getBoundingClientRect(); const vb=svg.viewBox.baseVal; return { x:(e.clientX-r.left)/r.width*vb.width, y:(e.clientY-r.top)/r.height*vb.height }; }
 
     function conductsPairs(d){
@@ -992,6 +1112,54 @@
       img.onerror=function(){ setStatus('Could not render image for export.','#E24B4A'); };
       img.src='data:image/svg+xml;base64,'+svg64;
     });
+
+    // ===== phone layout wiring =====
+    (function(){
+      const MOBILE = 900;
+      // group each palette's buttons into one row so it can scroll sideways
+      document.querySelectorAll('.palette').forEach(function(pal){
+        const btns = Array.prototype.slice.call(pal.querySelectorAll('.device-btn'));
+        if (!btns.length) return;
+        const row = document.createElement('div');
+        row.className = 'wn-palrow';
+        pal.insertBefore(row, btns[0]);
+        btns.forEach(function(b){ row.appendChild(b); });
+      });
+
+      const toggle  = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const meter   = document.getElementById('meterDisplay');
+      const layout  = document.querySelector('.layout');
+      const hint    = document.getElementById('hintLine');
+
+      toggle.addEventListener('click', function(){
+        const open = sidebar.classList.toggle('wn-shown');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.textContent = open ? 'Hide Reference' : 'Reference & Quick Guide';
+      });
+
+      // The meter readout lives in the sidebar on desktop, but the sidebar is
+      // collapsed on a phone — so lift the readout above the canvas there.
+      function placeMeter(){
+        if (window.innerWidth <= MOBILE){
+          if (meter.parentNode !== layout.parentNode) layout.parentNode.insertBefore(meter, layout);
+        } else if (meter.parentNode !== sidebar){
+          sidebar.insertBefore(meter, sidebar.firstChild);
+        }
+      }
+
+      function setHint(){
+        if (!hint) return;
+        hint.textContent = wnIsTouch()
+          ? 'Tap a device to configure. Tap a terminal, then another, to wire them. Tap a wire for bend / delete. Drag the background to pan, and use + / \u2212 to zoom. Then Energize.'
+          : 'Click a device body to configure. Click a terminal then another to wire. Drag a wire\u2019s handle to route it; click the wire to delete. Then Energize.';
+      }
+
+      placeMeter(); setHint();
+      let t; window.addEventListener('resize', function(){
+        clearTimeout(t); t = setTimeout(placeMeter, 150);
+      });
+    })();
   </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c51b41d5f6924872bef5c4e0dd739b97"}'></script><!-- End Cloudflare Web Analytics -->
 
