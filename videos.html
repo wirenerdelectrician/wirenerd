@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Educational Videos · WireNerd</title>
+<meta name="description" content="Free animated electrical lessons from WireNerd. Start from zero: what electricity is, conductors and insulators, AC vs DC, the complete circuit, and volts, amps and ohms." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --panel-2:#2b2b2b;
+  --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--display);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:16px;min-height:60px;max-width:1200px;flex-wrap:nowrap}
+.brand{font-weight:800;letter-spacing:.5px;font-size:20px;color:var(--text);white-space:nowrap}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;align-items:center;gap:13px;margin-left:auto;flex-wrap:nowrap;white-space:nowrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text);text-decoration:none}
+@media(max-width:980px){.topnav .wrap{flex-wrap:wrap}.navlinks{flex-wrap:wrap}}
+.hero{padding:46px 0 6px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;margin:10px 0 8px;line-height:1.06}
+.lead{color:var(--text-dim);font-size:18px;margin:0 0 4px}
+.updated{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin:6px 0 0}
+main{padding:10px 0 40px}
+main h2{font-size:23px;font-weight:700;margin:30px 0 8px}
+main h3{font-size:18px;font-weight:600;margin:22px 0 6px;color:var(--text)}
+main p{color:var(--text-dim);margin:0 0 14px}
+main ul{color:var(--text-dim);margin:0 0 14px;padding-left:20px}
+main li{margin:5px 0}
+main strong,main b{color:var(--text)}
+.callout{background:var(--panel);border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;margin:18px 0;color:var(--text-dim)}
+.callout b{color:var(--text)}
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px;margin-top:30px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}
+footer a:hover{color:var(--accent)}
+.social{display:flex;gap:16px}
+.legal-links{display:flex;flex-wrap:wrap;gap:14px;font-size:13.5px}
+.fine{color:var(--muted);font-size:12.5px;margin-top:6px;max-width:780px;line-height:1.5}
+
+/* ---- videos page ---- */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;margin:22px 0 10px}
+.vcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.vplayer{position:relative;aspect-ratio:16/9;background:#111;overflow:hidden}
+.vplayer iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vthumb{all:unset;position:absolute;inset:0;cursor:pointer;display:block}
+.vthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease}
+.vthumb:hover img{transform:scale(1.03)}
+.vthumb:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.vplay{position:absolute;left:50%;top:50%;width:68px;height:68px;margin:-34px 0 0 -34px;border-radius:50%;background:rgba(239,159,39,.95);box-shadow:0 6px 24px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center}
+.vplay:after{content:"";margin-left:6px;border-style:solid;border-width:13px 0 13px 22px;border-color:transparent transparent transparent #1a1a1a}
+.vsoon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);background:repeating-linear-gradient(135deg,#202020 0 14px,#242424 14px 28px)}
+.vbody{padding:14px 16px 18px}
+.vnum{font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
+.vbody h3{margin:6px 0 6px;font-size:18px;line-height:1.25}
+.vbody p{margin:0;font-size:14.5px;color:var(--text-dim)}
+</style>
+<link rel="stylesheet" href="/wn-mobile.css">
+<script src="/wn-mobile.js" defer></script>
+</head>
+<body>
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a><a href="/videos.html">Videos</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a><a href="/plc-sandbox.html">PLC Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a>
+    <a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">Ground Zero · Video Series</div>
+  <h1>Educational Videos</h1>
+  <p class="lead">Short animated lessons that start from zero. Watch them in order &mdash; each one builds on the last.</p>
+</div></header>
+
+<main><div class="wrap">
+  <div class="vgrid" id="vgrid"></div>
+  <div class="callout"><b>New videos every week.</b> Subscribe on <a href="https://www.youtube.com/@WireNerdElectrician?sub_confirmation=1" target="_blank" rel="noopener">YouTube</a> to get the next one as soon as it&rsquo;s out.</div>
+</div></main>
+<footer><div class="wrap">
+  <div class="legal-links">
+    <a href="/about.html">About</a>
+    <a href="/disclaimer.html">Disclaimer</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/refunds.html">Refunds</a>
+    <a href="/contact.html">Contact</a>
+  </div>
+  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
+  <div>Built by Bryan Barrios</div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <div class="fine">WireNerd is an independent study and exam-prep resource. It is not a school, training academy, or licensing authority, and it is not affiliated with NFPA or any government agency. Content is for educational purposes &mdash; always verify against your own current adopted code and a licensed professional.</div>
+</div></footer>
+
+<script>
+// To add a video: paste its YouTube ID (the part after youtu.be/) into "id".
+// Videos with an empty id show as "Coming soon".
+const VIDEOS = [
+  { n:"01", id:"zS1OvyDqt6Q", title:"What Is Electricity?",     desc:"Atoms, electrons, voltage and current &mdash; where it all starts." },
+  { n:"02", id:"eCR22lU2ZHI", title:"Conductors &amp; Insulators", desc:"Why copper carries current and plastic blocks it." },
+  { n:"03", id:"",            title:"AC vs DC",                  desc:"Two ways current can flow, and where you&rsquo;ll find each one." },
+  { n:"04", id:"",            title:"The Complete Circuit",      desc:"Why electricity needs a full loop to do any work." },
+  { n:"05", id:"",            title:"Volts, Amps &amp; Ohms",    desc:"The three numbers behind every circuit, and how they connect." }
+];
+(function(){
+  const grid=document.getElementById('vgrid');
+  VIDEOS.forEach(function(v){
+    const card=document.createElement('article'); card.className='vcard';
+    let player;
+    if(v.id){
+      player='<div class="vplayer"><button class="vthumb" type="button" aria-label="Play: '+v.title.replace(/&[^;]+;/g,'')+'">'+
+        '<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+v.id+'/maxresdefault.jpg" '+
+        'onerror="this.onerror=null;this.src=\'https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg\'">'+
+        '<span class="vplay"></span></button></div>';
+    } else {
+      player='<div class="vplayer"><div class="vsoon">Coming soon</div></div>';
+    }
+    card.innerHTML=player+'<div class="vbody"><div class="vnum">Video '+v.n+'</div><h3>'+v.title+'</h3><p>'+v.desc+'</p></div>';
+    if(v.id){
+      card.querySelector('.vthumb').addEventListener('click',function(){
+        const box=this.parentNode;
+        box.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1&rel=0&playsinline=1" title="'+this.getAttribute('aria-label')+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      });
+    }
+    grid.appendChild(card);
+  });
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c51b41d5f6924872bef5c4e0dd739b97"}'></script><!-- End Cloudflare Web Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="/wn-notify.js"></script>
+</body>
+</html>
