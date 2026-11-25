@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /account.html
+Disallow: /profile.html
+Disallow: /member.html
+
+Sitemap: https://www.wirenerd.com/sitemap.xml
