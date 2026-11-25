@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Motor Circuit Calculator: FLA, Wire, Breaker &amp; Overload (NEC 430) | WireNerd</title>
+<link rel="canonical" href="https://www.wirenerd.com/tool-motor-circuit.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="WireNerd" />
+<meta property="og:title" content="Motor Circuit Calculator: FLA, Wire, Breaker &amp; Overload (NEC 430)" />
+<meta property="og:description" content="Free motor circuit calculator: full-load current from NEC 430.248/430.250, then wire size (125%), short-circuit protection (430.52) and overload setting (430.32)." />
+<meta property="og:url" content="https://www.wirenerd.com/tool-motor-circuit.html" />
+<meta property="og:image" content="https://www.wirenerd.com/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="WireNerd — Industrial electrical, made clear." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="description" content="Free motor circuit calculator: full-load current from NEC 430.248/430.250, then wire size (125%), short-circuit protection (430.52) and overload setting (430.32)." />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#1a1a1a" />
+<link rel="apple-touch-icon" href="/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="WN Tools" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --panel-2:#2b2b2b;
+  --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--display);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:16px;min-height:60px;max-width:1200px;flex-wrap:nowrap}
+.brand{font-weight:800;letter-spacing:.5px;font-size:20px;color:var(--text);white-space:nowrap}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;align-items:center;gap:13px;margin-left:auto;flex-wrap:nowrap;white-space:nowrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text);text-decoration:none}
+@media(max-width:980px){.topnav .wrap{flex-wrap:wrap}.navlinks{flex-wrap:wrap}}
+.hero{padding:46px 0 6px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;margin:10px 0 8px;line-height:1.06}
+.lead{color:var(--text-dim);font-size:18px;margin:0 0 4px}
+.updated{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin:6px 0 0}
+main{padding:10px 0 40px}
+main h2{font-size:23px;font-weight:700;margin:30px 0 8px}
+main h3{font-size:18px;font-weight:600;margin:22px 0 6px;color:var(--text)}
+main p{color:var(--text-dim);margin:0 0 14px}
+main ul{color:var(--text-dim);margin:0 0 14px;padding-left:20px}
+main li{margin:5px 0}
+main strong,main b{color:var(--text)}
+.callout{background:var(--panel);border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;margin:18px 0;color:var(--text-dim)}
+.callout b{color:var(--text)}
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px;margin-top:30px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}
+footer a:hover{color:var(--accent)}
+.social{display:flex;gap:16px}
+.legal-links{display:flex;flex-wrap:wrap;gap:14px;font-size:13.5px}
+.fine{color:var(--muted);font-size:12.5px;margin-top:6px;max-width:780px;line-height:1.5}
+</style>
+<link rel="stylesheet" href="/tools.css">
+<link rel="stylesheet" href="/wn-mobile.css">
+<script src="/wn-mobile.js" defer></script>
+</head>
+<body>
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a><a href="/videos.html">Videos</a><a href="/tools.html">Tools</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a><a href="/plc-sandbox.html">PLC Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a>
+    <a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">TOOLS · MOTORS</div>
+  <h1>Motor Circuit Calculator</h1>
+  <p class="lead">Pick the horsepower and voltage. Get the table full-load current, the wire size, the max breaker or fuse, and the overload setting.</p>
+</div></header>
+
+<main><div class="wrap">
+<div class="tool"><div class="tgrid">
+ <div class="fld"><label for="ph">Motor</label><select id="ph"><option value="3">Three-phase AC</option><option value="1">Single-phase AC</option></select></div>
+ <div class="fld"><label for="hp">Horsepower</label><select id="hp"></select></div>
+ <div class="fld"><label for="vv">Voltage</label><select id="vv"></select></div>
+ <div class="fld"><label for="oc">Short-circuit device</label><select id="oc"><option value="itb">Inverse-time breaker (250%)</option><option value="tdf">Dual-element time-delay fuse (175%)</option><option value="ntdf">Non-time-delay fuse (300%)</option><option value="itrip">Instantaneous-trip breaker (800%)</option></select></div>
+ <div class="fld"><label for="m">Conductor</label><select id="m"><option value="cu">Copper</option><option value="al">Aluminum</option></select></div>
+ <div class="fld"><label for="col">Termination rating</label><select id="col"><option value="75">75°C</option><option value="60">60°C</option></select></div>
+ <div class="fld"><label for="fla">Nameplate FLA (optional)</label><input id="fla" inputmode="decimal" placeholder="for overloads"></div>
+ <div class="fld"><label for="sf">Service factor ≥ 1.15 or temp rise ≤ 40°C?</label><select id="sf"><option value="1">Yes (125%)</option><option value="0">No (115%)</option></select></div>
+ </div><div id="res" class="res"></div><ul id="steps" class="steps"></ul></div>
+<h2>How motor circuits are sized</h2>
+<ol>
+<li><b>Full-load current (FLC):</b> use the NEC table value (430.248 single-phase, 430.250 three-phase), not the nameplate, for wire and short-circuit protection (430.6(A)(1)).</li>
+<li><b>Wire:</b> at least 125% of the FLC for a single motor (430.22).</li>
+<li><b>Branch-circuit short-circuit and ground-fault protection:</b> the device can’t exceed the Table 430.52 percentage of FLC. If that doesn’t land on a standard size, you may go up to the next standard size (430.52(C)(1) Exception 1).</li>
+<li><b>Overload:</b> size from the <b>nameplate</b> FLA: 125% for a service factor of 1.15 or more, or a temperature rise of 40°C or less, and 115% for all others (430.32(A)(1)).</li>
+</ol>
+<p class="note">Values are for standard squirrel-cage induction motors (Design B and similar). Wound-rotor, DC, Design B energy-efficient (Table 430.52 lists separate values) and multi-motor circuits have other rules. Small wire limits in 240.4(D) don’t apply to motor circuits (240.4(G)).</p>
+<h2>Learn the why</h2><div class="related"><a href="/lesson-motor-nameplate.html">Reading a Motor Nameplate</a><a href="/lesson-motor-starter.html">The Motor Starter</a><a href="/lesson-overcurrent.html">Overcurrent Protection</a></div>
+<div class="cta"><b>Want to really understand the math?</b> Our self-paced courses walk you through it with animated lessons, hands-on labs and a final exam. <a href="/courses.html">See the courses →</a></div>
+<p class="disc">For learning and quick checks only. Results are based on the 2023 NEC tables and standard field rules. Always verify against your adopted code edition, the equipment instructions and your AHJ. <a href="/disclaimer.html">Disclaimer</a>.</p>
+</div></main>
+<footer><div class="wrap">
+  <div class="legal-links">
+    <a href="/about.html">About</a>
+    <a href="/disclaimer.html">Disclaimer</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/refunds.html">Refunds</a>
+    <a href="/contact.html">Contact</a>
+  </div>
+  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
+  <div>Built by Bryan Barrios</div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <div class="fine">WireNerd is an independent study and exam-prep resource. It is not a school, training academy, or licensing authority, and it is not affiliated with NFPA or any government agency. Content is for educational purposes &mdash; always verify against your own current adopted code and a licensed professional.</div>
+</div></footer>
+<script src="/wn-tools.js"></script>
+<script src="/wn-tools2.js"></script>
+<script>
+
+var $=function(id){return document.getElementById(id);};
+function num(id){var v=$(id).value.trim().replace(/,/g,'');return v===''?null:parseFloat(v);}
+function outbox(k,v,cls){return '<div class="out '+(cls||'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
+function sizeOptions(sel,list,def){list.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=WNT.label(s);if(s===def)o.selected=true;sel.appendChild(o);});}
+
+function fill(){var T=$('ph').value==='3'?WNT.M3:WNT.M1,hp=$('hp').value,vv=$('vv').value;$('hp').innerHTML='';$('vv').innerHTML='';
+ T.hp.forEach(function(h){var o=document.createElement('option');o.value=h;o.textContent=h+' HP';if(h===(hp||'10'))o.selected=true;$('hp').appendChild(o);});
+ if(!$('hp').value)$('hp').selectedIndex=0;
+ T.v.forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v+' V';if(v===(vv||(T===WNT.M3?'460':'230')))o.selected=true;$('vv').appendChild(o);});
+ if(T.v.indexOf($('vv').value)<0)$('vv').value=T===WNT.M3?'460':'230';calc();}
+function calc(){var fla=num('fla'),o={phase:$('ph').value,hp:$('hp').value,volts:$('vv').value,metal:$('m').value,col:+$('col').value,ocpd:$('oc').value,fla:fla,sf115:$('sf').value==='1'};
+ if(!o.hp||!o.volts)return;var r=WNT.motor(o);
+ $('res').innerHTML=outbox('Table FLC',WNT.fmt(r.flc)+' A','hi')+outbox('Min wire ampacity',WNT.fmt(r.need)+' A')+outbox('Wire size',r.wire?WNT.label(r.wire):'Over 750','hi')+outbox('Max '+(o.ocpd==='itb'||o.ocpd==='itrip'?'breaker':'fuse'),r.ocNext+' A','hi')+(r.ol?outbox('Overload set at',WNT.fmt(r.ol)+' A max'):'');
+ $('steps').innerHTML='<li>FLC from Table '+(o.phase==='3'?'430.250':'430.248')+': '+o.hp+' HP at '+o.volts+' V = '+r.flc+' A</li><li>Wire: '+r.flc+' × 125% = '+WNT.fmt(r.need)+' A → '+WNT.label(r.wire)+' ('+r.wireAmp+' A at '+o.col+'°C)</li><li>'+r.ocName+': '+r.flc+' × '+r.ocPct+'% = '+WNT.fmt(r.ocMax)+' A → '+(Math.abs(r.ocNext-r.ocMax)<1e-9?'':'next standard size ')+r.ocNext+' A</li>'+(r.ol?'<li>Overload: '+fla+' A nameplate × '+(o.sf115?'125':'115')+'% = '+WNT.fmt(r.ol)+' A</li>':'<li>Enter the nameplate FLA to size the overload.</li>');}
+$('ph').addEventListener('change',fill);['hp','vv','oc','m','col','sf'].forEach(function(i){$(i).addEventListener('change',calc);});$('fla').addEventListener('input',calc);fill();
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
+</script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c51b41d5f6924872bef5c4e0dd739b97"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

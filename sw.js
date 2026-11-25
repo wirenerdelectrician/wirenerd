@@ -1,9 +1,7 @@
 /* WireNerd Tools service worker: network-first for the tool pages and their files,
    so they keep working offline once opened. Everything else on the site is untouched. */
-var CACHE = 'wn-tools-v1';
-var FILES = ['/tools.html', '/tool-peir-calculator.html', '/tool-watts-to-amps.html', '/tool-voltage-drop.html',
-  '/tool-wire-ampacity.html', '/tool-box-fill.html', '/tool-conduit-fill.html', '/tool-conduit-bending.html',
-  '/wn-tools.js', '/tools.css', '/wn-mobile.css', '/wn-mobile.js', '/manifest.webmanifest', '/icon-192.png', '/icon-180.png'];
+var CACHE = 'wn-tools-v2';
+var FILES = ["/tools.html", "/tool-peir-calculator.html", "/tool-watts-to-amps.html", "/tool-voltage-drop.html", "/tool-wire-ampacity.html", "/tool-box-fill.html", "/tool-conduit-fill.html", "/tool-conduit-bending.html", "/tool-motor-circuit.html", "/tool-ampacity-derating.html", "/tool-ground-wire-size.html", "/tool-transformer.html", "/tool-breaker-size.html", "/tool-power-triangle.html", "/tool-series-parallel.html", "/tool-wire-color-codes.html", "/tool-awg-to-mm2.html", "/wn-tools.js", "/wn-tools2.js", "/tools.css", "/wn-mobile.css", "/wn-mobile.js", "/manifest.webmanifest", "/icon-192.png", "/icon-180.png"];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).catch(function () {}));
   self.skipWaiting();

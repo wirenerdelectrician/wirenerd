@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Conduit Bending Calculator: Offsets, Saddles &amp; 90s | WireNerd</title>
+<title>Conduit Bending Calculator: Offsets, Saddles, Rolling Offsets &amp; 90s | WireNerd</title>
 <link rel="canonical" href="https://www.wirenerd.com/tool-conduit-bending.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="WireNerd" />
-<meta property="og:title" content="Conduit Bending Calculator: Offsets, Saddles &amp; 90s" />
-<meta property="og:description" content="Free EMT conduit bending helper: offset multipliers and shrink, 3-point saddles and 90° stub-up marks, with the field rules explained." />
+<meta property="og:title" content="Conduit Bending Calculator: Offsets, Saddles, Rolling Offsets &amp; 90s" />
+<meta property="og:description" content="Free EMT conduit bending helper: offsets, 3- and 4-point saddles, rolling offsets, kicks, 90° stubs and back-to-back 90s, with the field rules explained." />
 <meta property="og:url" content="https://www.wirenerd.com/tool-conduit-bending.html" />
 <meta property="og:image" content="https://www.wirenerd.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="WireNerd — Industrial electrical, made clear." />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="description" content="Free EMT conduit bending helper: offset multipliers and shrink, 3-point saddles and 90° stub-up marks, with the field rules explained." />
+<meta name="description" content="Free EMT conduit bending helper: offsets, 3- and 4-point saddles, rolling offsets, kicks, 90° stubs and back-to-back 90s, with the field rules explained." />
 <link rel="manifest" href="/manifest.webmanifest" />
 <meta name="theme-color" content="#1a1a1a" />
 <link rel="apple-touch-icon" href="/icon-180.png" />
@@ -90,12 +90,12 @@ footer a:hover{color:var(--accent)}
 <header class="hero"><div class="wrap">
   <div class="kicker">TOOLS · CONDUIT BENDING</div>
   <h1>Conduit Bending Helper</h1>
-  <p class="lead">Get your marks for offsets, 3-point saddles and 90° stubs, and learn the rule behind each number.</p>
+  <p class="lead">Get your marks for offsets, saddles, rolling offsets, kicks and 90s, and learn the rule behind each number.</p>
 </div></header>
 
 <main><div class="wrap">
 <div class="tool">
-  <div class="tabs"><button data-t="off" class="on" type="button">Offset</button><button data-t="sad" type="button">3-Point Saddle</button><button data-t="s90" type="button">90° Stub-Up</button></div>
+  <div class="tabs"><button data-t="off" class="on" type="button">Offset</button><button data-t="sad" type="button">3-Point Saddle</button><button data-t="s4" type="button">4-Point Saddle</button><button data-t="rol" type="button">Rolling Offset</button><button data-t="s90" type="button">90° Stub-Up</button><button data-t="b2b" type="button">Back-to-Back 90</button><button data-t="kik" type="button">Kick</button></div>
   <div id="p-off">
     <div class="tgrid">
       <div class="fld"><label for="oh">Offset depth</label><input id="oh" inputmode="decimal" value="6"><span class="unit">inches, how far to move the pipe</span></div>
@@ -119,6 +119,36 @@ footer a:hover{color:var(--accent)}
       <div class="fld"><label for="ts">EMT size</label><select id="ts"><option>1/2"</option><option>3/4"</option><option>1"</option><option>1-1/4"</option></select></div>
     </div>
     <div id="r-s90" class="res"></div><ul id="s-s90" class="steps"></ul>
+  </div>
+  <div id="p-s4" style="display:none">
+    <div class="tgrid">
+      <div class="fld"><label for="fh">Obstruction height</label><input id="fh" inputmode="decimal" value="4"><span class="unit">inches</span></div>
+      <div class="fld"><label for="fa">Bend angle</label><select id="fa"><option value="22.5">22½°</option><option value="30" selected>30°</option><option value="45">45°</option></select></div>
+      <div class="fld"><label for="fn">Distance to near edge</label><input id="fn" inputmode="decimal" value="30"><span class="unit">inches from the pipe end</span></div>
+      <div class="fld"><label for="fw">Obstruction width</label><input id="fw" inputmode="decimal" value="12"><span class="unit">inches</span></div>
+    </div>
+    <div id="r-s4" class="res"></div><ul id="s-s4" class="steps"></ul>
+  </div>
+  <div id="p-rol" style="display:none">
+    <div class="tgrid">
+      <div class="fld"><label for="rr">Rise</label><input id="rr" inputmode="decimal" value="6"><span class="unit">inches up/down</span></div>
+      <div class="fld"><label for="rl2">Roll</label><input id="rl2" inputmode="decimal" value="8"><span class="unit">inches sideways</span></div>
+      <div class="fld"><label for="ra">Bend angle</label><select id="ra"><option value="22.5">22½°</option><option value="30" selected>30°</option><option value="45">45°</option></select></div>
+    </div>
+    <div id="r-rol" class="res"></div><ul id="s-rol" class="steps"></ul>
+  </div>
+  <div id="p-b2b" style="display:none">
+    <div class="tgrid">
+      <div class="fld"><label for="bl">Back-to-back length</label><input id="bl" inputmode="decimal" value="48"><span class="unit">inches, outside of one 90 to outside of the other</span></div>
+    </div>
+    <div id="r-b2b" class="res"></div><ul id="s-b2b" class="steps"></ul>
+  </div>
+  <div id="p-kik" style="display:none">
+    <div class="tgrid">
+      <div class="fld"><label for="kr">Kick rise</label><input id="kr" inputmode="decimal" value="3"><span class="unit">inches the end must move</span></div>
+      <div class="fld"><label for="kd">Distance to the end</label><input id="kd" inputmode="decimal" value="12"><span class="unit">inches from the bend to where the rise is measured</span></div>
+    </div>
+    <div id="r-kik" class="res"></div><ul id="s-kik" class="steps"></ul>
   </div>
   <p class="note">These are standard EMT hand-bender field rules. Benders vary, so check the take-up and marks printed on yours, and test on scrap before a critical run.</p>
 </div>
@@ -149,6 +179,7 @@ footer a:hover{color:var(--accent)}
   <div class="fine">WireNerd is an independent study and exam-prep resource. It is not a school, training academy, or licensing authority, and it is not affiliated with NFPA or any government agency. Content is for educational purposes &mdash; always verify against your own current adopted code and a licensed professional.</div>
 </div></footer>
 <script src="/wn-tools.js"></script>
+<script src="/wn-tools2.js"></script>
 <script>
 
 var $=function(id){return document.getElementById(id);};
@@ -156,7 +187,7 @@ function num(id){var v=$(id).value.trim().replace(/,/g,'');return v===''?null:pa
 function outbox(k,v,cls){return '<div class="out '+(cls||'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
 function sizeOptions(sel,list,def){list.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=WNT.label(s);if(s===def)o.selected=true;sel.appendChild(o);});}
 
-function tab(t){Array.prototype.forEach.call(document.querySelectorAll('.tabs button'),function(b){b.className=b.getAttribute('data-t')===t?'on':'';});['off','sad','s90'].forEach(function(k){$('p-'+k).style.display=k===t?'':'none';});}
+function tab(t){Array.prototype.forEach.call(document.querySelectorAll('.tabs button'),function(b){b.className=b.getAttribute('data-t')===t?'on':'';});['off','sad','s4','rol','s90','b2b','kik'].forEach(function(k){$('p-'+k).style.display=k===t?'':'none';});}
 Array.prototype.forEach.call(document.querySelectorAll('.tabs button'),function(b){b.onclick=function(){tab(b.getAttribute('data-t'));};});
 function off(){var h=num('oh'),a=+$('oa').value,d=num('od');$('r-off').innerHTML='';$('s-off').innerHTML='';if(!(h>0))return;
   var r=WNT.offset({height:h,angle:a,toObstacle:d}),t=WNT.OFFSET[a];
@@ -172,6 +203,23 @@ function s90(){var h=num('th'),z=$('ts').value;$('r-s90').innerHTML='';$('s-s90'
   var r=WNT.stub90({height:h,size:z});
   $('r-s90').innerHTML=outbox('Mark from the end',WNT.inch(r.mark),r.mark<0?'bad':'hi')+outbox('Take-up ('+z+' EMT)',WNT.inch(r.takeup));
   $('s-s90').innerHTML='<li>'+WNT.inch(h)+' stub − '+WNT.inch(r.takeup)+' take-up = '+WNT.inch(r.mark)+'</li><li>Line the mark up with the arrow on the bender, foot pressure on the heel, and bend to 90°.</li>'+(r.mark<0?'<li>Stub is shorter than the take-up: that height can’t be bent with this bender.</li>':'');}
+function s4(){var h=num('fh'),a=+$('fa').value,n=num('fn'),w=num('fw');$('r-s4').innerHTML='';$('s-s4').innerHTML='';if(!(h>0&&n>0&&w>0))return;
+  var r=WNT.saddle4({height:h,angle:a,near:n,far:n+w});
+  $('r-s4').innerHTML=outbox('Mark 1',WNT.inch(r.m1),r.m1<0?'bad':'hi')+outbox('Mark 2',WNT.inch(r.m2),'hi')+outbox('Mark 3',WNT.inch(r.m3),'hi')+outbox('Mark 4',WNT.inch(r.m4),'hi')+outbox('Total shrink',WNT.inch(r.total));
+  $('s-s4').innerHTML='<li>Each offset: '+h+'" × '+WNT.OFFSET[a][0]+' = '+WNT.inch(r.dist)+' between bends, '+WNT.inch(r.shrink)+' shrink</li><li>Marks 1–2 (up): near edge '+WNT.inch(n)+' + '+WNT.inch(r.shrink)+' shrink = '+WNT.inch(r.m2)+'; back '+WNT.inch(r.dist)+' = '+WNT.inch(r.m1)+'</li><li>Marks 3–4 (down): far edge '+WNT.inch(n+w)+' + '+WNT.inch(r.shrink)+' = '+WNT.inch(r.m3)+'; ahead '+WNT.inch(r.dist)+' = '+WNT.inch(r.m4)+'</li><li>Bend '+a+'° at all four marks. Up at 1 and 2, then down at 3 and 4.</li>';}
+function rol(){var r1=num('rr'),r2=num('rl2'),a=+$('ra').value;$('r-rol').innerHTML='';$('s-rol').innerHTML='';if(!(r1>0&&r2>0))return;
+  var r=WNT.rolling({rise:r1,roll:r2,angle:a});
+  $('r-rol').innerHTML=outbox('True offset',WNT.inch(r.trueOff),'hi')+outbox('Distance between bends',WNT.inch(r.dist),'hi')+outbox('Shrink',WNT.inch(r.shrink));
+  $('s-rol').innerHTML='<li>True offset = √('+r1+'² + '+r2+'²) = '+WNT.inch(r.trueOff)+'</li><li>Bend it as a regular '+a+'° offset of '+WNT.inch(r.trueOff)+': marks '+WNT.inch(r.dist)+' apart</li><li>Roll the pipe so the offset points along the diagonal between the rise and the roll.</li>';}
+function b2b(){var l=num('bl');$('r-b2b').innerHTML='';$('s-b2b').innerHTML='';if(!(l>0))return;
+  $('r-b2b').innerHTML=outbox('Mark from back of first 90',WNT.inch(l),'hi');
+  $('s-b2b').innerHTML='<li>Bend the first 90 as a normal stub.</li><li>Measure '+WNT.inch(l)+' from the back (outside) of the first 90 and mark.</li><li>Turn the bender so its hook faces the first 90, line your mark up with the <b>star (back-of-bend) mark</b>, and bend the second 90.</li>';}
+function kik(){var r1=num('kr'),d=num('kd');$('r-kik').innerHTML='';$('s-kik').innerHTML='';if(!(r1>0&&d>0))return;var r=WNT.kick({rise:r1,run:d});
+  $('r-kik').innerHTML=outbox('Bend angle',WNT.fmt(r.angle,1)+'°','hi')+outbox('Pipe travel',WNT.inch(r.travel));
+  $('s-kik').innerHTML='<li>Angle = tan⁻¹('+r1+' ÷ '+d+') = '+WNT.fmt(r.angle,1)+'°</li><li>A kick is a single bend. Check the angle with a level or the degree marks on the bender.</li>';}
+['fh','fn','fw'].forEach(function(id){$(id).addEventListener('input',s4);});$('fa').addEventListener('change',s4);
+['rr','rl2'].forEach(function(id){$(id).addEventListener('input',rol);});$('ra').addEventListener('change',rol);
+$('bl').addEventListener('input',b2b);['kr','kd'].forEach(function(id){$(id).addEventListener('input',kik);});s4();rol();b2b();kik();
 ['oh','od'].forEach(function(id){$(id).addEventListener('input',off);});$('oa').addEventListener('change',off);
 ['sh','sc'].forEach(function(id){$(id).addEventListener('input',sad);});
 $('th').addEventListener('input',s90);$('ts').addEventListener('change',s90);off();sad();s90();
