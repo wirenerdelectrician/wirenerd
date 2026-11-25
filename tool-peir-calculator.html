@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ohm&#x27;s Law &amp; Power Calculator (PEIR Ladder) | WireNerd</title>
+<link rel="canonical" href="https://www.wirenerd.com/tool-peir-calculator.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="WireNerd" />
+<meta property="og:title" content="Ohm&#x27;s Law &amp; Power Calculator (PEIR Ladder)" />
+<meta property="og:description" content="Free Ohm&#x27;s law calculator: enter any two of watts, volts, amps or ohms and get the other two, with the PEIR ladder step that solves it." />
+<meta property="og:url" content="https://www.wirenerd.com/tool-peir-calculator.html" />
+<meta property="og:image" content="https://www.wirenerd.com/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="WireNerd — Industrial electrical, made clear." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="description" content="Free Ohm&#x27;s law calculator: enter any two of watts, volts, amps or ohms and get the other two, with the PEIR ladder step that solves it." />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#1a1a1a" />
+<link rel="apple-touch-icon" href="/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="WN Tools" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a1a; --panel:#232323; --accent:#EF9F27; --green:#1D9E75;
+  --blue:#85B7EB; --muted:#B4B2A9; --red:#E24B4A; --panel-2:#2b2b2b;
+  --line:#383838; --text:#ece9e2; --text-dim:#B4B2A9;
+  --display:'Saira',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--display);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+.topnav{border-bottom:1px solid var(--line);background:rgba(26,26,26,.85);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+.topnav .wrap{display:flex;align-items:center;gap:16px;min-height:60px;max-width:1200px;flex-wrap:nowrap}
+.brand{font-weight:800;letter-spacing:.5px;font-size:20px;color:var(--text);white-space:nowrap}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;align-items:center;gap:13px;margin-left:auto;flex-wrap:nowrap;white-space:nowrap}
+.navlinks a{color:var(--text-dim);font-weight:500;font-size:15px}
+.navlinks a:hover{color:var(--text);text-decoration:none}
+@media(max-width:980px){.topnav .wrap{flex-wrap:wrap}.navlinks{flex-wrap:wrap}}
+.hero{padding:46px 0 6px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;margin:10px 0 8px;line-height:1.06}
+.lead{color:var(--text-dim);font-size:18px;margin:0 0 4px}
+.updated{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin:6px 0 0}
+main{padding:10px 0 40px}
+main h2{font-size:23px;font-weight:700;margin:30px 0 8px}
+main h3{font-size:18px;font-weight:600;margin:22px 0 6px;color:var(--text)}
+main p{color:var(--text-dim);margin:0 0 14px}
+main ul{color:var(--text-dim);margin:0 0 14px;padding-left:20px}
+main li{margin:5px 0}
+main strong,main b{color:var(--text)}
+.callout{background:var(--panel);border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;margin:18px 0;color:var(--text-dim)}
+.callout b{color:var(--text)}
+footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--text-dim);font-size:14px;margin-top:30px}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--text-dim)}
+footer a:hover{color:var(--accent)}
+.social{display:flex;gap:16px}
+.legal-links{display:flex;flex-wrap:wrap;gap:14px;font-size:13.5px}
+.fine{color:var(--muted);font-size:12.5px;margin-top:6px;max-width:780px;line-height:1.5}
+</style>
+<link rel="stylesheet" href="/tools.css">
+<link rel="stylesheet" href="/wn-mobile.css">
+<script src="/wn-mobile.js" defer></script>
+</head>
+<body>
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="/">wire<b>nerd</b></a>
+  <div class="navlinks">
+    <a href="/lessons.html">Lessons</a><a href="/videos.html">Videos</a><a href="/tools.html">Tools</a>
+    <a href="/guides.html">Build Guides</a>
+    <a href="/components.html">Components</a>
+    <a href="/trainer.html">Sandbox</a><a href="/plc-sandbox.html">PLC Sandbox</a>
+    <a href="/nec-journeyman.html">Become a Journeyman</a>
+    <a href="/classes.html">Classes</a>
+    <a href="/forum.html">Forum</a>
+    <a href="/profile.html">Profile</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">TOOLS · OHM’S LAW</div>
+  <h1>Ohm’s Law &amp; Power Calculator</h1>
+  <p class="lead">Enter any <b>two</b> values. Get the other two, plus the PEIR ladder move that solves it.</p>
+</div></header>
+
+<main><div class="wrap">
+<div class="tool">
+  <div class="tgrid">
+    <div class="fld"><label for="P">P · Power</label><input id="P" inputmode="decimal" placeholder="watts"><span class="unit">watts (W)</span></div>
+    <div class="fld"><label for="E">E · Voltage</label><input id="E" inputmode="decimal" placeholder="volts"><span class="unit">volts (V)</span></div>
+    <div class="fld"><label for="I">I · Current</label><input id="I" inputmode="decimal" placeholder="amps"><span class="unit">amps (A)</span></div>
+    <div class="fld"><label for="R">R · Resistance</label><input id="R" inputmode="decimal" placeholder="ohms"><span class="unit">ohms (Ω)</span></div>
+  </div>
+  <div class="tabs" style="margin-top:16px"><button id="clear" type="button">Clear</button><button id="ex" type="button">Example: 1,200 W toaster on 120 V</button></div>
+  <div id="res" class="res"></div><ul id="steps" class="steps"></ul><div id="err" class="err"></div>
+</div>
+<h2>The PEIR ladder</h2>
+<p>Stack the letters <b>P, E, I, R</b> top to bottom. <b>Going down, divide. Going up, multiply.</b> When the letter you need sits between two you know, divide the top by the bottom.</p>
+<table class="t"><tr><th>You know</th><th>Find</th><th>Formula</th></tr>
+<tr><td>P and E</td><td>I</td><td>P ÷ E</td></tr><tr><td>E and I</td><td>R</td><td>E ÷ I</td></tr>
+<tr><td>I and R</td><td>E</td><td>I × R</td></tr><tr><td>E and I</td><td>P</td><td>E × I</td></tr>
+<tr><td>P and I</td><td>E</td><td>P ÷ I</td></tr><tr><td>E and R</td><td>I</td><td>E ÷ R</td></tr>
+<tr><td>P and R</td><td>I</td><td>√(P ÷ R)</td></tr></table>
+<p class="note">E is voltage (electromotive force) and I is current (from the French <i>intensité</i>). Watts equal volt-amps only for resistive loads like heaters; motors and electronics draw more VA than watts.</p>
+<h2>Learn the why</h2><div class="related"><a href="/videos.html">Video 06: The PEIR Ladder</a><a href="/videos.html">Volts, Amps &amp; Ohms</a><a href="/lesson-complete-circuit.html">The Complete Circuit</a></div>
+<div class="cta"><b>Want to really understand the math?</b> Our self-paced courses walk you through it with animated lessons, hands-on labs and a final exam. <a href="/courses.html">See the courses →</a></div>
+<p class="disc">For learning and quick checks only. Results are based on the 2023 NEC tables and standard field rules. Always verify against your adopted code edition, the equipment instructions and your AHJ. <a href="/disclaimer.html">Disclaimer</a>.</p>
+</div></main>
+<footer><div class="wrap">
+  <div class="legal-links">
+    <a href="/about.html">About</a>
+    <a href="/disclaimer.html">Disclaimer</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/refunds.html">Refunds</a>
+    <a href="/contact.html">Contact</a>
+  </div>
+  <div>© 2026 WireNerd · Industrial Electrical · Made Clear</div>
+  <div>Built by Bryan Barrios</div>
+  <div class="social">
+    <a href="https://www.youtube.com/@WireNerdElectrician" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.tiktok.com/@wirenerdelectrician" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.instagram.com/wirenerdelectrician" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <div class="fine">WireNerd is an independent study and exam-prep resource. It is not a school, training academy, or licensing authority, and it is not affiliated with NFPA or any government agency. Content is for educational purposes &mdash; always verify against your own current adopted code and a licensed professional.</div>
+</div></footer>
+<script src="/wn-tools.js"></script>
+<script>
+
+var $=function(id){return document.getElementById(id);};
+function num(id){var v=$(id).value.trim().replace(/,/g,'');return v===''?null:parseFloat(v);}
+function outbox(k,v,cls){return '<div class="out '+(cls||'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
+function sizeOptions(sel,list,def){list.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=WNT.label(s);if(s===def)o.selected=true;sel.appendChild(o);});}
+
+var F=['P','E','I','R'];
+function calc(){
+  var v={};F.forEach(function(k){v[k]=num(k);});
+  var filled=F.filter(function(k){return v[k]!=null;});
+  $('err').textContent='';$('res').innerHTML='';$('steps').innerHTML='';
+  if(filled.length<2)return;
+  if(filled.length>2){$('err').textContent='Enter only two values. Clear one to solve.';return;}
+  var r=WNT.peir(v); if(r.error){$('err').textContent=r.error;return;}
+  $('res').innerHTML=outbox('Power (P)',WNT.fmt(r.P)+' W',filled.indexOf('P')<0?'hi':'')+outbox('Voltage (E)',WNT.fmt(r.E)+' V',filled.indexOf('E')<0?'hi':'')+outbox('Current (I)',WNT.fmt(r.I)+' A',filled.indexOf('I')<0?'hi':'')+outbox('Resistance (R)',WNT.fmt(r.R)+' Ω',filled.indexOf('R')<0?'hi':'');
+  $('steps').innerHTML=r.steps.map(function(s){return '<li>'+s+'</li>';}).join('');
+}
+F.forEach(function(k){$(k).addEventListener('input',calc);});
+$('clear').onclick=function(){F.forEach(function(k){$(k).value='';});calc();};
+$('ex').onclick=function(){F.forEach(function(k){$(k).value='';});$('P').value='1200';$('E').value='120';calc();};
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
+</script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c51b41d5f6924872bef5c4e0dd739b97"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
